@@ -32,9 +32,10 @@ import { ref, onMounted, getCurrentInstance } from 'vue'
 
 const events = ref([])
 const { proxy } = getCurrentInstance()
+document.title = "Chaperones' Calendar - Steel City Choristers"
 
 onMounted(() => {
-  fetch('http://localhost:5001/events', {
+  fetchAPI('http://localhost:5001/events', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -55,7 +56,7 @@ onMounted(() => {
       console.error('Error:', error)
     });
 
-  fetch('http://localhost:5001/events_chaperones', {
+  fetchAPI('http://localhost:5001/events_chaperones', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -77,7 +78,7 @@ onMounted(() => {
 })
 
 // events.value.forEach((event) => {
-//   fetch(`http://localhost:5001/chaperones/${event.id}`, {
+//   fetchAPI(`http://localhost:5001/chaperones/${event.id}`, {
 //     method: 'GET',
 //     headers: {
 //       'Content-Type': 'application/json',

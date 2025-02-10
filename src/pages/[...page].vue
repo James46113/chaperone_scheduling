@@ -19,5 +19,6 @@
 <script setup>
 
 const { proxy } = getCurrentInstance()
+document.title = "404 Page Not Found - Steel City Choristers"
 
 </script>

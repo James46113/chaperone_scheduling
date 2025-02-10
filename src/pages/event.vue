@@ -54,7 +54,7 @@ onMounted(() => {
   if (!proxy.$route.query.id) {
     proxy.$router.push('/')
   }
-  fetch(`http://localhost:5001/events/${proxy.$route.query.id}`, {
+  fetchAPI(`http://localhost:5001/events/${proxy.$route.query.id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ onMounted(() => {
       document.title = `${data.title} - Steel City Choristers`;
     })
 
-  fetch(`http://localhost:5001/chaperone_slots/${proxy.$route.query.id}`, {
+  fetchAPI(`http://localhost:5001/chaperone_slots/${proxy.$route.query.id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

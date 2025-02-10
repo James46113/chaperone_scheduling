@@ -12,6 +12,9 @@
 <script setup>
 import { onMounted } from 'vue';
 
+document.title = "Chaperones - Steel City Choristers"
+
+
 const chaperones = ref([])
 const headers = [
   { title: 'Name', key: 'chaperone' }
@@ -25,7 +28,7 @@ const showSchedule = (value, row) => {
 
 
 onMounted(() => {
-  fetch('http://localhost:5001/chaperones', {
+  fetchAPI('http://localhost:5001/chaperones', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

@@ -15,6 +15,8 @@
 <script setup>
 
 const { proxy } = getCurrentInstance()
+document.title = "Template Events - Steel City Choristers"
+
 
 const templates = ref([])
 const headers = [
@@ -22,7 +24,7 @@ const headers = [
 ]
 
 onMounted(() => {
-  fetch('http://localhost:5001/templates/list', {
+  fetchAPI('http://localhost:5001/templates/list', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

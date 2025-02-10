@@ -4,8 +4,8 @@
     <v-card-title class="text-h5 mt-4 ml-4">Chaperones</v-card-title>
     <v-spacer />
 
-    <v-btn class="mt-4 mr-3">
-      <v-icon size="25" @click="proxy.$router.push('/templateEvents')">mdi-note-text</v-icon>
+    <v-btn class="mt-4 mr-3" @click="proxy.$router.push('/templateEvents')">
+      <v-icon size="25">mdi-note-text</v-icon>
     </v-btn>
 
     <v-btn class="mt-4 mr-3" @click="proxy.$router.push('/chaperones')">
@@ -20,5 +20,4 @@
 
 <script lang="js" setup>
 const { proxy } = getCurrentInstance()
-document.title = "Chaperones' Calendar - Steel City Choristers"  
 </script>

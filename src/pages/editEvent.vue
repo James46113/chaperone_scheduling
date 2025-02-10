@@ -175,7 +175,7 @@ onMounted(() => {
       lead_chaperone: '',
     };
 
-    fetch('http://localhost:5001/templates', {
+    fetchAPI('http://localhost:5001/templates', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -189,7 +189,7 @@ onMounted(() => {
         console.error('Error:', error)
       });
 
-    fetch(`http://localhost:5001/template_chaperone_slots`, {
+    fetchAPI(`http://localhost:5001/template_chaperone_slots`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -206,7 +206,7 @@ onMounted(() => {
   }
 
   if (!isTemplate.value) {
-    fetch(`http://localhost:5001/events/${proxy.$route.query.id}`, {
+    fetchAPI(`http://localhost:5001/events/${proxy.$route.query.id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -228,7 +228,7 @@ onMounted(() => {
         console.error('Error:', error)
       });
 
-    fetch(`http://localhost:5001/chaperone_slots/${proxy.$route.query.id}`, {
+    fetchAPI(`http://localhost:5001/chaperone_slots/${proxy.$route.query.id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -252,7 +252,7 @@ onMounted(() => {
   }
 
   else {
-    fetch(`http://localhost:5001/templates/${proxy.$route.query.id}`, {
+    fetchAPI(`http://localhost:5001/templates/${proxy.$route.query.id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -274,7 +274,7 @@ onMounted(() => {
         console.error('Error:', error)
       });
 
-    fetch(`http://localhost:5001/template_chaperone_slots/${proxy.$route.query.id}`, {
+    fetchAPI(`http://localhost:5001/template_chaperone_slots/${proxy.$route.query.id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -330,13 +330,13 @@ const loadTemplate = () => {
 const deleteEvent = () => {
   let failed = false;
   if (isTemplate.value) {
-    fetch(`http://localhost:5001/templates/${event.value.id}`, {
+    fetchAPI(`http://localhost:5001/templates/${event.value.id}`, {
       method: 'DELETE',
     }).then((response) => {
       if (!response.ok) {
         failed = true;
       }
-      fetch(`http://localhost:5001/template_chaperone_slots/${event.value.id}`, {
+      fetchAPI(`http://localhost:5001/template_chaperone_slots/${event.value.id}`, {
         method: 'DELETE',
       }).then((response) => {
         if (!response.ok) {
@@ -355,13 +355,13 @@ const deleteEvent = () => {
 
   else {
 
-    fetch(`http://localhost:5001/events/${event.value.id}`, {
+    fetchAPI(`http://localhost:5001/events/${event.value.id}`, {
       method: 'DELETE',
     }).then((response) => {
       if (!response.ok) {
         failed = true;
       }
-      fetch(`http://localhost:5001/chaperone_slots/${event.value.id}`, {
+      fetchAPI(`http://localhost:5001/chaperone_slots/${event.value.id}`, {
         method: 'DELETE',
       }).then((response) => {
         if (!response.ok) {
@@ -469,7 +469,7 @@ const saveEvent = async () => {
 }
 
 const saveNewTemplate = async () => {
-  await fetch("http://localhost:5001/templates", {
+  await fetchAPI("http://localhost:5001/templates", {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -494,7 +494,7 @@ const saveNewTemplate = async () => {
 }
 
 const saveNewEvent = async () => {
-  await fetch("http://localhost:5001/events", {
+  await fetchAPI("http://localhost:5001/events", {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -520,7 +520,7 @@ const saveNewEvent = async () => {
 }
 
 const getChaperones = () => {
-  fetch('http://localhost:5001/chaperones', {
+  fetchAPI('http://localhost:5001/chaperones', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -536,7 +536,7 @@ const getChaperones = () => {
 }
 
 const saveExistingEvent = () => {
-  fetch(`http://localhost:5001/events/${event.value.id}`, {
+  fetchAPI(`http://localhost:5001/events/${event.value.id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -557,7 +557,7 @@ const saveExistingEvent = () => {
 }
 
 const saveExistingTemplate = () => {
-  fetch(`http://localhost:5001/templates/${event.value.id}`, {
+  fetchAPI(`http://localhost:5001/templates/${event.value.id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -603,7 +603,7 @@ const saveTemplateChaperoneSlots = async () => {
     store.showAlert('Invalid Data', 'End time must be after start time for all chaperones.');
     return;
   }
-  await fetch(`http://localhost:5001/template_chaperone_slots/${event.value.id}`, {
+  await fetchAPI(`http://localhost:5001/template_chaperone_slots/${event.value.id}`, {
     method: 'DELETE'
   }).then(response => {
     if (!response.ok) {
@@ -615,7 +615,7 @@ const saveTemplateChaperoneSlots = async () => {
 
   await Promise.all(chaperoneSlots.value.map(slot => {
     console.log(JSON.stringify(slot));
-    return fetch("http://localhost:5001/template_chaperone_slots", {
+    return fetchAPI("http://localhost:5001/template_chaperone_slots", {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -670,12 +670,12 @@ const saveChaperoneSlots = async () => {
     return false;
   }
 
-  await fetch(`http://localhost:5001/chaperone_slots/${event.value.id}`, {
+  await fetchAPI(`http://localhost:5001/chaperone_slots/${event.value.id}`, {
     method: 'DELETE'
   })
 
   await Promise.all(chaperoneSlots.value.map(slot => {
-    return fetch("http://localhost:5001/chaperone_slots", {
+    return fetchAPI("http://localhost:5001/chaperone_slots", {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
