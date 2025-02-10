@@ -23,7 +23,9 @@ declare module 'vue-router/auto-routes' {
     '/chaperones': RouteRecordInfo<'/chaperones', '/chaperones', Record<never, never>, Record<never, never>>,
     '/editEvent': RouteRecordInfo<'/editEvent', '/editEvent', Record<never, never>, Record<never, never>>,
     '/event': RouteRecordInfo<'/event', '/event', Record<never, never>, Record<never, never>>,
+    '/login': RouteRecordInfo<'/login', '/login', Record<never, never>, Record<never, never>>,
     '/schedule': RouteRecordInfo<'/schedule', '/schedule', Record<never, never>, Record<never, never>>,
     '/templateEvents': RouteRecordInfo<'/templateEvents', '/templateEvents', Record<never, never>, Record<never, never>>,
+    '/users': RouteRecordInfo<'/users', '/users', Record<never, never>, Record<never, never>>,
   }
 }

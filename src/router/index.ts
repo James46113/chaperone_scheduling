@@ -8,6 +8,8 @@
 import { createRouter, createWebHistory } from 'vue-router/auto'
 import { setupLayouts } from 'virtual:generated-layouts'
 import { routes } from 'vue-router/auto-routes'
+import { useAppStore } from '@/stores/app'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,6 +33,29 @@ router.onError((err, to) => {
 
 router.isReady().then(() => {
   localStorage.removeItem('vuetify:dynamic-reload')
+})
+
+router.beforeEach((to, from, next) => {
+  const store = useAppStore();
+
+  if (!store.userEmail && to.path !== '/login') {
+    console.log(store.userEmail);
+    next('/login');
+  } else {
+    next();
+  }
+});
+
+router.beforeEach((to, from, next) => {
+  const store = useAppStore();
+
+  if ((to.path.startsWith('/editEvent') ||
+    to.path.startsWith('/templateEvents') ||
+    to.path.startsWith('/users')) && !store.isAdmin) {
+    next('/');
+  } else {
+    next();
+  }
 })
 
 export default router

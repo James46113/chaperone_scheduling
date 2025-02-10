@@ -1,7 +1,6 @@
 <template>
   <v-main>
     <router-view />
-    <app-header />
     <AlertDialog />
   </v-main>
 

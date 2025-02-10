@@ -1,4 +1,5 @@
 <template>
+  <app-header />
   <div class="pa-6">
     <v-card class="pa-3">
       <v-row>

@@ -1,4 +1,5 @@
 <template>
+  <app-header />
   <v-card class="ma-4">
     <v-card-title class="text-h5">{{ proxy.$route.query.name }}'s Schedule</v-card-title>
     <v-sheet v-for="event in events" class="ma-2" variant="outlined" color="primary" style="padding: 1px;" rounded>

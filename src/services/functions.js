@@ -4,8 +4,6 @@ export const fetchAPI = async (url, params) => {
     'Authorization': import.meta.env.VITE_API_KEY
   };
 
-  console.log(JSON.stringify({ ...params, headers }));
-
   return fetch(url, {
     ...params,
     headers

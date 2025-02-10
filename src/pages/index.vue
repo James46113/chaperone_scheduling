@@ -1,37 +1,27 @@
 <template>
+  <app-header />
   <div class="pa-4">
-    <v-btn @click="proxy.$router.push('/editEvent?id=new')" style="position: absolute; right: 16px;" class="mt-4"
-      color="primary">Add Event</v-btn>
-    <v-calendar :events="events" :weekdays="[1, 2, 3, 4, 5, 6, 0]">
+    <v-btn v-if="store.isAdmin && !store.isMobile" @click="proxy.$router.push('/editEvent?id=new')"
+      style="position: absolute; right: 16px;" class="mt-4" color="primary">Add
+      Event</v-btn>
+    <v-calendar :events="events" :weekdays="[1, 2, 3, 4, 5, 6, 0]" v-if="!store.isMobile">
       <template #event="{ event }">
-        <v-card @click="proxy.$router.push(`/event?id=${event.id}`)" class="ma-1">
-          <v-card-title>{{ event.title }}</v-card-title>
-          <v-card-subtitle class="mt-n3">
-            {{ event.location }}
-          </v-card-subtitle>
-          <v-card-subtitle>
-            {{ new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }} -
-            {{ new Date(event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
-          </v-card-subtitle>
-          <v-card-text>
-            <span v-for="chaperone in event.chaperones">
-              <span :style="chaperone == event.lead_chaperone ? 'font-weight: bold;' : ''">
-                {{ chaperone }}<br>
-              </span>
-            </span>
-          </v-card-text>
-        </v-card>
+        <event-card :event="event" />
       </template>
     </v-calendar>
+    <event-card v-for="event in events" :event="event" mobile v-else />
   </div>
 </template>
 
 <script lang="js" setup>
 import { VCalendar } from 'vuetify/labs/VCalendar'
 import { ref, onMounted, getCurrentInstance } from 'vue'
+import { useAppStore } from '@/stores/app'
 
 const events = ref([])
 const { proxy } = getCurrentInstance()
+const store = useAppStore();
+
 document.title = "Chaperones' Calendar - Steel City Choristers"
 
 onMounted(() => {

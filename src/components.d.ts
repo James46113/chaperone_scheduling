@@ -10,10 +10,9 @@ declare module 'vue' {
     AlertDialog: typeof import('./components/AlertDialog.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     AppHeader: typeof import('./components/AppHeader.vue')['default']
-    HelloWorld: typeof import('./components/HelloWorld.vue')['default']
+    EventCard: typeof import('./components/EventCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TimePicker: typeof import('./components/TimePicker.vue')['default']
-    TtimePicker: typeof import('./components/TtimePicker.vue')['default']
   }
 }

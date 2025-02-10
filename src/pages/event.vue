@@ -1,16 +1,17 @@
 <template>
+  <app-header />
   <v-card class="pa-4">
     <v-card-title class="text-h4 mb-n5">{{ event.title }}</v-card-title>
 
-    <v-btn @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)" color="primary"
-      style="position: absolute; right: 32px;">Edit</v-btn>
+    <v-btn v-if="store.isAdmin && !store.isMobile" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)"
+      color="primary" style="position: absolute; right: 32px;">Edit</v-btn>
 
     <v-card-title>{{ event.date }}, {{ event.start }} - {{ event.end }}</v-card-title>
     <v-card-subtitle>
       {{ event.location }}
     </v-card-subtitle>
     <v-card-text>
-      <span style="white-space: pre;">
+      <span style="white-space: pre-wrap;">
         {{ event.details?.length > 0 ? event.details : 'No details available' }}
       </span>
     </v-card-text>
@@ -19,7 +20,7 @@
     <v-card-title>Chaperones</v-card-title>
     <v-card-text>Lead Chaperone: {{ event.lead_chaperone }}</v-card-text>
 
-    <v-data-table :headers="tableHeaders" :items="chaperoneSlots" hide-default-footer>
+    <v-data-table :headers="tableHeaders" :items="chaperoneSlots" hide-default-footer v-if="!store.isMobile">
       <template #item.startTime="{ item }">
         {{ new Date(item.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
       </template>
@@ -32,13 +33,35 @@
         </span>
         <i v-else>No details available</i>
       </template>
+      <template v-slot:no-data>
+        <v-alert type="warning" class="mt-3">
+          No chaperones assigned
+        </v-alert>
+      </template>
     </v-data-table>
+    <v-card v-else v-for="slot in chaperoneSlots" class="mb-4">
+      <v-card-title>{{ slot.chaperone }}</v-card-title>
+      <v-card-subtitle class="mt-n2">{{ slot.title }}</v-card-subtitle>
+      <v-card-subtitle>{{ new Date(slot.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }} -
+        {{ new Date(slot.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</v-card-subtitle>
+      <v-card-text>
+        <span v-if="slot.details?.length > 0">
+          {{ slot.details }}
+        </span>
+        <i v-else>No details available</i>
+      </v-card-text>
+
+    </v-card>
   </v-card>
 </template>
 
 <script setup>
+import { useAppStore } from '@/stores/app';
+
 
 const { proxy } = getCurrentInstance()
+const store = useAppStore();
+
 const event = ref({})
 const chaperoneSlots = ref([])
 
