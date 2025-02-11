@@ -73,6 +73,7 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+    allowedHosts: true,
   },
   css: {
     preprocessorOptions: {
@@ -81,4 +82,5 @@ export default defineConfig({
       },
     },
   },
+
 })

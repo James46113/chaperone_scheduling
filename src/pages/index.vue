@@ -25,7 +25,7 @@ const store = useAppStore();
 document.title = "Chaperones' Calendar - Steel City Choristers"
 
 onMounted(() => {
-  fetchAPI('http://localhost:5001/events', {
+  fetchAPI('https://chaperoneschedulingapi-production-b505.up.railway.app/events', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ onMounted(() => {
       console.error('Error:', error)
     });
 
-  fetchAPI('http://localhost:5001/events_chaperones', {
+  fetchAPI('https://chaperoneschedulingapi-production-b505.up.railway.app/events_chaperones', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ onMounted(() => {
 })
 
 // events.value.forEach((event) => {
-//   fetchAPI(`http://localhost:5001/chaperones/${event.id}`, {
+//   fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/chaperones/${event.id}`, {
 //     method: 'GET',
 //     headers: {
 //       'Content-Type': 'application/json',

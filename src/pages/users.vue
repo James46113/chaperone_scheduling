@@ -63,7 +63,7 @@ const headers = computed(() => [
 ].filter(header => !store.isMobile || header.mobile))
 
 onMounted(() => {
-  fetchAPI('http://localhost:5001/users', {
+  fetchAPI('https://chaperoneschedulingapi-production-b505.up.railway.app/users', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ const createUser = () => {
     store.showAlert('Invalid email', 'Please enter an email address')
     return;
   }
-  fetchAPI('http://localhost:5001/users', {
+  fetchAPI('https://chaperoneschedulingapi-production-b505.up.railway.app/users', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ const createUser = () => {
 }
 
 const deleteUser = (email) => {
-  fetchAPI(`http://localhost:5001/users/${email}`, {
+  fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/users/${email}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -133,7 +133,7 @@ const deleteUser = (email) => {
 }
 
 const updateAdmin = (user) => {
-  fetchAPI(`http://localhost:5001/users/${user.email}`, {
+  fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/users/${user.email}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',

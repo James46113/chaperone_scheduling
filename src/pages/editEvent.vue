@@ -176,7 +176,7 @@ onMounted(() => {
       lead_chaperone: '',
     };
 
-    fetchAPI('http://localhost:5001/templates', {
+    fetchAPI('https://chaperoneschedulingapi-production-b505.up.railway.app/templates', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -190,7 +190,7 @@ onMounted(() => {
         console.error('Error:', error)
       });
 
-    fetchAPI(`http://localhost:5001/template_chaperone_slots`, {
+    fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/template_chaperone_slots`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -207,7 +207,7 @@ onMounted(() => {
   }
 
   if (!isTemplate.value) {
-    fetchAPI(`http://localhost:5001/events/${proxy.$route.query.id}`, {
+    fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/events/${proxy.$route.query.id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -229,7 +229,7 @@ onMounted(() => {
         console.error('Error:', error)
       });
 
-    fetchAPI(`http://localhost:5001/chaperone_slots/${proxy.$route.query.id}`, {
+    fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/chaperone_slots/${proxy.$route.query.id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -253,7 +253,7 @@ onMounted(() => {
   }
 
   else {
-    fetchAPI(`http://localhost:5001/templates/${proxy.$route.query.id}`, {
+    fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/templates/${proxy.$route.query.id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -275,7 +275,7 @@ onMounted(() => {
         console.error('Error:', error)
       });
 
-    fetchAPI(`http://localhost:5001/template_chaperone_slots/${proxy.$route.query.id}`, {
+    fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/template_chaperone_slots/${proxy.$route.query.id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -331,13 +331,13 @@ const loadTemplate = () => {
 const deleteEvent = () => {
   let failed = false;
   if (isTemplate.value) {
-    fetchAPI(`http://localhost:5001/templates/${event.value.id}`, {
+    fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/templates/${event.value.id}`, {
       method: 'DELETE',
     }).then((response) => {
       if (!response.ok) {
         failed = true;
       }
-      fetchAPI(`http://localhost:5001/template_chaperone_slots/${event.value.id}`, {
+      fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/template_chaperone_slots/${event.value.id}`, {
         method: 'DELETE',
       }).then((response) => {
         if (!response.ok) {
@@ -356,13 +356,13 @@ const deleteEvent = () => {
 
   else {
 
-    fetchAPI(`http://localhost:5001/events/${event.value.id}`, {
+    fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/events/${event.value.id}`, {
       method: 'DELETE',
     }).then((response) => {
       if (!response.ok) {
         failed = true;
       }
-      fetchAPI(`http://localhost:5001/chaperone_slots/${event.value.id}`, {
+      fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/chaperone_slots/${event.value.id}`, {
         method: 'DELETE',
       }).then((response) => {
         if (!response.ok) {
@@ -470,7 +470,7 @@ const saveEvent = async () => {
 }
 
 const saveNewTemplate = async () => {
-  await fetchAPI("http://localhost:5001/templates", {
+  await fetchAPI("https://chaperoneschedulingapi-production-b505.up.railway.app/templates", {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -495,7 +495,7 @@ const saveNewTemplate = async () => {
 }
 
 const saveNewEvent = async () => {
-  await fetchAPI("http://localhost:5001/events", {
+  await fetchAPI("https://chaperoneschedulingapi-production-b505.up.railway.app/events", {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -521,7 +521,7 @@ const saveNewEvent = async () => {
 }
 
 const getChaperones = () => {
-  fetchAPI('http://localhost:5001/chaperones', {
+  fetchAPI('https://chaperoneschedulingapi-production-b505.up.railway.app/chaperones', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -537,7 +537,7 @@ const getChaperones = () => {
 }
 
 const saveExistingEvent = () => {
-  fetchAPI(`http://localhost:5001/events/${event.value.id}`, {
+  fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/events/${event.value.id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -558,7 +558,7 @@ const saveExistingEvent = () => {
 }
 
 const saveExistingTemplate = () => {
-  fetchAPI(`http://localhost:5001/templates/${event.value.id}`, {
+  fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/templates/${event.value.id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -604,7 +604,7 @@ const saveTemplateChaperoneSlots = async () => {
     store.showAlert('Invalid Data', 'End time must be after start time for all chaperones.');
     return;
   }
-  await fetchAPI(`http://localhost:5001/template_chaperone_slots/${event.value.id}`, {
+  await fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/template_chaperone_slots/${event.value.id}`, {
     method: 'DELETE'
   }).then(response => {
     if (!response.ok) {
@@ -616,7 +616,7 @@ const saveTemplateChaperoneSlots = async () => {
 
   await Promise.all(chaperoneSlots.value.map(slot => {
     console.log(JSON.stringify(slot));
-    return fetchAPI("http://localhost:5001/template_chaperone_slots", {
+    return fetchAPI("https://chaperoneschedulingapi-production-b505.up.railway.app/template_chaperone_slots", {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -671,12 +671,12 @@ const saveChaperoneSlots = async () => {
     return false;
   }
 
-  await fetchAPI(`http://localhost:5001/chaperone_slots/${event.value.id}`, {
+  await fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/chaperone_slots/${event.value.id}`, {
     method: 'DELETE'
   })
 
   await Promise.all(chaperoneSlots.value.map(slot => {
-    return fetchAPI("http://localhost:5001/chaperone_slots", {
+    return fetchAPI("https://chaperoneschedulingapi-production-b505.up.railway.app/chaperone_slots", {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

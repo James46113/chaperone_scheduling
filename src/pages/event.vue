@@ -10,11 +10,6 @@
     <v-card-subtitle>
       {{ event.location }}
     </v-card-subtitle>
-    <v-card-text>
-      <span style="white-space: pre-wrap;">
-        {{ event.details?.length > 0 ? event.details : 'No details available' }}
-      </span>
-    </v-card-text>
 
     <v-divider class="my-4"></v-divider>
     <v-card-title>Chaperones</v-card-title>
@@ -52,6 +47,13 @@
       </v-card-text>
 
     </v-card>
+    <v-divider />
+    <v-card-title class="my-3">Details</v-card-title>
+    <v-card-text>
+      <span style="white-space: pre-wrap;">
+        {{ event.details?.length > 0 ? event.details : 'No details available' }}
+      </span>
+    </v-card-text>
   </v-card>
 </template>
 
@@ -77,7 +79,7 @@ onMounted(() => {
   if (!proxy.$route.query.id) {
     proxy.$router.push('/')
   }
-  fetchAPI(`http://localhost:5001/events/${proxy.$route.query.id}`, {
+  fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/events/${proxy.$route.query.id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -95,7 +97,7 @@ onMounted(() => {
       document.title = `${data.title} - Steel City Choristers`;
     })
 
-  fetchAPI(`http://localhost:5001/chaperone_slots/${proxy.$route.query.id}`, {
+  fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/chaperone_slots/${proxy.$route.query.id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

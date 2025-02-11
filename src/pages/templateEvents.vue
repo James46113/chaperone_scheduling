@@ -27,7 +27,7 @@ const headers = [
 ]
 
 onMounted(() => {
-  fetchAPI('http://localhost:5001/templates/list', {
+  fetchAPI('https://chaperoneschedulingapi-production-b505.up.railway.app/templates/list', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

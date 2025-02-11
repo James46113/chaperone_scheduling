@@ -21,7 +21,7 @@ const { proxy } = getCurrentInstance();
 
 function onSignIn(response) {
   store.userEmail = decodeCredential(response.credential).email;
-  fetch(`http://localhost:5001/login/${store.userEmail}`, {
+  fetch(`https://chaperoneschedulingapi-production-b505.up.railway.app/login/${store.userEmail}`, {
     method: 'GET',
   })
     .then((response) => {
@@ -35,7 +35,6 @@ function onSignIn(response) {
       proxy.$router.push('/');
     })
     .catch((error) => {
-      alert("Error: " + error);
       if (error.status === 401) {
         googleLogout();
         store.userEmail = '';

@@ -40,7 +40,7 @@ const showSchedule = (value, row) => {
 
 
 onMounted(() => {
-  fetchAPI('http://localhost:5001/chaperones', {
+  fetchAPI('https://chaperoneschedulingapi-production-b505.up.railway.app/chaperones', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
