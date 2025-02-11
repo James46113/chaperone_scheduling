@@ -14,9 +14,9 @@
           {{ chaperone }}<br>
         </span>
       </span>
-      <v-alert type="warning">
-        No chaperones assigned
-      </v-alert>
+      <v-sheet v-else color="warning" class="pa-2">
+        <span>No chaperones assigned</span>
+      </v-sheet>
     </v-card-text>
   </v-card>
 

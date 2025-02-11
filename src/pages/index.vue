@@ -42,26 +42,25 @@ onMounted(() => {
         lead_chaperone: event.lead_chaperone,
       }))
     })
-    .catch((error) => {
-      console.error('Error:', error)
-    });
-
-  fetchAPI('https://chaperoneschedulingapi-production-b505.up.railway.app/events_chaperones', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      events.value.forEach((event) => {
-        event.chaperones = data.filter(slot => slot.event_id === event.id)[0].chaperones
-        event.chaperones = [...new Set(event.chaperones)]
-        const leadIndex = event.chaperones.indexOf(event.lead_chaperone)
-        event.chaperones.splice(leadIndex, 1)
-        event.chaperones.unshift(event.lead_chaperone)
+    .then(
+      fetchAPI('https://chaperoneschedulingapi-production-b505.up.railway.app/events_chaperones', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       })
-    })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(JSON.stringify(data))
+          console.log(JSON.stringify(events.value))
+          events.value.forEach((event) => {
+            event.chaperones = data.filter(slot => slot.event_id == event.id)[0].chaperones
+            event.chaperones = [...new Set(event.chaperones)]
+            const leadIndex = event.chaperones.indexOf(event.lead_chaperone)
+            event.chaperones.splice(leadIndex, 1)
+            event.chaperones.unshift(event.lead_chaperone)
+          })
+        }))
     .catch((error) => {
       console.error('Error:', error)
     });

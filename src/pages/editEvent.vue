@@ -300,6 +300,9 @@ onMounted(() => {
 });
 
 const leadChaperoneAssigned = () => {
+  if (assignedChaperones.value.length > 0 && !event.value.lead_chaperone) {
+    return false
+  }
   if (!assignedChaperones.value.includes(event.value.lead_chaperone) && event.value.lead_chaperone) {
     return false
   }
@@ -466,7 +469,6 @@ const saveEvent = async () => {
       await saveExistingEvent();
     }
   }
-  saving.value = false;
 }
 
 const saveNewTemplate = async () => {
@@ -491,6 +493,7 @@ const saveNewTemplate = async () => {
         .then(() => {
           store.showAlert("Success", "Template saved successfully.");
           proxy.$router.push(`/templateEvents`)
+          saving.value = false;
         });
     });
 }
@@ -517,6 +520,7 @@ const saveNewEvent = async () => {
           if (success) {
             store.showAlert("Success", "Event saved successfully.");
             proxy.$router.push(`/event?id=${event.value.id}`)
+            saving.value = false;
           }
         });
     });
@@ -555,6 +559,7 @@ const saveExistingEvent = () => {
       if (success) {
         store.showAlert("Success", "Event saved successfully.");
         proxy.$router.push(`/event?id=${event.value.id}`)
+        saving.value = false;
       }
     })
   });
@@ -582,8 +587,6 @@ const saveTemplateChaperoneSlots = async () => {
   let validData = true;
   let validTimes = true;
 
-  console.log("here")
-
   chaperoneSlots.value.forEach(slot => {
     const start = new Date(event.value.date);
     start.setHours(slot.startHours, slot.startMinutes, 0, 0);
@@ -602,10 +605,12 @@ const saveTemplateChaperoneSlots = async () => {
   });
   if (!validData) {
     store.showAlert('Invalid Data', 'Please fill in all required fields.');
+    saving.value = false;
     return;
   }
   if (!validTimes) {
     store.showAlert('Invalid Data', 'End time must be after start time for all chaperones.');
+    saving.value = false;
     return;
   }
   await fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/template_chaperone_slots/${event.value.id}`, {
@@ -634,6 +639,7 @@ const saveTemplateChaperoneSlots = async () => {
         details: slot.details,
       }),
     }).then(response => {
+      saving.value = false;
       if (!response.ok) {
         saving.value = false;
         store.showAlert("Error", "Failed to save template.");
@@ -664,15 +670,18 @@ const saveChaperoneSlots = async () => {
   });
   if (!validData) {
     store.showAlert('Invalid Data', 'Please fill in all required fields.');
+    saving.value = false;
     return false;
   }
   if (!validTimes) {
     store.showAlert('Invalid Data', 'End time must be after start time for all chaperones.');
+    saving.value = false;
     return false;
   }
 
   if (!leadChaperoneAssigned()) {
     store.showAlert('Invalid Data', 'Lead chaperone must be assigned to a chaperone slot.');
+    saving.value = false;
     return false;
   }
 
@@ -696,6 +705,7 @@ const saveChaperoneSlots = async () => {
       }),
     })
   }));
+  saving.value = false;
   return true;
 }
 
