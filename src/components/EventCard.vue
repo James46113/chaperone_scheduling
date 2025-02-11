@@ -9,11 +9,14 @@
       {{ new Date(event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
     </v-card-subtitle>
     <v-card-text>
-      <span v-for="chaperone in event.chaperones">
+      <span v-for="chaperone in event.chaperones" v-if="event.chaperones?.length > 0 ?? false">
         <span :style="chaperone == event.lead_chaperone ? 'font-weight: bold;' : ''">
           {{ chaperone }}<br>
         </span>
       </span>
+      <v-alert type="warning">
+        No chaperones assigned
+      </v-alert>
     </v-card-text>
   </v-card>
 
