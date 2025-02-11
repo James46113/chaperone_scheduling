@@ -8,7 +8,8 @@
         </a>
       </v-col>
       <v-col class="text-center text-caption text-disabled">
-        <a class="text-disabled" href="https://steelcitychoristers.org.uk">Steel City Choristers</a> - Registered
+        <a class="text-disabled" rel="noopener noreferrer" target="_blank"
+          href="https://steelcitychoristers.org.uk">Steel City Choristers</a> - Registered
         Charity Number 1195909
       </v-col>
       <v-col class="text-right">
