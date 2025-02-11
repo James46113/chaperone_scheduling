@@ -17,7 +17,7 @@ import vue3GoogleLogin from 'vue3-google-login'
 
 const app = createApp(App)
 app.use(vue3GoogleLogin, {
-  clientId: "1076744696278-um5rt4junaii0nkqd8ibd7brudua4617.apps.googleusercontent.com"
+  clientId: "1055714484946-t144r6afo5g999l8malkjesavh4s95eq.apps.googleusercontent.com"
 })
 
 registerPlugins(app)
