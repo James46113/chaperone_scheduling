@@ -1,6 +1,6 @@
 <template>
   <v-main>
-    <v-alert type="warning">The listed chaperones were correct at the time of entry, as this system is not currently
+    <v-alert type="warning">The listed chaperones were correct at the time of entry. As this system is not currently
       live, please do not rely on it to provide accurate up-to-date information</v-alert>
     <router-view />
     <AlertDialog />
