@@ -4,7 +4,7 @@
     <v-btn v-if="store.isAdmin && !isMobile" @click="proxy.$router.push('/editEvent?id=new')"
       style="position: absolute; right: 16px;" class="mt-4" color="primary">Add
       Event</v-btn>
-    <v-calendar :events="events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" v-if="!isMobile">
+    <v-calendar :events="events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" v-if="!isMobile" hide-week-number>
       <template #event="{ event }">
         <event-card :event="event" />
       </template>

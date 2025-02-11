@@ -245,6 +245,7 @@ onMounted(() => {
           slot.endHours = String(slot.end.getHours()).padStart(2, '0');
           slot.endMinutes = String(slot.end.getMinutes()).padStart(2, '0');
         });
+        data.sort((a, b) => a.start - b.start)
         chaperoneSlots.value = data;
       })
       .catch((error) => {
