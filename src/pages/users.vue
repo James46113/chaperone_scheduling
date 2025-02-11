@@ -14,8 +14,8 @@
       </v-alert>
 
       <div class="d-flex justify-center">
-        <v-data-table :items="users" hide-default-footer items-per-page="-1" :headers="headers" density="compact"
-          :height="loadingData ? 120 : (users.length + 1) * 64">
+        <v-data-table :items="users" :hide-default-header="loadingData" hide-default-footer items-per-page="-1"
+          :headers="headers" density="compact" :height="loadingData ? 120 : (users.length + 1) * 64">
           <template #item.is_admin="{ item }">
             <v-switch @click="updateAdmin(item)" class="mb-n6" v-model="item.is_admin" color="primary" />
           </template>
