@@ -15,4 +15,8 @@ sed -i 's#AllowOverride [Nn]one#AllowOverride All#' /usr/local/apache2/conf/http
 
 RUN echo 'ServerName chaperones.steelcitychoristers.org.uk' >> /usr/local/apache2/conf/httpd.conf
 
+RUN echo 'Listen 8080' >> /usr/local/apache2/conf/httpd.conf
+
+EXPOSE 8080
+
 COPY --from=build-stage /app/dist /usr/local/apache2/htdocs/
