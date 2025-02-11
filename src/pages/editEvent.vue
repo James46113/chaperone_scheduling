@@ -479,6 +479,7 @@ const saveNewTemplate = async () => {
   }).then((response) => {
     if (!response.ok) {
       store.showAlert("Error", "Failed to save template.");
+      saving.value = false;
       return;
     }
     return response.json()
@@ -504,6 +505,7 @@ const saveNewEvent = async () => {
   }).then((response) => {
     if (!response.ok) {
       store.showAlert("Error", "Failed to save event.");
+      saving.value = false;
       return;
     }
     return response.json()
@@ -546,6 +548,7 @@ const saveExistingEvent = () => {
   }).then(response => {
     if (!response.ok) {
       store.showAlert("Error", "Failed to save event.");
+      saving.value = false;
       return;
     }
     saveChaperoneSlots().then(success => {
@@ -566,6 +569,7 @@ const saveExistingTemplate = () => {
     body: JSON.stringify(event.value),
   }).then(response => {
     if (!response.ok) {
+      saving.value = false;
       store.showAlert("Error", "Failed to save template.");
       return;
     }
@@ -631,6 +635,7 @@ const saveTemplateChaperoneSlots = async () => {
       }),
     }).then(response => {
       if (!response.ok) {
+        saving.value = false;
         store.showAlert("Error", "Failed to save template.");
         return;
       }
