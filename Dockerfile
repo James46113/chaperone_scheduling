@@ -1,5 +1,5 @@
 # Stage 1: Build the application
-FROM node:16-alpine as build-stage
+FROM node:16-bullseye-slim as build-stage
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
