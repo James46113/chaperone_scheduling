@@ -12,8 +12,7 @@ FROM httpd:alpine
 COPY --from=build-stage /app/dist /usr/local/apache2/htdocs/
 
 # Create a custom Apache configuration file with rewrite rules
-RUN echo 'LoadModule rewrite_module modules/mod_rewrite.so\n\
-<Directory "/usr/local/apache2/htdocs">\n\
+RUN echo '<Directory "/usr/local/apache2/htdocs">\n\
     AllowOverride None\n\
     Require all granted\n\
     RewriteEngine On\n\
