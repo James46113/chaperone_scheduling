@@ -5,11 +5,10 @@
     <v-sheet v-for="event in events" class="ma-2" variant="outlined" color="primary" style="padding: 1px;" rounded>
       <v-card class="pa-1">
         <v-row class="pa-3">
-          <v-card-title>
+          <v-card-title @click="proxy.$router.push(`/event?id=${event.id}`)" style="cursor: pointer;">
             {{ event.title }} - {{ event.start.toLocaleDateString() }}
 
-            <v-icon color="primary" size="25" class="mt-n1 ml-2"
-              @click="proxy.$router.push(`/event?id=${event.id}`)">mdi-open-in-new</v-icon>
+            <v-icon color="primary" size="25" class="mt-n1 ml-2">mdi-open-in-new</v-icon>
           </v-card-title>
         </v-row>
         <v-card-subtitle>{{ event.location }}</v-card-subtitle>
