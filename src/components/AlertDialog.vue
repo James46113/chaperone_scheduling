@@ -16,6 +16,4 @@ import { useAppStore } from '@/stores/app';
 
 const store = useAppStore();
 
-const isMobile = computed(() => window.innerWidth < 600);
-
 </script>

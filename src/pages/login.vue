@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; justify-content: center; align-items: center; height: 60vh;">
-    <v-card :width="store.isMobile ? '100vw' : '30vw'" class="pa-4">
+    <v-card :width="isMobile ? '100vw' : '30vw'" class="pa-4">
       <v-img src="/Steel-City-Choristers.png" max-width="200" />
       <v-card-title>Login</v-card-title>
       <v-card-text>Please login with Google to access the chaperone schedule.</v-card-text>
@@ -19,10 +19,9 @@ import { getCurrentInstance } from 'vue';
 const store = useAppStore();
 const { proxy } = getCurrentInstance();
 
-
 function onSignIn(response) {
   store.userEmail = decodeCredential(response.credential).email;
-  fetch(`https://chaperoneschedulingapi-production-b505.up.railway.app/login/${store.userEmail}`, {
+  fetchAPI(`login/${store.userEmail}`, {
     method: 'GET',
   })
     .then((response) => {
@@ -33,7 +32,11 @@ function onSignIn(response) {
     })
     .then((data) => {
       store.isAdmin = data.is_admin
-      proxy.$router.push('/');
+      if (proxy.$route.query.redirect) {
+        proxy.$router.push(proxy.$route.query.redirect);
+      } else {
+        proxy.$router.push('/');
+      }
     })
     .catch((error) => {
       if (error.status === 401) {

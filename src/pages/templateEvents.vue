@@ -10,7 +10,14 @@
       </v-row>
       <v-card-text>Click on an event template below to edit it</v-card-text>
       <v-data-table :items="templates" :headers="headers" hide-default-footer items-per-page="-1"
-        @click:row="editTemplate" hide-default-header />
+        @click:row="editTemplate" hide-default-header>
+        <template v-slot:no-data>
+          <v-card-text v-if="loadingData">Loading...</v-card-text>
+          <v-card-text v-else>
+            No event templates found
+          </v-card-text>
+        </template>
+      </v-data-table>
     </v-card>
   </div>
 </template>
@@ -27,7 +34,8 @@ const headers = [
 ]
 
 onMounted(() => {
-  fetchAPI('https://chaperoneschedulingapi-production-b505.up.railway.app/templates/list', {
+  loadingData.value = true;
+  fetchAPI('templates/list', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -37,6 +45,7 @@ onMounted(() => {
     .then((data) => {
       data.sort((a, b) => a.template_name.localeCompare(b.template_name));
       templates.value = data;
+      loadingData.value = false;
     })
     .catch((error) => {
       console.error('Error:', error)

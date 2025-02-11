@@ -7,7 +7,6 @@ export const useAppStore = defineStore('app', () => {
   const alertMessage = ref('');
   const userEmail = ref('');
   const isAdmin = ref(false);
-  const isMobile = computed(() => window.innerWidth < 768);
 
   const showAlert = (title: string, message: string) => {
     alertTitle.value = title;
@@ -22,6 +21,5 @@ export const useAppStore = defineStore('app', () => {
     showAlert,
     userEmail,
     isAdmin,
-    isMobile,
   }
 })

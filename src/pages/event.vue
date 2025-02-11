@@ -1,9 +1,9 @@
 <template>
   <app-header />
   <v-card class="pa-4">
-    <v-card-title class="text-h4 mb-n5">{{ event.title }}</v-card-title>
+    <v-card-title class="text-h4 mb-n5">{{ loadingData ? "Loading..." : event.title }}</v-card-title>
 
-    <v-btn v-if="store.isAdmin && !store.isMobile" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)"
+    <v-btn v-if="store.isAdmin && !isMobile" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)"
       color="primary" style="position: absolute; right: 32px;">Edit</v-btn>
 
     <v-card-title>{{ event.date }}, {{ event.start }} - {{ event.end }}</v-card-title>
@@ -15,7 +15,7 @@
     <v-card-title>Chaperones</v-card-title>
     <v-card-text>Lead Chaperone: {{ event.lead_chaperone }}</v-card-text>
 
-    <v-data-table :headers="tableHeaders" :items="chaperoneSlots" hide-default-footer v-if="!store.isMobile">
+    <v-data-table :headers="tableHeaders" :items="chaperoneSlots" hide-default-footer v-if="!isMobile">
       <template #item.startTime="{ item }">
         {{ new Date(item.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
       </template>
@@ -29,7 +29,8 @@
         <i v-else>No details available</i>
       </template>
       <template v-slot:no-data>
-        <v-alert type="warning" class="mt-3">
+        <v-card-text v-if="loadingData">Loading...</v-card-text>
+        <v-alert v-else type="warning" class="mt-3">
           No chaperones assigned
         </v-alert>
       </template>
@@ -75,39 +76,39 @@ const tableHeaders = [
   { title: 'End', key: 'endTime', width: '12%' },
 ];
 
-onMounted(() => {
+onMounted(async () => {
   if (!proxy.$route.query.id) {
     proxy.$router.push('/')
   }
-  fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/events/${proxy.$route.query.id}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      data.date = new Date(data.start).toLocaleDateString('en-UK', {
-        weekday: 'short', day: 'numeric',
-        month: 'short', year: 'numeric'
-      })
-      data.start = new Date(data.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      data.end = new Date(data.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      event.value = data;
-      document.title = `${data.title} - Steel City Choristers`;
-    })
+  loadingData.value = true
+  const [eventData, chaperoneData] = await Promise.all([
+    fetchAPI(`events/${proxy.$route.query.id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then((response) => response.json()),
+    fetchAPI(`chaperone_slots/${proxy.$route.query.id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then((response) => response.json())
+  ]);
 
-  fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/chaperone_slots/${proxy.$route.query.id}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      data.sort((a, b) => new Date(a.start) - new Date(b.start));
-      chaperoneSlots.value = data;
-    })
+  eventData.date = new Date(eventData.start).toLocaleDateString('en-UK', {
+    weekday: 'short', day: 'numeric',
+    month: 'short', year: 'numeric'
+  });
+  eventData.start = new Date(eventData.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  eventData.end = new Date(eventData.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  event.value = eventData;
+  document.title = `${eventData.title} - Steel City Choristers`;
+
+  chaperoneData.sort((a, b) => new Date(a.start) - new Date(b.start));
+  chaperoneSlots.value = chaperoneData;
+
+  loadingData.value = false
 })
 
 </script>

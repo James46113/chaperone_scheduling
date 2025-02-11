@@ -1,6 +1,6 @@
 <template>
   <v-card @click="proxy.$router.push(`/event?id=${event.id}`)" class="ma-1">
-    <v-card-title>{{ store.isMobile ? event.start.toLocaleDateString() + ' - ' : '' }}{{ event.title }}</v-card-title>
+    <v-card-title>{{ isMobile ? event.start.toLocaleDateString() + ' - ' : '' }}{{ event.title }}</v-card-title>
     <v-card-subtitle class="mt-n3">
       {{ event.location }}
     </v-card-subtitle>
@@ -9,7 +9,10 @@
       {{ new Date(event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
     </v-card-subtitle>
     <v-card-text>
-      <span v-for="chaperone in event.chaperones" v-if="event.chaperones?.length > 0 ?? false">
+      <v-card-text v-if="loadingData">
+        Loading...
+      </v-card-text>
+      <span v-for="chaperone in event.chaperones" v-else-if="event.chaperones?.length > 0 ?? false">
         <span :style="chaperone == event.lead_chaperone ? 'font-weight: bold;' : ''">
           {{ chaperone }}<br>
         </span>

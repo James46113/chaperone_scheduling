@@ -73,6 +73,8 @@
     "useModel": true,
     "useTemplateRef": true,
     "default": true,
-    "fetchAPI": true
+    "fetchAPI": true,
+    "isMobile": true,
+    "loadingData": true
   }
 }

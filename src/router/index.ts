@@ -39,8 +39,7 @@ router.beforeEach((to, from, next) => {
   const store = useAppStore();
 
   if (!store.userEmail && to.path !== '/login') {
-    console.log(store.userEmail);
-    next('/login');
+    next(`/login?redirect=${to.path}`);
   } else {
     next();
   }

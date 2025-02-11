@@ -5,14 +5,20 @@
       <v-row>
         <v-card-title class="text-h5 mt-3 ml-3">Chaperones' Schedules</v-card-title>
         <v-spacer />
-        <v-btn v-if="store.isAdmin && !store.isMobile" variant="flat" class="mt-6 mr-6" color="primary"
+        <v-btn v-if="store.isAdmin && !isMobile" variant="flat" class="mt-6 mr-6" color="primary"
           @click="proxy.$router.push('/users')">Manage Users</v-btn>
       </v-row>
       <v-card-text>Click on a chaperone below to view their schedule</v-card-text>
       <v-data-table :items="chaperones" hide-default-footer items-per-page="-1" @click:row="showSchedule"
         hide-default-header>
+        <template v-slot:no-data>
+          <v-card-text v-if="loadingData">Loading...</v-card-text>
+          <v-card-text v-else>
+            No chaperones found
+          </v-card-text>
+        </template>
       </v-data-table>
-      <v-btn v-if="store.isAdmin && store.isMobile" variant="flat" color="primary" @click="proxy.$router.push('/users')"
+      <v-btn v-if="store.isAdmin && isMobile" variant="flat" color="primary" @click="proxy.$router.push('/users')"
         width="80vw" class="mt-4">Manage Users</v-btn>
     </v-card>
   </div>
@@ -40,7 +46,8 @@ const showSchedule = (value, row) => {
 
 
 onMounted(() => {
-  fetchAPI('https://chaperoneschedulingapi-production-b505.up.railway.app/chaperones', {
+  loadingData.value = true;
+  fetchAPI('chaperones', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -50,6 +57,7 @@ onMounted(() => {
     .then((data) => {
       chaperones.value = data.map(chaperone => { return { chaperone: chaperone } })
       chaperones.value.sort((a, b) => a.chaperone.localeCompare(b.chaperone));
+      loadingData.value = false;
     })
     .catch((error) => {
       console.error('Error:', error)

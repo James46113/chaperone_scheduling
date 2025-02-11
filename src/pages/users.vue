@@ -22,12 +22,16 @@
           <template #item.delete="{ item }">
             <v-btn @click="deleteUser(item.email)" variant="flat"><v-icon>mdi-delete</v-icon></v-btn>
           </template>
+          <template v-slot:no-data>
+            <v-card-text v-if="loadingData">Loading...</v-card-text>
+            <v-card-text v-else>No users found</v-card-text>
+          </template>
         </v-data-table>
       </div>
     </v-card>
   </div>
 
-  <v-dialog v-model="showNewUserDialog" :width="store.isMobile ? '100vw' : '30vw'" density="compact">
+  <v-dialog v-model="showNewUserDialog" :width="isMobile ? '100vw' : '30vw'" density="compact">
     <v-card>
       <v-card-title>New User</v-card-title>
       <v-card-text>
@@ -60,10 +64,11 @@ const headers = computed(() => [
   { title: 'Email', key: 'email', mobile: true },
   { title: 'Admin', key: 'is_admin', mobile: true },
   { title: 'Delete', key: 'delete', width: '10%', mobile: false },
-].filter(header => !store.isMobile || header.mobile))
+].filter(header => !isMobile.value || header.mobile))
 
 onMounted(() => {
-  fetchAPI('https://chaperoneschedulingapi-production-b505.up.railway.app/users', {
+  loadingData.value = true;
+  fetchAPI('users', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -73,6 +78,7 @@ onMounted(() => {
     .then((data) => {
       data.sort((a, b) => a.email.localeCompare(b.email));
       users.value = data;
+      loadingData.value = false;
     })
     .catch((error) => {
       console.error('Error:', error)
@@ -84,7 +90,7 @@ const createUser = () => {
     store.showAlert('Invalid email', 'Please enter an email address')
     return;
   }
-  fetchAPI('https://chaperoneschedulingapi-production-b505.up.railway.app/users', {
+  fetchAPI('users', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -112,7 +118,7 @@ const createUser = () => {
 }
 
 const deleteUser = (email) => {
-  fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/users/${email}`, {
+  fetchAPI(`users/${email}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -133,7 +139,7 @@ const deleteUser = (email) => {
 }
 
 const updateAdmin = (user) => {
-  fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/users/${user.email}`, {
+  fetchAPI(`users/${user.email}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',

@@ -47,7 +47,7 @@ onMounted(() => {
   }
   document.title = `${proxy.$route.query.name}'s Schedule - Steel City Choristers`
 
-  fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/events/${proxy.$route.query.name}`, {
+  fetchAPI(`events/${proxy.$route.query.name}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ onMounted(() => {
     })
     .then(() => {
       events.value.forEach(event => {
-        fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/events/${event.id}/${proxy.$route.query.name}`, {
+        fetchAPI(`events/${event.id}/${proxy.$route.query.name}`, {
           method: 'GET',
         })
           .then((response) => response.json())

@@ -1,14 +1,14 @@
 <template>
   <v-app-bar height="100" class="d-flex justify-space-between align-center">
     <img class="ml-4 mb-4" src="/Steel-City-Choristers.png" width="130px" contain @click="proxy.$router.push('/')" />
-    <v-card-title v-if="!store.isMobile" class="text-h5 mt-4 ml-4">Chaperones</v-card-title>
+    <v-card-title v-if="!isMobile" class="text-h5 mt-4 ml-4">Chaperones</v-card-title>
     <v-spacer />
 
     <v-btn href="mailto:jamescaroe@gmail.com" color="primary" class="mt-4">
       Report Error
     </v-btn>
 
-    <v-btn v-if="store.isAdmin && !store.isMobile" class="mt-4 mr-3" @click="proxy.$router.push('/templateEvents')">
+    <v-btn v-if="store.isAdmin && !isMobile" class="mt-4 mr-3" @click="proxy.$router.push('/templateEvents')">
       <v-icon size="25">mdi-note-text</v-icon>
     </v-btn>
 

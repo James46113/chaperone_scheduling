@@ -1,10 +1,10 @@
 <template>
   <app-header />
   <div class="pa-4">
-    <v-btn v-if="store.isAdmin && !store.isMobile" @click="proxy.$router.push('/editEvent?id=new')"
+    <v-btn v-if="store.isAdmin && !isMobile" @click="proxy.$router.push('/editEvent?id=new')"
       style="position: absolute; right: 16px;" class="mt-4" color="primary">Add
       Event</v-btn>
-    <v-calendar :events="events" :weekdays="[1, 2, 3, 4, 5, 6, 0]" v-if="!store.isMobile">
+    <v-calendar :events="events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" v-if="!isMobile">
       <template #event="{ event }">
         <event-card :event="event" />
       </template>
@@ -24,64 +24,48 @@ const store = useAppStore();
 
 document.title = "Chaperones' Calendar - Steel City Choristers"
 
-onMounted(() => {
-  fetchAPI('https://chaperoneschedulingapi-production-b505.up.railway.app/events', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      events.value = data.map((event) => ({
-        id: event.id,
-        title: event.title,
-        start: new Date(event.start),
-        end: new Date(event.end),
-        location: event.location,
-        lead_chaperone: event.lead_chaperone,
-      }))
+// onMounted(() => {
+loadingData.value = true
+fetchAPI('events', {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+  .then((response) => response.json())
+  .then((data) => {
+    events.value = data.map((event) => ({
+      id: event.id,
+      title: event.title,
+      start: new Date(event.start),
+      end: new Date(event.end),
+      location: event.location,
+      lead_chaperone: event.lead_chaperone,
+    }))
+
+    fetchAPI('events_chaperones', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     })
-    .then(
-      fetchAPI('https://chaperoneschedulingapi-production-b505.up.railway.app/events_chaperones', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(JSON.stringify(data))
-          console.log(JSON.stringify(events.value))
-          events.value.forEach((event) => {
-            event.chaperones = data.filter(slot => slot.event_id == event.id)[0].chaperones
+      .then((response) => response.json())
+      .then((data) => {
+        events.value.forEach((event) => {
+          event.chaperones = data.filter(slot => slot.event_id == event.id)[0].chaperones
+          if (event.chaperones) {
             event.chaperones = [...new Set(event.chaperones)]
             const leadIndex = event.chaperones.indexOf(event.lead_chaperone)
-            event.chaperones.splice(leadIndex, 1)
-            event.chaperones.unshift(event.lead_chaperone)
-          })
-        }))
-    .catch((error) => {
-      console.error('Error:', error)
-    });
-})
-
-// events.value.forEach((event) => {
-//   fetchAPI(`https://chaperoneschedulingapi-production-b505.up.railway.app/chaperones/${event.id}`, {
-//     method: 'GET',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//   })
-//     .then((response) => response.json())
-//     .then((data) => {
-//       event.chaperones = data
-//       if (event.chaperones.length !== 1) {
-//         const leadIndex = event.chaperones.indexOf(event.lead_chaperone)
-//         event.chaperones.splice(leadIndex, 1)
-//         event.chaperones.unshift(event.lead_chaperone)
-//       }
-//     })
-// })
+            if (leadIndex !== -1) {
+              event.chaperones.splice(leadIndex, 1)
+              event.chaperones.unshift(event.lead_chaperone)
+            }
+          }
+        })
+        loadingData.value = false
+      }).catch(error => {
+        console.error('Error:', error)
+      })
+  })
 
 </script>
