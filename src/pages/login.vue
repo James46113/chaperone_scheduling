@@ -18,7 +18,7 @@ import { getCurrentInstance } from 'vue';
 
 const store = useAppStore();
 const { proxy } = getCurrentInstance();
-console.log(process.env.API_KEY);
+console.log(import.meta.env.VITE_API_KEY);
 
 function onSignIn(response) {
   store.userEmail = decodeCredential(response.credential).email;
