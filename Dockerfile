@@ -11,3 +11,6 @@ RUN npm run build
 FROM httpd:alpine
 COPY --from=build-stage /app/dist /usr/local/apache2/htdocs/
 COPY --from=build-stage /app/public/.htaccess ./usr/local/apache2/htdocs/
+
+# Enable .htaccess by updating the Apache configuration
+RUN echo "AllowOverride All" >> /usr/local/apache2/conf/httpd.conf
