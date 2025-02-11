@@ -2,6 +2,7 @@
 FROM node:20 as build-stage
 WORKDIR /app
 COPY package*.json ./
+COPY .env ./
 RUN npm install
 COPY . .
 RUN npm run build
