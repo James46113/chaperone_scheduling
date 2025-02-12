@@ -1,16 +1,41 @@
 <template>
   <app-header />
-  <div class="pa-4">
+  <div class="pa-3">
     <GoogleLogin v-if="isMobile && !store.userEmail" :callback="onSignIn" auto-login prompt />
-    <v-btn v-if="store.isAdmin && !isMobile" @click="proxy.$router.push('/editEvent?id=new')"
-      style="position: absolute; right: 16px;" class="mt-4" color="primary">Add
-      Event</v-btn>
-    <v-calendar :events="events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" v-if="!isMobile" hide-week-number>
-      <template #event="{ event }">
-        <event-card :event="event" />
-      </template>
-    </v-calendar>
-    <event-card v-for="event in events" :event="event" v-else />
+
+    <v-tabs v-model="tab" grow color="primary">
+      <v-tab value="calendar">Calendar</v-tab>
+      <v-tab value="cards">Cards</v-tab>
+    </v-tabs>
+
+    <v-tabs-window v-model="tab">
+
+      <v-tabs-window-item value="calendar">
+
+        <v-btn v-if="store.isAdmin" @click="proxy.$router.push('/editEvent?id=new')"
+          style="position: absolute; right: 16px;" class="mt-4" color="primary">Add
+          Event</v-btn>
+
+        <v-calendar class="pa-0" :events="events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" hide-week-number>
+          <template #event="{ event }" v-if="!isMobile">
+            <event-card :event="event" />
+          </template>
+          <template #event="{ event }" v-if="isMobile">
+            <v-card-text style="font-size: x-small; border-left: 2px solid; padding-left: 0.2em; border-color: #a80056;"
+              class="py-0" @click="proxy.$router.push(`/event?id=${event.id}`)">
+              {{ event.title }}
+            </v-card-text>
+            <!-- <v-chip class=" py-0 px-1" style="font-size: x-small;" color="primary"></v-chip> -->
+          </template>
+        </v-calendar>
+
+      </v-tabs-window-item>
+
+      <v-tabs-window-item value="cards">
+        <event-card v-for="event in events" :event="event" />
+      </v-tabs-window-item>
+
+    </v-tabs-window>
 
 
   </div>
@@ -22,10 +47,10 @@ import { ref, onMounted, getCurrentInstance } from 'vue'
 import { useAppStore } from '@/stores/app'
 import { GoogleLogin, decodeCredential, googleLogout } from 'vue3-google-login';
 
-
 const events = ref([])
 const { proxy } = getCurrentInstance()
 const store = useAppStore();
+const tab = ref(isMobile.value ? 'cards' : 'calendar');
 
 document.title = "Chaperones' Calendar - Steel City Choristers"
 

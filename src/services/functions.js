@@ -9,6 +9,16 @@ export const fetchAPI = async (url, params) => {
   });
 };
 
-export const isMobile = computed(() => window.innerWidth < 768);
+
+
+const windowWidth = ref(window.innerWidth);
+
+const handleResize = () => {
+  windowWidth.value = window.innerWidth;
+};
+
+window.addEventListener('resize', handleResize);
+
+export const isMobile = computed(() => windowWidth.value < 768);
 
 export const loadingData = ref(false);
