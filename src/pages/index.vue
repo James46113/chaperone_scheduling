@@ -20,7 +20,7 @@
           <template #event="{ event }" v-if="!isMobile" :interval-height="20">
             <v-card class="ma-1">
               <event-card :event="event" :chaperones="chaperones" />
-              <availability-selector v-if="!loadingData || !store.userID" :event="event" small />
+              <availability-selector v-if="!loadingData && !store.userID" :event="event" small />
             </v-card>
           </template>
           <template #event="{ event }" v-if="isMobile">
