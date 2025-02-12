@@ -27,8 +27,8 @@ const store = useAppStore();
 
 const updateAvailable = (availability) => {
   props.event.available = availability
-  // fetchAPI(`chaperones/availability/${store.userID}`, {
-  fetchAPI(`chaperones/availability/1`, { // DEBUG ONLY
+  fetchAPI(`chaperones/availability/${store.userID}`, {
+    // fetchAPI(`chaperones/availability/1`, { // DEBUG ONLY
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',

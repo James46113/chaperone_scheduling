@@ -70,22 +70,21 @@ onMounted(async () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log("then: " + JSON.stringify(data));
           availability.value = data;
         });
     }
 
     // DEBUG ONLY
-    fetchAPI(`/chaperones/availability/1`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        availability.value = data;
-      });
+    // fetchAPI(`/chaperones/availability/1`, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     availability.value = data;
+    //   });
     // DEBUG ONLY
 
     const [chaperonesResponse, eventsResponse] = await Promise.all([

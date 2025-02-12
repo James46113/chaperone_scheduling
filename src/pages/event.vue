@@ -104,8 +104,8 @@ onMounted(async () => {
   await getChaperones();
   let availability = null;
 
-  // fetchAPI(`chaperones/availability/${store.userID}/${proxy.$route.query.id}`, {
-  fetchAPI(`chaperones/availability/1/${proxy.$route.query.id}`, {
+  fetchAPI(`chaperones/availability/${store.userID}/${proxy.$route.query.id}`, {
+    // fetchAPI(`chaperones/availability/1/${proxy.$route.query.id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
