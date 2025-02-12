@@ -134,6 +134,7 @@ const getAvailability = () => {
       events.value.forEach((event) => {
         event.available = availability.value.filter(slot => slot.event_id == event.id)[0]?.available;
       });
+      console.log(JSON.stringify(events.value));
     });
 }
 
