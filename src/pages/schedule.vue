@@ -1,7 +1,8 @@
 <template>
   <app-header />
   <v-card class="ma-4">
-    <v-card-title class="text-h5">{{ proxy.$route.query.name }}'s Schedule</v-card-title>
+    <v-card-title class="text-h5" v-if="!loadingData">{{ chaperone.name }}'s Schedule</v-card-title>
+    <v-card-title class="text-h5" v-else>Loading...</v-card-title>
     <v-sheet v-for="event in events" class="ma-2" variant="outlined" color="primary" style="padding: 1px;" rounded>
       <v-card class="pa-1">
         <v-row class="pa-3" @click="proxy.$router.push(`/event?id=${event.id}`)" style="cursor: pointer;">
@@ -45,15 +46,17 @@
 
 const { proxy } = getCurrentInstance()
 const events = ref([])
+const chaperone = ref({})
+const chaperones = ref([])
 
-onMounted(() => {
-  if (!proxy.$route.query.name) {
+onMounted(async () => {
+  if (!proxy.$route.query.id) {
     proxy.$router.push('/chaperones')
   }
-  document.title = `${proxy.$route.query.name}'s Schedule - Steel City Choristers`
   loadingData.value = true
+  await getChaperones();
 
-  fetchAPI(`events/${proxy.$route.query.name}`, {
+  fetchAPI(`events/chaperone/${proxy.$route.query.id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -63,14 +66,14 @@ onMounted(() => {
     .then((data) => {
       events.value = data.map((event) => ({
         ...event,
+        lead_chaperone: chaperones.value.find(chaperone => chaperone.id === event.lead_chaperone).name,
         start: new Date(event.start),
         end: new Date(event.end),
       }))
       events.value.sort((a, b) => a.start - b.start)
-    })
-    .then(() => {
+
       events.value.forEach(event => {
-        fetchAPI(`events/${event.id}/${proxy.$route.query.name}`, {
+        fetchAPI(`events/${event.id}/${proxy.$route.query.id}`, {
           method: 'GET',
         })
           .then((response) => response.json())
@@ -82,12 +85,47 @@ onMounted(() => {
             }));
             event.chaperone_slots.sort((a, b) => a.start - b.start);
             loadingData.value = false
+          }).catch(error => {
+            console.error('Error:', error)
+            loadingData.value = false
           })
       })
+      loadingData.value = false;
     }).catch((error) => {
       console.error('Error:', error)
       loadingData.value = false
     });
+
+  fetchAPI(`chaperones/${proxy.$route.query.id}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      chaperone.value = data
+      document.title = `${chaperone.value.name}'s Schedule - Steel City Choristers`
+    })
+    .catch((error) => {
+      console.error('Error:', error)
+    });
 })
+
+const getChaperones = async () => {
+  await fetchAPI('chaperones', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      chaperones.value = data;
+    })
+    .catch((error) => {
+      console.error('Error:', error)
+    });
+}
 
 </script>

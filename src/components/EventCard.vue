@@ -14,7 +14,7 @@
       </v-card-text>
       <span v-for="chaperone in event.chaperones" v-else-if="event.chaperones?.length > 0 ?? false">
         <span :style="chaperone == event.lead_chaperone ? 'font-weight: bold;' : ''">
-          {{ chaperone }}<br>
+          {{ chaperones.find(c => c.id === chaperone).name }}<br>
         </span>
       </span>
       <v-sheet v-else color="warning" class="pa-2">
@@ -32,8 +32,13 @@ import { useAppStore } from '@/stores/app';
 const store = useAppStore();
 
 const { proxy } = getCurrentInstance()
-defineProps({
+const props = defineProps({
   event: Object,
+  chaperones: Array,
+})
+
+onMounted(() => {
+  console.log(JSON.stringify(props.chaperones))
 })
 
 </script>

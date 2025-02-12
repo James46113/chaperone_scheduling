@@ -18,7 +18,7 @@
 
         <v-calendar class="pa-0" :events="events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" hide-week-number>
           <template #event="{ event }" v-if="!isMobile" :interval-height="20">
-            <event-card :event="event" />
+            <event-card :event="event" :chaperones="chaperones" />
           </template>
           <template #event="{ event }" v-if="isMobile">
             <v-card-text style="font-size: x-small; border-left: 2px solid; padding-left: 0.2em; border-color: #a80056;"
@@ -32,7 +32,7 @@
       </v-tabs-window-item>
 
       <v-tabs-window-item value="list">
-        <event-card v-for="event in events" :event="event" />
+        <event-card v-for="event in events" :event="event" :chaperones="chaperones" />
       </v-tabs-window-item>
 
     </v-tabs-window>
@@ -51,6 +51,7 @@ const events = ref([])
 const { proxy } = getCurrentInstance()
 const store = useAppStore();
 const tab = ref(isMobile.value ? 'list' : 'calendar');
+const chaperones = ref([]);
 
 document.title = "Chaperones' Calendar - Steel City Choristers"
 
@@ -97,6 +98,22 @@ fetchAPI('events', {
         console.error('Error:', error)
       })
   })
+
+onMounted(async () => {
+  await fetchAPI('chaperones', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      chaperones.value = data;
+    })
+    .catch((error) => {
+      console.error('Error:', error)
+    });
+})
 
 function onSignIn(response) {
   store.userEmail = decodeCredential(response.credential).email;

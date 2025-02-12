@@ -123,7 +123,7 @@ const { proxy } = getCurrentInstance();
 const event = ref({});
 const chaperoneSlots = ref([]);
 const chaperones = ref([]);
-const chaperoneNames = ref(chaperones.value.map(chaperone => chaperone.name).sort());
+const chaperoneNames = ref([])
 
 const saving = ref(false);
 const store = useAppStore();
@@ -151,7 +151,7 @@ const tableHeaders = computed(() => [
 ].filter(header => isTemplate.value ? header.showTemplate : true));
 
 
-onMounted(() => {
+onMounted(async () => {
 
   if (!proxy.$route.query.id) {
     proxy.$router.push('/');
@@ -161,7 +161,7 @@ onMounted(() => {
     isTemplate.value = proxy.$route.query.isTemplate === '1';
   }
 
-  getChaperones();
+  await getChaperones();
 
   if (proxy.$route.query.id === 'new') {
     newEvent = true;
@@ -224,6 +224,7 @@ onMounted(() => {
         data.endHours = String(data.end.getHours()).padStart(2, '0');
         data.endMinutes = String(data.end.getMinutes()).padStart(2, '0');
         data.date = data.start;
+        data.lead_chaperone = chaperones.value.find(chaperone => chaperone.id === data.lead_chaperone).name;
         event.value = data;
         document.title = `${data.title} - Steel City Choristers`;
       })
@@ -246,6 +247,7 @@ onMounted(() => {
           slot.startMinutes = String(slot.start.getMinutes()).padStart(2, '0');
           slot.endHours = String(slot.end.getHours()).padStart(2, '0');
           slot.endMinutes = String(slot.end.getMinutes()).padStart(2, '0');
+          slot.chaperone = chaperones.value.find(chaperone => chaperone.id === slot.chaperone).name;
         });
         data.sort((a, b) => a.start - b.start)
         chaperoneSlots.value = data;
@@ -303,6 +305,8 @@ onMounted(() => {
 });
 
 const leadChaperoneAssigned = () => {
+  console.log(assignedChaperones)
+  console.log(event.value.lead_chaperone)
   if (assignedChaperones.value.length > 0 && !event.value.lead_chaperone) {
     return false
   }
@@ -508,7 +512,7 @@ const saveNewEvent = () => {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(event.value),
+    body: JSON.stringify({ ...event.value, lead_chaperone: chaperones.value.find(chaperone => chaperone.name === event.value.lead_chaperone)[0].id }),
   }).then((response) => {
     if (!response.ok) {
       store.showAlert("Error", "Failed to save event.");
@@ -540,6 +544,7 @@ const getChaperones = () => {
     .then((response) => response.json())
     .then((data) => {
       chaperones.value = data;
+      chaperoneNames.value = chaperones.value.map(chaperone => chaperone.name).sort()
     })
     .catch((error) => {
       console.error('Error:', error)
@@ -547,6 +552,7 @@ const getChaperones = () => {
 }
 
 const saveExistingEvent = () => {
+  event.value.lead_chaperone = chaperones.value.find(chaperone => chaperone.name === event.value.lead_chaperone).id;
   fetchAPI(`events/${event.value.id}`, {
     method: 'PATCH',
     headers: {

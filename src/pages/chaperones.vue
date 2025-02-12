@@ -11,6 +11,9 @@
       <v-card-text>Click on a chaperone below to view their schedule</v-card-text>
       <v-data-table :items="chaperones" hide-default-footer items-per-page="-1" @click:row="showSchedule"
         hide-default-header>
+        <template #item.chaperone="{ item }">
+          <v-card-text>{{ item.chaperone.name }}</v-card-text>
+        </template>
         <template v-slot:no-data>
           <v-card-text v-if="loadingData">Loading...</v-card-text>
           <v-card-text v-else>
@@ -41,7 +44,7 @@ const { proxy } = getCurrentInstance();
 const store = useAppStore();
 
 const showSchedule = (value, row) => {
-  proxy.$router.push(`/schedule?name=${row.item.chaperone}`)
+  proxy.$router.push(`/schedule?id=${row.item.chaperone.id}`)
 }
 
 

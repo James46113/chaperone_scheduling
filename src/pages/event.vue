@@ -6,7 +6,7 @@
     <v-btn v-if="store.isAdmin && !isMobile" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)"
       color="primary" style="position: absolute; right: 32px;">Edit</v-btn>
 
-    <v-card-title>{{ event.date }}, {{ event.start }} - {{ event.end }}</v-card-title>
+    <v-card-title v-if="!loadingData">{{ event.date }}, {{ event.start }} - {{ event.end }}</v-card-title>
     <v-card-subtitle>
       {{ event.location }}
     </v-card-subtitle>
@@ -21,6 +21,9 @@
       </template>
       <template #item.endTime="{ item }">
         {{ new Date(item.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
+      </template>
+      <template #item.chaperone="{ item }">
+        <span>{{ chaperones.find(chaperone => chaperone.id === item.chaperone)?.name }}</span>
       </template>
       <template #item.details="{ item }">
         <span v-if="item.details?.length > 0">
@@ -73,6 +76,7 @@ const store = useAppStore();
 
 const event = ref({})
 const chaperoneSlots = ref([])
+const chaperones = ref([])
 
 const tableHeaders = [
   { title: 'Group', key: 'title', width: '20%' },
@@ -87,6 +91,7 @@ onMounted(async () => {
     proxy.$router.push('/')
   }
   loadingData.value = true
+  await getChaperones();
   const [eventData, chaperoneData] = await Promise.all([
     fetchAPI(`events/${proxy.$route.query.id}`, {
       method: 'GET',
@@ -108,6 +113,8 @@ onMounted(async () => {
   });
   eventData.start = new Date(eventData.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   eventData.end = new Date(eventData.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  eventData.lead_chaperone = chaperones.value.find(chaperone => chaperone.id == eventData.lead_chaperone).name
   event.value = eventData;
   document.title = `${eventData.title} - Steel City Choristers`;
 
@@ -138,6 +145,22 @@ function onSignIn(response) {
         store.isAdmin = false;
         store.showAlert('Unauthorised', "You are not authorised to access the chaperones' schedule. If you believe this is in error, please contact the chaperoning team.");
       }
+      console.error('Error:', error)
+    });
+}
+
+const getChaperones = async () => {
+  await fetchAPI('chaperones', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      chaperones.value = data;
+    })
+    .catch((error) => {
       console.error('Error:', error)
     });
 }
