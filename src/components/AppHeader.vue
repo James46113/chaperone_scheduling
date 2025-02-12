@@ -46,7 +46,7 @@ function onSignIn(response) {
       return Promise.reject(response);
     })
     .then((data) => {
-      store.isAdmin = false;
+      store.isAdmin = data.is_admin;
       store.userID = null
     })
     .catch((error) => {

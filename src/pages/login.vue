@@ -31,7 +31,7 @@ function onSignIn(response) {
       return Promise.reject(response);
     })
     .then((data) => {
-      store.isAdmin = false;
+      store.isAdmin = data.is_admin;
       store.userID = null;
       if (proxy.$route.query.redirect) {
         proxy.$router.push(proxy.$route.query.redirect);
