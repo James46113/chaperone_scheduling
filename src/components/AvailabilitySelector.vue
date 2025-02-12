@@ -1,5 +1,5 @@
 <template>
-  <div v-if="store.userID">
+  <div>
     <v-card-text v-if="small">Available:</v-card-text>
     <v-card-title v-else>Available:</v-card-title>
     <v-row class="mx-2 mt-1 mb-3">
