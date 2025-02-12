@@ -18,10 +18,7 @@
 
         <v-calendar class="pa-0" :events="events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" hide-week-number>
           <template #event="{ event }" v-if="!isMobile" :interval-height="20">
-            <v-card class="ma-1">
-              <event-card :event="event" :chaperones="chaperones" />
-              <availability-selector v-if="!loadingData && store.userID" :event="event" small />
-            </v-card>
+            <event-card :event="event" :chaperones="chaperones" />
           </template>
           <template #event="{ event }" v-if="isMobile">
             <v-card-text style="font-size: x-small; border-left: 2px solid; padding-left: 0.2em; border-color: #a80056;"
@@ -134,6 +131,9 @@ const getAvailability = () => {
     .then((response) => response.json())
     .then((data) => {
       availability.value = data;
+      events.value.forEach((event) => {
+        event.available = availability.value.filter(slot => slot.event_id == event.id)[0]?.available;
+      });
     });
 }
 
@@ -148,11 +148,10 @@ function onSignIn(response) {
       }
       return Promise.reject(response);
     })
-    .then((data) =>
-      getAvailability()
-    ).then(() => {
+    .then((data) => {
       store.isAdmin = data.is_admin;
       store.userID = data.id
+      getAvailability();
     })
     .catch((error) => {
       if (error.status === 401) {
