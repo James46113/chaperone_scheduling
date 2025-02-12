@@ -305,12 +305,10 @@ onMounted(async () => {
 });
 
 const leadChaperoneAssigned = () => {
-  console.log(assignedChaperones)
-  console.log(event.value.lead_chaperone)
   if (assignedChaperones.value.length > 0 && !event.value.lead_chaperone) {
     return false
   }
-  if (!assignedChaperones.value.includes(event.value.lead_chaperone) && event.value.lead_chaperone) {
+  if (!assignedChaperones.value.includes(chaperones.value.find(chaperone => chaperone.name === event.value.lead_chaperone).id) && event.value.lead_chaperone) {
     return false
   }
   return true
@@ -506,13 +504,12 @@ const saveNewTemplate = async () => {
 }
 
 const saveNewEvent = () => {
-
   fetchAPI("events", {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ ...event.value, lead_chaperone: chaperones.value.find(chaperone => chaperone.name === event.value.lead_chaperone)[0].id }),
+    body: JSON.stringify({ ...event.value, lead_chaperone: chaperones.value.find(chaperone => chaperone.name === event.value.lead_chaperone).id }),
   }).then((response) => {
     if (!response.ok) {
       store.showAlert("Error", "Failed to save event.");
