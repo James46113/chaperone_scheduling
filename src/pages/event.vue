@@ -16,7 +16,7 @@
       </div>
 
       <!-- <v-divider class="my-4"></v-divider> -->
-      <div class="ml-6" v-if="!loadingData && !store.userID">
+      <div class="ml-6" v-if="!loadingData && store.userID">
         <availability-selector :event="event" />
       </div>
     </v-row>
