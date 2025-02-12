@@ -63,6 +63,7 @@ const store = useAppStore();
 const required = (value) => !!value || 'This field is required.'
 
 const headers = computed(() => [
+  { title: 'Name', key: 'name', mobile: true },
   { title: 'Email', key: 'email', mobile: true },
   { title: 'Admin', key: 'is_admin', mobile: true },
   { title: 'Delete', key: 'delete', width: '10%', mobile: false },
