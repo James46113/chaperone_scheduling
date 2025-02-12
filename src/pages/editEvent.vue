@@ -137,7 +137,10 @@ const templateChaperoneSlots = ref([]);
 
 const showConfirmDeleteDialog = ref(false);
 
-const assignedChaperones = computed(() => [... new Set(chaperoneSlots.value.map(slot => slot.chaperone))].sort());
+const assignedChaperones = computed(() => {
+  const chaperoneSlotsCopy = [...chaperoneSlots.value];
+  return [... new Set(chaperoneSlotsCopy.map(slot => slot.chaperone))].sort()
+});
 
 const required = value => !!value || 'Field is required.';
 
@@ -357,7 +360,7 @@ const deleteEvent = () => {
           return;
         } else {
           store.showAlert("Success", "Template deleted successfully.");
-          proxy.$router.push('/');
+          proxy.$router.push('/templates');
         }
       });
     });
