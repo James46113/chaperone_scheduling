@@ -23,31 +23,24 @@
         </v-sheet>
       </v-card-text>
     </div>
-    <availability-selector :event="event" small ref="availabilitySelector" />
+    <availability-selector :event="event" small />
   </v-card>
 
 </template>
 
 <script setup>
-import { useAppStore } from '@/stores/app';
-
-const store = useAppStore();
-
-const availabilitySelector = ref(null);
-
-defineExpose({
-  updateAvailability,
-});
-
-const updateAvailability = () => {
-  availabilitySelector.value.updateAvailability();
-}
 
 const { proxy } = getCurrentInstance()
 const props = defineProps({
   event: Object,
   chaperones: Array,
 })
+
+import { watch } from 'vue';
+
+watch(() => props.event.availability, (newVal, oldVal) => {
+  console.log('Availability changed from', oldVal, 'to', newVal);
+});
 
 
 const goToEvent = (value) => {
