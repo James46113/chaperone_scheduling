@@ -12,7 +12,7 @@
 
       <v-tabs-window-item value="calendar">
 
-        <v-btn v-if="store.isAdmin" @click="proxy.$router.push('/editEvent?id=new')"
+        <v-btn v-if="store.isAdmin && !isMobile" @click="proxy.$router.push('/editEvent?id=new')"
           style="position: absolute; right: 16px;" class="mt-4" color="primary">Add
           Event</v-btn>
 
