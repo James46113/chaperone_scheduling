@@ -37,8 +37,4 @@ const props = defineProps({
   chaperones: Array,
 })
 
-onMounted(() => {
-  console.log(JSON.stringify(props.chaperones))
-})
-
 </script>
