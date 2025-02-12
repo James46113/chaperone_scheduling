@@ -46,7 +46,7 @@ router.beforeEach((to, from, next) => {
     to.path.startsWith('/editEvent') ||
     to.path.startsWith('/templateEvents') ||
     to.path.startsWith('/users'))) {
-    next(`/login?redirect=${to.path}`);
+    next(`/login?redirect=${to.fullPath}`);
   }
   else {
     next();

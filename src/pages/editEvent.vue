@@ -152,7 +152,7 @@ const tableHeaders = computed(() => [
 onMounted(() => {
 
   if (!proxy.$route.query.id) {
-    proxy.$router.push('/events');
+    proxy.$router.push('/');
   }
 
   if (proxy.$route.query.isTemplate) {
