@@ -104,7 +104,6 @@ onMounted(async () => {
   await getChaperones();
   let availability = null;
 
-  getAvailability();
 
   const [eventData, chaperoneData] = await Promise.all([
     fetchAPI(`events/${proxy.$route.query.id}`, {
@@ -131,6 +130,7 @@ onMounted(async () => {
   eventData.lead_chaperone = chaperones.value.find(chaperone => chaperone.id == eventData.lead_chaperone)?.name ?? null;
   eventData.available = availability;
   event.value = eventData;
+  getAvailability();
   document.title = `${eventData.title} - Steel City Choristers`;
 
   chaperoneData.sort((a, b) => new Date(a.start) - new Date(b.start));
@@ -150,7 +150,7 @@ const getAvailability = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        availability = data.available;
+        event.value.available = data.available;
       })
       .catch((error) => {
         console.error('Error:', error)
