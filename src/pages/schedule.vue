@@ -66,7 +66,7 @@ onMounted(async () => {
     .then((data) => {
       events.value = data.map((event) => ({
         ...event,
-        lead_chaperone: chaperones.value.find(chaperone => chaperone.id === event.lead_chaperone).name,
+        lead_chaperone: chaperones.value.find(chaperone => chaperone.id === event.lead_chaperone)?.name ?? null,
         start: new Date(event.start),
         end: new Date(event.end),
       }))

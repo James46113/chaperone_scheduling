@@ -53,41 +53,16 @@ const store = useAppStore();
 const tab = ref(isMobile.value ? 'list' : 'calendar');
 const chaperones = ref([]);
 
+const availability = ref([]);
+
 document.title = "Chaperones' Calendar - Steel City Choristers"
 
 onMounted(async () => {
-  await fetchAPI('chaperones', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      chaperones.value = data;
-    })
-    .catch((error) => {
-      console.error('Error:', error)
-    });
   loadingData.value = true
-  fetchAPI('events', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      events.value = data.map((event) => ({
-        id: event.id,
-        title: event.title,
-        start: new Date(event.start),
-        end: new Date(event.end),
-        location: event.location,
-        lead_chaperone: event.lead_chaperone,
-      }))
 
-      fetchAPI('events_chaperones', {
+  try {
+    if (store.userID) {
+      fetchAPI(`/chaperones/availability/${store.userID}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -95,22 +70,78 @@ onMounted(async () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          events.value.forEach((event) => {
-            event.chaperones = data.filter(slot => slot.event_id == event.id)[0]?.chaperones
-            if (event.chaperones) {
-              event.chaperones = [...new Set(event.chaperones)]
-              const leadIndex = event.chaperones.indexOf(event.lead_chaperone)
-              if (leadIndex !== -1) {
-                event.chaperones.splice(leadIndex, 1)
-                event.chaperones.unshift(event.lead_chaperone)
-              }
-            }
-          })
-          loadingData.value = false
-        }).catch(error => {
-          console.error('Error:', error)
-        })
+          console.log("then: " + JSON.stringify(data));
+          availability.value = data;
+        });
+    }
+
+    // DEBUG ONLY
+    fetchAPI(`/chaperones/availability/1`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     })
+      .then((response) => response.json())
+      .then((data) => {
+        availability.value = data;
+      });
+    // DEBUG ONLY
+
+    const [chaperonesResponse, eventsResponse] = await Promise.all([
+      fetchAPI('chaperones', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }),
+      fetchAPI('events', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+    ]);
+
+    const chaperonesData = await chaperonesResponse.json();
+    chaperones.value = chaperonesData;
+
+    const eventsData = await eventsResponse.json();
+    events.value = eventsData.map((event) => ({
+      id: event.id,
+      title: event.title,
+      start: new Date(event.start),
+      end: new Date(event.end),
+      location: event.location,
+      lead_chaperone: event.lead_chaperone,
+      available: availability.value.filter(slot => slot.event_id == event.id)[0]?.available,
+    }));
+
+    const eventsChaperonesResponse = await fetchAPI('events_chaperones', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const eventsChaperonesData = await eventsChaperonesResponse.json();
+    events.value.forEach((event) => {
+      event.chaperones = eventsChaperonesData.filter(slot => slot.event_id == event.id)[0]?.chaperones;
+      if (event.chaperones) {
+        event.chaperones = [...new Set(event.chaperones)];
+        const leadIndex = event.chaperones.indexOf(event.lead_chaperone);
+        if (leadIndex !== -1) {
+          event.chaperones.splice(leadIndex, 1);
+          event.chaperones.unshift(event.lead_chaperone);
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error('Error:', error);
+  } finally {
+    loadingData.value = false;
+  }
 })
 
 function onSignIn(response) {
@@ -125,13 +156,15 @@ function onSignIn(response) {
       return Promise.reject(response);
     })
     .then((data) => {
-      store.isAdmin = data.is_admin
+      store.isAdmin = false;
+      store.userID = null
     })
     .catch((error) => {
       if (error.status === 401) {
         googleLogout();
         store.userEmail = '';
         store.isAdmin = false;
+        store.userID = null
         store.showAlert('Unauthorised', "You are not authorised to access the chaperones' schedule. If you believe this is in error, please contact the chaperoning team.");
       }
       console.error('Error:', error)

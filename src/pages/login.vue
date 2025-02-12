@@ -31,7 +31,8 @@ function onSignIn(response) {
       return Promise.reject(response);
     })
     .then((data) => {
-      store.isAdmin = data.is_admin
+      store.isAdmin = false;
+      store.userID = null;
       if (proxy.$route.query.redirect) {
         proxy.$router.push(proxy.$route.query.redirect);
       } else {
@@ -43,6 +44,7 @@ function onSignIn(response) {
         googleLogout();
         store.userEmail = '';
         store.isAdmin = false;
+        store.userID = null
         store.showAlert('Unauthorised', "You are not authorised to access the chaperones' schedule. If you believe this is in error, please contact the chaperoning team.");
       }
       console.error('Error:', error)

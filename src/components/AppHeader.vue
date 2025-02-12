@@ -46,13 +46,15 @@ function onSignIn(response) {
       return Promise.reject(response);
     })
     .then((data) => {
-      store.isAdmin = data.is_admin
+      store.isAdmin = false;
+      store.userID = null
     })
     .catch((error) => {
       if (error.status === 401) {
         googleLogout();
         store.userEmail = '';
         store.isAdmin = false;
+        store.userID = null
         store.showAlert('Unauthorised', "You are not authorised to view this content. If you believe this is in error, please contact the chaperoning team.");
       }
       console.error('Error:', error)

@@ -7,6 +7,7 @@ export const useAppStore = defineStore('app', () => {
   const alertMessage = ref('');
   const userEmail = ref('');
   const isAdmin = ref(false);
+  const userID = ref(null);
 
   const showAlert = (title: string, message: string) => {
     alertTitle.value = title;
@@ -21,5 +22,6 @@ export const useAppStore = defineStore('app', () => {
     showAlert,
     userEmail,
     isAdmin,
+    userID,
   }
 })

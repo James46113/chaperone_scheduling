@@ -224,7 +224,7 @@ onMounted(async () => {
         data.endHours = String(data.end.getHours()).padStart(2, '0');
         data.endMinutes = String(data.end.getMinutes()).padStart(2, '0');
         data.date = data.start;
-        data.lead_chaperone = chaperones.value.find(chaperone => chaperone.id === data.lead_chaperone).name ?? "Error";
+        data.lead_chaperone = chaperones.value.find(chaperone => chaperone.id === data.lead_chaperone)?.name ?? null;
         event.value = data;
         document.title = `${data.title} - Steel City Choristers`;
       })
@@ -247,7 +247,7 @@ onMounted(async () => {
           slot.startMinutes = String(slot.start.getMinutes()).padStart(2, '0');
           slot.endHours = String(slot.end.getHours()).padStart(2, '0');
           slot.endMinutes = String(slot.end.getMinutes()).padStart(2, '0');
-          slot.chaperone = chaperones.value.find(chaperone => chaperone.id === slot.chaperone).name;
+          slot.chaperone = chaperones.value.find(chaperone => chaperone.id === slot.chaperone)?.name ?? null;
         });
         data.sort((a, b) => a.start - b.start)
         chaperoneSlots.value = data;
@@ -309,7 +309,7 @@ const leadChaperoneAssigned = () => {
     return false
   }
 
-  if (!assignedChaperones.value.includes(chaperones.value.find(chaperone => chaperone.name === event.value.lead_chaperone).id) && event.value.lead_chaperone) {
+  if (!assignedChaperones.value.includes(chaperones.value.find(chaperone => chaperone.name === event.value.lead_chaperone)?.id ?? null) && event.value.lead_chaperone) {
     return false
   }
   return true
@@ -510,7 +510,7 @@ const saveNewEvent = () => {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ ...event.value, lead_chaperone: chaperones.value.find(chaperone => chaperone.name === event.value.lead_chaperone).id }),
+    body: JSON.stringify({ ...event.value, lead_chaperone: chaperones.value.find(chaperone => chaperone.name === event.value.lead_chaperone)?.id ?? null }),
   }).then((response) => {
     if (!response.ok) {
       store.showAlert("Error", "Failed to save event.");
@@ -555,7 +555,7 @@ const saveExistingEvent = () => {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ ...event.value, lead_chaperone: chaperones.value.find(chaperone => chaperone.name === event.value.lead_chaperone).id }),
+    body: JSON.stringify({ ...event.value, lead_chaperone: chaperones.value.find(chaperone => chaperone.name === event.value.lead_chaperone)?.id ?? null }),
   }).then(response => {
     if (!response.ok) {
       store.showAlert("Error", "Failed to save event.");
@@ -666,7 +666,7 @@ const saveChaperoneSlots = async () => {
     const end = new Date(event.value.date);
     end.setHours(slot.endHours, slot.endMinutes, 0, 0);
     slot.end = end;
-    slot.chaperone = chaperones.value.find(chaperone => chaperone.name === slot.chaperone).id;
+    slot.chaperone = chaperones.value.find(chaperone => chaperone.name === slot.chaperone)?.id ?? null;
 
     if (!slot.chaperone || !slot.title || !slot.start || !slot.end) {
       validData = false;

@@ -114,7 +114,7 @@ onMounted(async () => {
   eventData.start = new Date(eventData.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   eventData.end = new Date(eventData.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-  eventData.lead_chaperone = chaperones.value.find(chaperone => chaperone.id == eventData.lead_chaperone).name
+  eventData.lead_chaperone = chaperones.value.find(chaperone => chaperone.id == eventData.lead_chaperone)?.name ?? null;
   event.value = eventData;
   document.title = `${eventData.title} - Steel City Choristers`;
 
@@ -136,13 +136,15 @@ function onSignIn(response) {
       return Promise.reject(response);
     })
     .then((data) => {
-      store.isAdmin = data.is_admin
+      store.isAdmin = false;
+      store.userID = null
     })
     .catch((error) => {
       if (error.status === 401) {
         googleLogout();
         store.userEmail = '';
         store.isAdmin = false;
+        store.userID = null
         store.showAlert('Unauthorised', "You are not authorised to access the chaperones' schedule. If you believe this is in error, please contact the chaperoning team.");
       }
       console.error('Error:', error)
