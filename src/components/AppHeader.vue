@@ -8,7 +8,7 @@
       Report Error
     </v-btn>
 
-    <GoogleLogin :callback="onSignIn" auto-login prompt class="mt-4 mx-3" />
+    <GoogleLogin v-if="!store.userEmail" :callback="onSignIn" auto-login prompt class="mt-4 mx-3" />
 
     <v-btn v-if="store.isAdmin && !isMobile" class="mt-4 mr-3" @click="proxy.$router.push('/templateEvents')">
       <v-icon size="25">mdi-note-text</v-icon>
@@ -47,11 +47,6 @@ function onSignIn(response) {
     })
     .then((data) => {
       store.isAdmin = data.is_admin
-      if (proxy.$route.query.redirect) {
-        proxy.$router.push(proxy.$route.query.redirect);
-      } else {
-        proxy.$router.push('/');
-      }
     })
     .catch((error) => {
       if (error.status === 401) {
