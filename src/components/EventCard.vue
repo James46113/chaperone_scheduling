@@ -9,12 +9,12 @@
         {{ new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }} -
         {{ new Date(event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
       </v-card-subtitle>
-      <v-card-text class="ma-0 pa-0">
+      <v-card-text class="pl-0">
         <v-card-text v-if="loadingData" class="ma-0">
           Loading...
         </v-card-text>
         <span v-for="chaperone in event.chaperones" v-else-if="event.chaperones?.length > 0 ?? false">
-          <v-card-text :style="chaperone == event.lead_chaperone ? 'font-weight: bold;' : ''">
+          <v-card-text :style="chaperone == event.lead_chaperone ? 'font-weight: bold;' : ''" class="py-0">
             {{ chaperones.find(c => c.id === chaperone).name }}<br>
           </v-card-text>
         </span>
