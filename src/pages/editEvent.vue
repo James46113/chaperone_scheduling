@@ -68,7 +68,7 @@
       <v-data-table :height="chaperoneSlots.length > 0 ? (chaperoneSlots.length + 1) * 76 : undefined"
         :items="chaperoneSlots" :headers="tableHeaders" items-per-page="-1" hide-default-footer>
         <template v-slot:item.chaperone="{ item }">
-          <v-combobox :items="chaperones" v-model="item.chaperone" variant="outlined" density="compact"
+          <v-select :items="chaperoneNames" v-model="item.chaperone" variant="outlined" density="compact"
             class="mt-3 mb-1" auto-select-first />
         </template>
         <template v-slot:item.startTime="{ item }">
@@ -123,6 +123,8 @@ const { proxy } = getCurrentInstance();
 const event = ref({});
 const chaperoneSlots = ref([]);
 const chaperones = ref([]);
+const chaperoneNames = ref(chaperones.value.map(chaperone => chaperone.name).sort());
+
 const saving = ref(false);
 const store = useAppStore();
 let newEvent = false;
@@ -499,8 +501,9 @@ const saveNewTemplate = async () => {
     });
 }
 
-const saveNewEvent = async () => {
-  await fetchAPI("events", {
+const saveNewEvent = () => {
+
+  fetchAPI("events", {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -660,6 +663,7 @@ const saveChaperoneSlots = async () => {
     const end = new Date(event.value.date);
     end.setHours(slot.endHours, slot.endMinutes, 0, 0);
     slot.end = end;
+    slot.chaperone = chaperones.value.find(chaperone => chaperone.name === slot.chaperone).id;
 
     if (!slot.chaperone || !slot.title || !slot.start || !slot.end) {
       validData = false;
