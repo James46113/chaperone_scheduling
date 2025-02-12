@@ -5,7 +5,7 @@
 
     <v-tabs v-model="tab" grow color="primary">
       <v-tab value="calendar">Calendar</v-tab>
-      <v-tab value="cards">Cards</v-tab>
+      <v-tab value="list">List</v-tab>
     </v-tabs>
 
     <v-tabs-window v-model="tab">
@@ -17,7 +17,7 @@
           Event</v-btn>
 
         <v-calendar class="pa-0" :events="events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" hide-week-number>
-          <template #event="{ event }" v-if="!isMobile">
+          <template #event="{ event }" v-if="!isMobile" :interval-height="20">
             <event-card :event="event" />
           </template>
           <template #event="{ event }" v-if="isMobile">
@@ -31,7 +31,7 @@
 
       </v-tabs-window-item>
 
-      <v-tabs-window-item value="cards">
+      <v-tabs-window-item value="list">
         <event-card v-for="event in events" :event="event" />
       </v-tabs-window-item>
 
@@ -50,7 +50,7 @@ import { GoogleLogin, decodeCredential, googleLogout } from 'vue3-google-login';
 const events = ref([])
 const { proxy } = getCurrentInstance()
 const store = useAppStore();
-const tab = ref(isMobile.value ? 'cards' : 'calendar');
+const tab = ref(isMobile.value ? 'list' : 'calendar');
 
 document.title = "Chaperones' Calendar - Steel City Choristers"
 
