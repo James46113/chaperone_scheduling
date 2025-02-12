@@ -39,6 +39,10 @@ const props = defineProps({
   chaperones: Array,
 })
 
+watch(() => props.event, (event) => {
+  alert(JSON.stringify(event))
+})
+
 const goToEvent = (value) => {
   if (!value.target.closest('.v-btn')) {
     proxy.$router.push(`/event?id=${props.event.id}`)
