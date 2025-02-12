@@ -11,33 +11,37 @@
       <v-row class="mt-6">
         <v-date-input variant="outlined" label="Start" class="px-3" max-width="300" v-model="start" :max="end" />
         <v-date-input variant="outlined" label="End" class="px-3" max-width="300" v-model="end" :min="start" />
+        <v-spacer />
+        <v-btn v-if="showTable" color="primary" @click="saveTableAsImage" class="mr-4" variant="flat">Save as
+          Image</v-btn>
       </v-row>
       <v-card-text v-if="loadingData">Loading...</v-card-text>
+      <div v-else-if="showTable" class="table_container pa-4">
+        <table class="ma-7">
+          <tr>
+            <th></th>
+            <th v-for="event in eventsInRange">
+              <div class="vertical-text rotate">
+                {{ event.start.toLocaleDateString() }}
+              </div>
+            </th>
+          </tr>
 
-      <table v-else-if="showTable" class="ma-7">
-        <tr>
-          <th></th>
-          <th v-for="event in eventsInRange">
-            <div class="vertical-text">
-              {{ event.start.toLocaleDateString() }}
-            </div>
-          </th>
-        </tr>
-
-        <tr v-for=" chaperone in chaperones">
-          <td>{{ chaperone.name }}</td>
-          <td v-for="event in eventsInRange">
-            <span
-              v-if="availabilities.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available">
-              <v-icon>mdi-check</v-icon>
-            </span>
-            <span
-              v-else-if="availabilities.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available === null">
-              <pre> ?</pre>
-            </span>
-          </td>
-        </tr>
-      </table>
+          <tr v-for=" chaperone in chaperones">
+            <td>{{ chaperone.name }}</td>
+            <td v-for="event in eventsInRange">
+              <span
+                v-if="availabilities.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available">
+                <v-icon>mdi-check</v-icon>
+              </span>
+              <span
+                v-else-if="availabilities.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available === null">
+                <pre> ?</pre>
+              </span>
+            </td>
+          </tr>
+        </table>
+      </div>
       <v-card-text v-else>No events found in the selected range</v-card-text>
     </v-card>
   </div>
@@ -45,6 +49,7 @@
 
 <script setup>
 import { VDateInput } from 'vuetify/labs/VDateInput'
+import html2canvas from 'html2canvas';
 
 
 const chaperones = ref([])
@@ -113,6 +118,33 @@ onMounted(async () => {
   ])
   loadingData.value = false
 })
+
+const saveTableAsImage = () => {
+  try {
+    const barcodeElement = document.querySelector('.table_container');
+
+    const footerText = document.createElement('div');
+    footerText.style.textAlign = 'center';
+    footerText.style.marginTop = '20px';
+    footerText.textContent = `Generated on ${new Date().toLocaleDateString()} - Steel City Choristers - Dates have been rotated to work with canvas formatting`;
+    barcodeElement.appendChild(footerText);
+
+    barcodeElement.querySelectorAll('.rotate').forEach(element => {
+      element.classList.remove('vertical-text');
+    });
+    html2canvas(barcodeElement).then(canvas => {
+      const link = document.createElement('a');
+      link.download = `availability-${start.value.toLocaleDateString()}-${end.value.toLocaleDateString()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+    barcodeElement.querySelectorAll('.rotate').forEach(element => {
+      element.classList.add('vertical-text');
+    });
+    barcodeElement.removeChild(footerText);
+  } catch (error) { console.error('Error:', error) }
+}
+
 
 </script>
 
