@@ -49,7 +49,7 @@
       </template>
     </v-data-table>
     <v-card v-else v-for="slot in chaperoneSlots" class="mb-4">
-      <v-card-title>{{ slot.chaperone }}</v-card-title>
+      <v-card-title>{{ chaperones.find(chaperone => chaperone.id === slot.chaperone)?.name }}</v-card-title>
       <v-card-subtitle class="mt-n2">{{ slot.title }}</v-card-subtitle>
       <v-card-subtitle>{{ new Date(slot.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }} -
         {{ new Date(slot.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</v-card-subtitle>
