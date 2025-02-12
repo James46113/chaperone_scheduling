@@ -1,5 +1,5 @@
 <template>
-  <app-header />
+  <app-header :update-availability="getAvailability" />
   <div class="pa-3">
     <GoogleLogin v-if="isMobile && !store.userEmail" :callback="onSignIn" auto-login prompt />
 
