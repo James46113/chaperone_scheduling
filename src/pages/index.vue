@@ -1,6 +1,7 @@
 <template>
   <app-header />
   <div class="pa-4">
+    <GoogleLogin v-if="isMobile" :callback="onSignIn" auto-login prompt />
     <v-btn v-if="store.isAdmin && !isMobile" @click="proxy.$router.push('/editEvent?id=new')"
       style="position: absolute; right: 16px;" class="mt-4" color="primary">Add
       Event</v-btn>
@@ -9,7 +10,9 @@
         <event-card :event="event" />
       </template>
     </v-calendar>
-    <event-card v-for="event in events" :event="event" mobile v-else />
+    <event-card v-for="event in events" :event="event" v-else />
+
+
   </div>
 </template>
 
@@ -17,6 +20,8 @@
 import { VCalendar } from 'vuetify/labs/VCalendar'
 import { ref, onMounted, getCurrentInstance } from 'vue'
 import { useAppStore } from '@/stores/app'
+import { GoogleLogin, decodeCredential, googleLogout } from 'vue3-google-login';
+
 
 const events = ref([])
 const { proxy } = getCurrentInstance()
@@ -68,4 +73,28 @@ fetchAPI('events', {
       })
   })
 
+function onSignIn(response) {
+  store.userEmail = decodeCredential(response.credential).email;
+  fetchAPI(`login/${store.userEmail}`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+      return Promise.reject(response);
+    })
+    .then((data) => {
+      store.isAdmin = data.is_admin
+    })
+    .catch((error) => {
+      if (error.status === 401) {
+        googleLogout();
+        store.userEmail = '';
+        store.isAdmin = false;
+        store.showAlert('Unauthorised', "You are not authorised to access the chaperones' schedule. If you believe this is in error, please contact the chaperoning team.");
+      }
+      console.error('Error:', error)
+    });
+}
 </script>
