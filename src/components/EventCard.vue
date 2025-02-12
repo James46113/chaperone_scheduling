@@ -22,18 +22,8 @@
           <span>No chaperones assigned</span>
         </v-sheet>
       </v-card-text>
-      <v-card-text>
-        Available:
-      </v-card-text>
     </div>
-    <v-row class="mx-2 mb-2">
-      <v-btn variant="flat" max-width="200px" width="50%"
-        :color="event.available === null ? '' : event.available ? 'green' : ''" @click="updateAvailable"
-        :ripple="false">✓</v-btn>
-      <v-btn variant="flat" max-width="200px" width="50%"
-        :color="event.available === null ? '' : event.available ? '' : 'red'" @click="updateAvailable"
-        :ripple="false">⨯</v-btn>
-    </v-row>
+    <availability-selector :event="event" small />
   </v-card>
 
 </template>
@@ -53,24 +43,6 @@ const goToEvent = (value) => {
   if (!value.target.closest('.v-btn')) {
     proxy.$router.push(`/event?id=${props.event.id}`)
   }
-}
-
-const updateAvailable = () => {
-  fetchAPI(`chaperones/availability/${store.userID}`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      event_id: props.event.id,
-      available: props.event.available
-    })
-  })
-    .then((response) => {
-      if (!response.ok) {
-        store.showAlert('Error updating availability', 'Please try again later, if this persists contact jamescaroe@gmail.com')
-      }
-    })
 }
 
 </script>

@@ -1,15 +1,25 @@
 <template>
   <app-header />
   <v-card class="pa-4">
-    <v-card-title class="text-h4 mb-n5">{{ loadingData ? "Loading..." : event.title }}</v-card-title>
+    <v-row>
 
-    <v-btn v-if="store.isAdmin && !isMobile" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)"
-      color="primary" style="position: absolute; right: 32px;">Edit</v-btn>
+      <div>
+        <v-card-title class="text-h4 mb-n5">{{ loadingData ? "Loading..." : event.title }}</v-card-title>
 
-    <v-card-title v-if="!loadingData">{{ event.date }}, {{ event.start }} - {{ event.end }}</v-card-title>
-    <v-card-subtitle>
-      {{ event.location }}
-    </v-card-subtitle>
+        <v-btn v-if="store.isAdmin && !isMobile" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)"
+          color="primary" style="position: absolute; right: 32px;">Edit</v-btn>
+
+        <v-card-title v-if="!loadingData">{{ event.date }}, {{ event.start }} - {{ event.end }}</v-card-title>
+        <v-card-subtitle>
+          {{ event.location }}
+        </v-card-subtitle>
+      </div>
+
+      <!-- <v-divider class="my-4"></v-divider> -->
+      <div class="ml-6" v-if="!loadingData">
+        <availability-selector :event="event" />
+      </div>
+    </v-row>
 
     <v-divider class="my-4"></v-divider>
     <v-card-title>Chaperones</v-card-title>
@@ -92,6 +102,23 @@ onMounted(async () => {
   }
   loadingData.value = true
   await getChaperones();
+  let availability = null;
+
+  // fetchAPI(`chaperones/availability/${store.userID}/${proxy.$route.query.id}`, {
+  fetchAPI(`chaperones/availability/1/${proxy.$route.query.id}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      availability = data.available;
+    })
+    .catch((error) => {
+      console.error('Error:', error)
+    });
+
   const [eventData, chaperoneData] = await Promise.all([
     fetchAPI(`events/${proxy.$route.query.id}`, {
       method: 'GET',
@@ -115,6 +142,7 @@ onMounted(async () => {
   eventData.end = new Date(eventData.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   eventData.lead_chaperone = chaperones.value.find(chaperone => chaperone.id == eventData.lead_chaperone)?.name ?? null;
+  eventData.available = availability;
   event.value = eventData;
   document.title = `${eventData.title} - Steel City Choristers`;
 
