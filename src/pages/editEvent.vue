@@ -240,6 +240,7 @@ onMounted(async () => {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(chaperones.value.find(chaperone => chaperone.id === data[0].chaperone).name)
         data.forEach(slot => {
           slot.start = new Date(slot.start);
           slot.end = new Date(slot.end);
@@ -531,8 +532,8 @@ const saveNewEvent = () => {
     });
 }
 
-const getChaperones = () => {
-  fetchAPI('chaperones', {
+const getChaperones = async () => {
+  await fetchAPI('chaperones', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
