@@ -35,18 +35,18 @@ router.isReady().then(() => {
   localStorage.removeItem('vuetify:dynamic-reload')
 })
 
-// router.beforeEach((to, from, next) => {
-//   const store = useAppStore();
-//   if (!store.userEmail && (
-//     to.path.startsWith('/editEvent') ||
-//     to.path.startsWith('/templateEvents') ||
-//     to.path.startsWith('/users'))) {
-//     next(`/login?redirect=${to.fullPath}`);
-//   }
-//   else {
-//     next();
-//   }
-// });
+router.beforeEach((to, from, next) => {
+  const store = useAppStore();
+  if (!store.userEmail && (
+    to.path.startsWith('/editEvent') ||
+    to.path.startsWith('/templateEvents') ||
+    to.path.startsWith('/users'))) {
+    next(`/login?redirect=${to.fullPath}`);
+  }
+  else {
+    next();
+  }
+});
 
 router.beforeEach((to, from, next) => {
   const store = useAppStore();

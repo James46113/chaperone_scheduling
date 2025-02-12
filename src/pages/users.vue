@@ -20,7 +20,7 @@
             <v-switch @click="updateAdmin(item)" class="mb-n6" v-model="item.is_admin" color="primary" />
           </template>
           <template #item.delete="{ item }">
-            <v-btn @click="deleteUser(item.email)" variant="flat"><v-icon>mdi-delete</v-icon></v-btn>
+            <v-btn @click="deleteUser(item.id)" variant="flat"><v-icon>mdi-delete</v-icon></v-btn>
           </template>
           <template v-slot:no-data>
             <v-card-text v-if="loadingData">Loading...</v-card-text>
@@ -36,6 +36,8 @@
       <v-card-title>New User</v-card-title>
       <v-card-text>
         <v-text-field v-model="newUser.email" :rules="[required]" label="Email" required
+          @keyup.enter="createUser"></v-text-field>
+        <v-text-field v-model="newUser.name" :rules="[required]" label="Name" required
           @keyup.enter="createUser"></v-text-field>
         <v-switch v-model="newUser.is_admin" label="Admin" color="primary" />
       </v-card-text>
@@ -68,7 +70,7 @@ const headers = computed(() => [
 
 onMounted(() => {
   loadingData.value = true;
-  fetchAPI('users', {
+  fetchAPI('chaperones', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -90,7 +92,11 @@ const createUser = () => {
     store.showAlert('Invalid email', 'Please enter an email address')
     return;
   }
-  fetchAPI('users', {
+  if (!newUser.value.name) {
+    store.showAlert('Invalid name', 'Please enter a name')
+    return;
+  }
+  fetchAPI('chaperones', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -117,8 +123,8 @@ const createUser = () => {
     });
 }
 
-const deleteUser = (email) => {
-  fetchAPI(`users/${email}`, {
+const deleteUser = (user_id) => {
+  fetchAPI(`chaperones/${user_id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -131,7 +137,7 @@ const deleteUser = (email) => {
       return response.json()
     })
     .then((data) => {
-      users.value = users.value.filter(user => user.email != email)
+      users.value = users.value.filter(user => user.id != user_id)
     })
     .catch((response) => {
       store.showAlert('Error', 'An error occurred while deleting the user')
@@ -139,7 +145,7 @@ const deleteUser = (email) => {
 }
 
 const updateAdmin = (user) => {
-  fetchAPI(`users/${user.email}`, {
+  fetchAPI(`chaperones/${user.id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
