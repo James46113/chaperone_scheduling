@@ -23,7 +23,7 @@ const props = defineProps({
 })
 
 defineExpose({
-  event: props.event
+  getAvailability
 })
 
 const store = useAppStore();
