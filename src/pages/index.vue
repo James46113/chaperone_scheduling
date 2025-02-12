@@ -148,10 +148,11 @@ function onSignIn(response) {
       }
       return Promise.reject(response);
     })
-    .then((data) => {
+    .then((data) =>
+      getAvailability()
+    ).then(() => {
       store.isAdmin = data.is_admin;
       store.userID = data.id
-      getAvailability();
     })
     .catch((error) => {
       if (error.status === 401) {
