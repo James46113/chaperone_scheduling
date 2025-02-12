@@ -104,20 +104,7 @@ onMounted(async () => {
   await getChaperones();
   let availability = null;
 
-  fetchAPI(`chaperones/availability/${store.userID}/${proxy.$route.query.id}`, {
-    // fetchAPI(`chaperones/availability/1/${proxy.$route.query.id}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      availability = data.available;
-    })
-    .catch((error) => {
-      console.error('Error:', error)
-    });
+  getAvailability();
 
   const [eventData, chaperoneData] = await Promise.all([
     fetchAPI(`events/${proxy.$route.query.id}`, {
@@ -152,6 +139,23 @@ onMounted(async () => {
   loadingData.value = false
 })
 
+const getAvailability = () => {
+  fetchAPI(`chaperones/availability/${store.userID}/${proxy.$route.query.id}`, {
+    // fetchAPI(`chaperones/availability/1/${proxy.$route.query.id}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      availability = data.available;
+    })
+    .catch((error) => {
+      console.error('Error:', error)
+    });
+}
+
 function onSignIn(response) {
   store.userEmail = decodeCredential(response.credential).email;
   fetchAPI(`login/${store.userEmail}`, {
@@ -166,6 +170,7 @@ function onSignIn(response) {
     .then((data) => {
       store.isAdmin = data.is_admin;
       store.userID = data.id
+      getAvailability();
     })
     .catch((error) => {
       if (error.status === 401) {

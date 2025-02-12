@@ -2,7 +2,7 @@
   <div v-if="store.userID">
     <v-card-text v-if="small">Available:</v-card-text>
     <v-card-title v-else>Available:</v-card-title>
-    <v-row class="mx-2 mt-1">
+    <v-row class="mx-2 mt-1 mb-3">
       <v-btn variant="flat" max-width="100px" width="50%"
         :color="event.available === null ? '' : event.available ? 'green' : ''" @click="updateAvailable(true)"
         :ripple="false">✓</v-btn>

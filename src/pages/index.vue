@@ -62,30 +62,8 @@ onMounted(async () => {
 
   try {
     if (store.userID) {
-      fetchAPI(`/chaperones/availability/${store.userID}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          availability.value = data;
-        });
+      getAvailability();
     }
-
-    // DEBUG ONLY
-    // fetchAPI(`/chaperones/availability/1`, {
-    //   method: 'GET',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     availability.value = data;
-    //   });
-    // DEBUG ONLY
 
     const [chaperonesResponse, eventsResponse] = await Promise.all([
       fetchAPI('chaperones', {
@@ -143,6 +121,19 @@ onMounted(async () => {
   }
 })
 
+const getAvailability = () => {
+  fetchAPI(`/chaperones/availability/${store.userID}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      availability.value = data;
+    });
+}
+
 function onSignIn(response) {
   store.userEmail = decodeCredential(response.credential).email;
   fetchAPI(`login/${store.userEmail}`, {
@@ -157,6 +148,7 @@ function onSignIn(response) {
     .then((data) => {
       store.isAdmin = data.is_admin;
       store.userID = data.id
+      getAvailability();
     })
     .catch((error) => {
       if (error.status === 401) {
