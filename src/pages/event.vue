@@ -165,7 +165,7 @@ function onSignIn(response) {
     })
     .then((data) => {
       store.isAdmin = data.is_admin;
-      store.userID = null
+      store.userID = data.id
     })
     .catch((error) => {
       if (error.status === 401) {
