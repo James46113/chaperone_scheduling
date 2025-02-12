@@ -120,24 +120,6 @@ onMounted(async () => {
   }
 })
 
-export const getAvailability = () => {
-  fetchAPI(`/chaperones/availability/${store.userID}`, {
-    // fetchAPI(`/chaperones/availability/1`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      availability.value = data;
-      events.value.forEach((event) => {
-        event.available = availability.value.filter(slot => slot.event_id == event.id)[0]?.available;
-      });
-      console.log(JSON.stringify(events.value));
-    }).catch((error) => console.error('Error:', error));
-}
-
 function onSignIn(response) {
   store.userEmail = decodeCredential(response.credential).email;
   fetchAPI(`login/${store.userEmail}`, {
@@ -165,4 +147,25 @@ function onSignIn(response) {
       console.error('Error:', error)
     });
 }
+</script>
+
+<script lang="js">
+export const getAvailability = () => {
+  fetchAPI(`/chaperones/availability/${store.userID}`, {
+    // fetchAPI(`/chaperones/availability/1`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      availability.value = data;
+      events.value.forEach((event) => {
+        event.available = availability.value.filter(slot => slot.event_id == event.id)[0]?.available;
+      });
+      console.log(JSON.stringify(events.value));
+    }).catch((error) => console.error('Error:', error));
+}
+
 </script>
