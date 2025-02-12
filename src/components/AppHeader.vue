@@ -4,11 +4,11 @@
     <v-card-title v-if="!isMobile" class="text-h5 mt-4 ml-4">Chaperones</v-card-title>
     <v-spacer />
 
-    <v-btn href="mailto:jamescaroe@gmail.com" color="primary" class="mt-4">
+    <v-btn v-if="!isMobile" href="mailto:jamescaroe@gmail.com" color="primary" class="mt-4">
       Report Error
     </v-btn>
 
-    <GoogleLogin v-if="!store.userEmail" :callback="onSignIn" auto-login prompt class="mt-4 mx-3" />
+    <GoogleLogin v-if="!store.userEmail && !isMobile" :callback="onSignIn" auto-login prompt class="mt-4 mx-3" />
 
     <v-btn v-if="store.isAdmin && !isMobile" class="mt-4 mr-3" @click="proxy.$router.push('/templateEvents')">
       <v-icon size="25">mdi-note-text</v-icon>
