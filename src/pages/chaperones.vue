@@ -6,7 +6,7 @@
         <v-card-title class="text-h5 mt-3 ml-3">Chaperones' Schedules</v-card-title>
         <v-spacer />
         <v-btn v-if="store.isAdmin && !isMobile" variant="flat" class="mt-6 mr-6" color="primary"
-          @click="proxy.$router.push('/availabilty')">Availability</v-btn>
+          @click="proxy.$router.push('/availability')">Availability</v-btn>
         <v-btn v-if="store.isAdmin && !isMobile" variant="flat" class="mt-6 mr-6" color="primary"
           @click="proxy.$router.push('/users')">Manage Users</v-btn>
       </v-row>
