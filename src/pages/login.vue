@@ -1,7 +1,7 @@
 <template>
   <div style="display: flex; justify-content: center; align-items: center; height: 60vh;">
     <v-card :width="isMobile ? '100vw' : '30vw'" class="pa-4">
-      <v-img src="/Steel-City-Choristers.png" max-width="200" />
+      <!-- <v-img src="/Steel-City-Choristers.png" max-width="200" /> -->
       <v-card-title>Login</v-card-title>
       <v-card-text>Please login with Google to access the chaperone schedule.</v-card-text>
       <div style="display: flex; justify-content: center;">

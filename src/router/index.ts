@@ -37,10 +37,18 @@ router.isReady().then(() => {
 
 router.beforeEach((to, from, next) => {
   const store = useAppStore();
-
-  if (!store.userEmail && to.path !== '/login') {
-    next(`/login?redirect=${to.path}`);
-  } else {
+  // if (!store.userEmail && to.path !== '/login') {
+  //   next(`/login?redirect=${to.path}`);
+  // } else {
+  //   next();
+  // }
+  if (!store.userEmail && (
+    to.path.startsWith('/editEvent') ||
+    to.path.startsWith('/templateEvents') ||
+    to.path.startsWith('/users'))) {
+    next(`/login`);
+  }
+  else {
     next();
   }
 });
@@ -50,7 +58,7 @@ router.beforeEach((to, from, next) => {
 
   if ((to.path.startsWith('/editEvent') ||
     to.path.startsWith('/templateEvents') ||
-    to.path.startsWith('/users')) && !store.isAdmin) {
+    to.path.startsWith('/users')) && !store.isAdmin && store.userEmail) {
     next('/');
   } else {
     next();

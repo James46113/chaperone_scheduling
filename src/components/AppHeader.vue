@@ -8,6 +8,8 @@
       Report Error
     </v-btn>
 
+    <GoogleLogin :callback="onSignIn" auto-login prompt class="mt-4 mx-3" />
+
     <v-btn v-if="store.isAdmin && !isMobile" class="mt-4 mr-3" @click="proxy.$router.push('/templateEvents')">
       <v-icon size="25">mdi-note-text</v-icon>
     </v-btn>
@@ -25,8 +27,41 @@
 <script setup>
 import { useAppStore } from '@/stores/app'
 import { getCurrentInstance } from 'vue'
+import { GoogleLogin, decodeCredential, googleLogout } from 'vue3-google-login';
+
 
 const { proxy } = getCurrentInstance()
 const store = useAppStore();
+
+
+function onSignIn(response) {
+  store.userEmail = decodeCredential(response.credential).email;
+  fetchAPI(`login/${store.userEmail}`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+      return Promise.reject(response);
+    })
+    .then((data) => {
+      store.isAdmin = data.is_admin
+      if (proxy.$route.query.redirect) {
+        proxy.$router.push(proxy.$route.query.redirect);
+      } else {
+        proxy.$router.push('/');
+      }
+    })
+    .catch((error) => {
+      if (error.status === 401) {
+        googleLogout();
+        store.userEmail = '';
+        store.isAdmin = false;
+        store.showAlert('Unauthorised', "You are not authorised to view this content. If you believe this is in error, please contact the chaperoning team.");
+      }
+      console.error('Error:', error)
+    });
+}
 
 </script>
