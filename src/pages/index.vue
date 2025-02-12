@@ -18,7 +18,10 @@
 
         <v-calendar class="pa-0" :events="events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" hide-week-number>
           <template #event="{ event }" v-if="!isMobile" :interval-height="20">
-            <event-card :event="event" :chaperones="chaperones" />
+            <v-card class="ma-1">
+              <event-card :event="event" :chaperones="chaperones" />
+              <availability-selector :event="event" small />
+            </v-card>
           </template>
           <template #event="{ event }" v-if="isMobile">
             <v-card-text style="font-size: x-small; border-left: 2px solid; padding-left: 0.2em; border-color: #a80056;"
