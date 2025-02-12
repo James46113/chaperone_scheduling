@@ -1,7 +1,7 @@
 <template>
   <app-header />
   <div class="pa-4">
-    <GoogleLogin v-if="isMobile" :callback="onSignIn" auto-login prompt />
+    <GoogleLogin v-if="isMobile && !store.userEmail" :callback="onSignIn" auto-login prompt />
     <v-btn v-if="store.isAdmin && !isMobile" @click="proxy.$router.push('/editEvent?id=new')"
       style="position: absolute; right: 16px;" class="mt-4" color="primary">Add
       Event</v-btn>
