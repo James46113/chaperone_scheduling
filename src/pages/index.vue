@@ -120,8 +120,7 @@ onMounted(async () => {
   }
 })
 
-const getAvailability = () => {
-  alert("getting availability")
+export const getAvailability = () => {
   fetchAPI(`/chaperones/availability/${store.userID}`, {
     // fetchAPI(`/chaperones/availability/1`, {
     method: 'GET',
@@ -141,7 +140,6 @@ const getAvailability = () => {
 
 function onSignIn(response) {
   store.userEmail = decodeCredential(response.credential).email;
-  alert("signing in")
   fetchAPI(`login/${store.userEmail}`, {
     method: 'GET',
   })
@@ -152,7 +150,6 @@ function onSignIn(response) {
       return Promise.reject(response);
     })
     .then((data) => {
-      alert("got data")
       store.isAdmin = data.is_admin;
       store.userID = data.id
       getAvailability();
