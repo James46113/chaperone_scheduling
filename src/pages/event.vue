@@ -140,20 +140,22 @@ onMounted(async () => {
 })
 
 const getAvailability = () => {
-  fetchAPI(`chaperones/availability/${store.userID}/${proxy.$route.query.id}`, {
-    // fetchAPI(`chaperones/availability/1/${proxy.$route.query.id}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      availability = data.available;
+  if (store.userID) {
+    fetchAPI(`chaperones/availability/${store.userID}/${proxy.$route.query.id}`, {
+      // fetchAPI(`chaperones/availability/1/${proxy.$route.query.id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     })
-    .catch((error) => {
-      console.error('Error:', error)
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        availability = data.available;
+      })
+      .catch((error) => {
+        console.error('Error:', error)
+      });
+  }
 }
 
 function onSignIn(response) {
