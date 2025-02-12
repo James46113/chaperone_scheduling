@@ -224,7 +224,7 @@ onMounted(async () => {
         data.endHours = String(data.end.getHours()).padStart(2, '0');
         data.endMinutes = String(data.end.getMinutes()).padStart(2, '0');
         data.date = data.start;
-        data.lead_chaperone = chaperones.value.find(chaperone => chaperone.id === data.lead_chaperone).name;
+        data.lead_chaperone = chaperones.value.find(chaperone => chaperone.id === data.lead_chaperone).name ?? "Error";
         event.value = data;
         document.title = `${data.title} - Steel City Choristers`;
       })
