@@ -25,7 +25,7 @@ export default defineConfig({
           'vue-router/auto': ['useRoute', 'useRouter'],
         },
         {
-          '@/services/functions': ['fetchAPI', 'isMobile', 'loadingData'],
+          '@/services/functions': ['fetchAPI', 'isMobile', 'loadingData', 'loadingAvailability'],
         },
       ],
       dts: 'src/auto-imports.d.ts',

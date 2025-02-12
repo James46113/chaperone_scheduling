@@ -149,6 +149,7 @@ function onSignIn(response) {
 }
 
 const getAvailability = () => {
+  loadingAvailability.value = true;
   fetchAPI(`/chaperones/availability/${store.userID}`, {
     // fetchAPI(`/chaperones/availability/1`, {
     method: 'GET',
@@ -162,7 +163,7 @@ const getAvailability = () => {
       events.value.forEach((event) => {
         event.available = availability.value.filter(slot => slot.event_id == event.id)[0]?.available;
       });
-      console.log(JSON.stringify(events.value));
+      loadingAvailability.value = false;
     }).catch((error) => console.error('Error:', error));
 }
 

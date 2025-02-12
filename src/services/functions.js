@@ -22,3 +22,4 @@ window.addEventListener('resize', handleResize);
 export const isMobile = computed(() => windowWidth.value < 768);
 
 export const loadingData = ref(false);
+export const loadingAvailability = ref(false);
