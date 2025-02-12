@@ -59,7 +59,6 @@ document.title = "Chaperones' Calendar - Steel City Choristers"
 
 onMounted(async () => {
   loadingData.value = true
-  store.userID = 1;
   try {
     if (store.userID) {
       getAvailability();
@@ -122,8 +121,9 @@ onMounted(async () => {
 })
 
 const getAvailability = () => {
-  // fetchAPI(`/chaperones/availability/${store.userID}`, {
-  fetchAPI(`/chaperones/availability/1`, {
+  alert("getting availability")
+  fetchAPI(`/chaperones/availability/${store.userID}`, {
+    // fetchAPI(`/chaperones/availability/1`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -141,6 +141,7 @@ const getAvailability = () => {
 
 function onSignIn(response) {
   store.userEmail = decodeCredential(response.credential).email;
+  alert("signing in")
   fetchAPI(`login/${store.userEmail}`, {
     method: 'GET',
   })
@@ -151,6 +152,7 @@ function onSignIn(response) {
       return Promise.reject(response);
     })
     .then((data) => {
+      alert("got data")
       store.isAdmin = data.is_admin;
       store.userID = data.id
       getAvailability();
