@@ -23,7 +23,7 @@
         </v-sheet>
       </v-card-text>
     </div>
-    <availability-selector :event="event" small />
+    <availability-selector :event="event" small ref="availabilitySelector" />
   </v-card>
 
 </template>
@@ -33,15 +33,22 @@ import { useAppStore } from '@/stores/app';
 
 const store = useAppStore();
 
+const availabilitySelector = ref(null);
+
+defineExpose({
+  updateAvailability,
+});
+
+const updateAvailability = () => {
+  availabilitySelector.value.updateAvailability();
+}
+
 const { proxy } = getCurrentInstance()
 const props = defineProps({
   event: Object,
   chaperones: Array,
 })
 
-watch(() => props.event, (event) => {
-  alert(JSON.stringify(event))
-})
 
 const goToEvent = (value) => {
   if (!value.target.closest('.v-btn')) {

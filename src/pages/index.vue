@@ -18,7 +18,7 @@
 
         <v-calendar class="pa-0" :events="events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" hide-week-number>
           <template #event="{ event }" v-if="!isMobile" :interval-height="20">
-            <event-card :event="event" :chaperones="chaperones" />
+            <event-card :event="event" :chaperones="chaperones" ref="calendarEventCard" />
           </template>
           <template #event="{ event }" v-if="isMobile">
             <v-card-text style="font-size: x-small; border-left: 2px solid; padding-left: 0.2em; border-color: #a80056;"
@@ -53,6 +53,8 @@ const store = useAppStore();
 const tab = ref(isMobile.value ? 'list' : 'calendar');
 const chaperones = ref([]);
 
+const calendarEventCard = ref(null);
+
 const availability = ref([]);
 
 document.title = "Chaperones' Calendar - Steel City Choristers"
@@ -62,7 +64,7 @@ onMounted(async () => {
 
   try {
     if (store.userID) {
-      getAvailability();
+      calendarEventCard.value.updateAvailability();
     }
 
     const [chaperonesResponse, eventsResponse] = await Promise.all([
@@ -148,7 +150,7 @@ function onSignIn(response) {
     .then((data) => {
       store.isAdmin = data.is_admin;
       store.userID = data.id
-      getAvailability();
+      calendarEventCard.value.updateAvailability();
     })
     .catch((error) => {
       if (error.status === 401) {

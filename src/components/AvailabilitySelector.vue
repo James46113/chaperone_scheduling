@@ -22,6 +22,10 @@ const props = defineProps({
   small: Boolean
 })
 
+defineExpose({
+  event: props.event
+})
+
 const store = useAppStore();
 
 
@@ -43,6 +47,19 @@ const updateAvailable = (availability) => {
         store.showAlert('Error updating availability', 'Please try again later, if this persists contact jamescaroe@gmail.com')
       }
     })
+}
+
+const getAvailability = () => {
+  fetchAPI(`/chaperones/availability/${store.userID}/${props.event.id}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      props.event.available = data.available
+    });
 }
 
 </script>
