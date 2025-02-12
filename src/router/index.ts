@@ -40,8 +40,8 @@ router.beforeEach((to, from, next) => {
   if (!store.userEmail && (
     to.path.startsWith('/editEvent') ||
     to.path.startsWith('/templateEvents') ||
-    to.path.startsWith('/users')) ||
-    to.path.startsWith('/availability')) {
+    to.path.startsWith('/users') ||
+    to.path.startsWith('/availability'))) {
     next(`/login?redirect=${to.fullPath}`);
   }
   else {
