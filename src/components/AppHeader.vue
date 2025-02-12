@@ -28,8 +28,10 @@
 import { useAppStore } from '@/stores/app'
 import { getCurrentInstance } from 'vue'
 import { GoogleLogin, decodeCredential, googleLogout } from 'vue3-google-login';
-import { getAvailability } from '@/pages/index.vue';
 
+const props = defineProps({
+  updateAvailability: Function
+})
 
 const { proxy } = getCurrentInstance()
 const store = useAppStore();
@@ -49,8 +51,8 @@ function onSignIn(response) {
     .then((data) => {
       store.isAdmin = data.is_admin;
       store.userID = data.id;
-      if (proxy.$router.currentRoute.value.path === '/') {
-        getAvailability();
+      if (proxy.$router.currentRoute.value.path === '/' && props.updateAvailability) {
+        props.updateAvailability();
       }
     })
     .catch((error) => {

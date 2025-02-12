@@ -147,10 +147,8 @@ function onSignIn(response) {
       console.error('Error:', error)
     });
 }
-</script>
 
-<script lang="js">
-export const getAvailability = () => {
+const getAvailability = () => {
   fetchAPI(`/chaperones/availability/${store.userID}`, {
     // fetchAPI(`/chaperones/availability/1`, {
     method: 'GET',
