@@ -50,16 +50,22 @@
     </v-card>
     <v-divider />
     <v-card-title class="my-3">Details</v-card-title>
-    <v-card-text>
+    <v-card-text v-if="store.userEmail">
       <span style="white-space: pre-wrap;">
         {{ event.details?.length > 0 ? event.details : 'No details available' }}
       </span>
+    </v-card-text>
+    <v-card-text v-else>
+      <i>Login to view details</i>
+      <GoogleLogin class="mt-4" :callback="onSignIn" auto-login prompt />
     </v-card-text>
   </v-card>
 </template>
 
 <script setup>
 import { useAppStore } from '@/stores/app';
+import { GoogleLogin, decodeCredential, googleLogout } from 'vue3-google-login';
+
 
 
 const { proxy } = getCurrentInstance()
@@ -111,4 +117,28 @@ onMounted(async () => {
   loadingData.value = false
 })
 
+function onSignIn(response) {
+  store.userEmail = decodeCredential(response.credential).email;
+  fetchAPI(`login/${store.userEmail}`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+      return Promise.reject(response);
+    })
+    .then((data) => {
+      store.isAdmin = data.is_admin
+    })
+    .catch((error) => {
+      if (error.status === 401) {
+        googleLogout();
+        store.userEmail = '';
+        store.isAdmin = false;
+        store.showAlert('Unauthorised', "You are not authorised to access the chaperones' schedule. If you believe this is in error, please contact the chaperoning team.");
+      }
+      console.error('Error:', error)
+    });
+}
 </script>
