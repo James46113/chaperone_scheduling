@@ -4,7 +4,7 @@
     <v-card-title class="text-h5 mt-4 ml-4" v-if="!isMobile">Chaperones</v-card-title>
     <v-spacer />
 
-    <v-btn href="mailto:jamescaroe@gmail.com" color="primary" class="mt-4">
+    <v-btn href="mailto:jamescaroe@gmail.com?subject=Bug%20Report" color="primary" class="mt-4">
       Report Error
     </v-btn>
 
