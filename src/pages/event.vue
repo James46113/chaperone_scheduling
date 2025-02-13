@@ -5,8 +5,8 @@
       <div>
         <v-card-title class="text-h4 mb-n5">{{ loadingData ? "Loading..." : event.title }}</v-card-title>
 
-        <v-btn v-if="!isMobile && store.userID" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)"
-          color="primary" style="position: absolute; right: 32px;">Edit</v-btn>
+        <v-btn v-if="!isMobile" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)" color="primary"
+          style="position: absolute; right: 32px;">Edit</v-btn>
 
         <v-card-title v-if="!loadingData">{{ event.date }}, {{ event.start }} - {{ event.end }}</v-card-title>
         <v-card-subtitle>
@@ -15,13 +15,13 @@
       </div>
 
       <!-- <v-divider class="my-4"></v-divider> -->
-      <div :class="isMobile ? '' : 'ml-6'" v-if="!loadingData && store.userID">
+      <div :class="isMobile ? '' : 'ml-6 mt-4'" v-if="!loadingData">
         <availability-selector :event="event" />
       </div>
     </v-row>
 
-    <v-btn v-if="isMobile && store.userID" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)"
-      color="primary" class="mt-10" width="100vw">Edit</v-btn>
+    <v-btn v-if="isMobile" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)" color="primary"
+      class="mt-10" width="100vw">Edit</v-btn>
 
     <v-divider class="mb-4 mt-10"></v-divider>
     <v-card-title>Chaperones</v-card-title>
@@ -65,21 +65,17 @@
     </v-card>
     <v-divider />
     <v-card-title class="my-3">Details</v-card-title>
-    <v-card-text v-if="store.userEmail">
+    <v-card-text>
       <span style="white-space: pre-wrap;">
         {{ event.details?.length > 0 ? event.details : 'No details available' }}
       </span>
-    </v-card-text>
-    <v-card-text v-else>
-      <i>Login to view details</i>
-      <GoogleLogin class="mt-4" :callback="onSignIn" />
     </v-card-text>
   </v-card>
 </template>
 
 <script setup>
 import { useAppStore } from '@/stores/app';
-import { GoogleLogin, decodeCredential, googleLogout } from 'vue3-google-login';
+import { decodeCredential, googleLogout } from 'vue3-google-login';
 
 
 
@@ -148,22 +144,21 @@ onMounted(async () => {
 })
 
 const getAvailability = () => {
-  if (store.userID) {
-    fetchAPI(`chaperones/availability/${store.userID}/${proxy.$route.query.id}`, {
-      // fetchAPI(`chaperones/availability/1/${proxy.$route.query.id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+  fetchAPI(`chaperones/availability/${store.userID}/${proxy.$route.query.id}`, {
+    // fetchAPI(`chaperones/availability/1/${proxy.$route.query.id}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      event.value.available = data.available;
     })
-      .then((response) => response.json())
-      .then((data) => {
-        event.value.available = data.available;
-      })
-      .catch((error) => {
-        console.error('Error:', error)
-      });
-  }
+    .catch((error) => {
+      console.error('Error:', error)
+    });
+
 }
 
 const onSignIn = async (response) => {

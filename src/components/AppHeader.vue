@@ -86,6 +86,7 @@ const logout = () => {
   store.isAdmin = false;
   store.userID = null;
   Cookies.remove('credential');
+  proxy.$router.push('/')
 }
 
 </script>

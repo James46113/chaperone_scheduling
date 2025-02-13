@@ -74,7 +74,7 @@ onMounted(async () => {
     await onSignIn({ credential });
   }
   try {
-    if (store.userID) {
+    if (store.userID || import.meta.env.VITE_DEV == 1) {
       getAvailability();
     }
 
@@ -165,7 +165,10 @@ const onSignIn = async (response) => {
 
 const getAvailability = () => {
   loadingAvailability.value = true;
-  fetchAPI(`/chaperones/availability/${store.userID}`, {
+  if (!store.userID) {
+    return;
+  }
+  fetchAPI(`chaperones/availability/${store.userID}`, {
     // fetchAPI(`/chaperones/availability/1`, {
     method: 'GET',
     headers: {

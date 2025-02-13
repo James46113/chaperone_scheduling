@@ -53,16 +53,20 @@ const chaperone = ref({})
 const chaperones = ref([])
 const chaperone_slots = ref([])
 
+
 const props = defineProps({
   chaperone_id: Number,
 })
+
 
 onMounted(async () => {
   if (!props.chaperone_id) {
     if (Cookies.get('credential')) {
       await new Promise(resolve => setTimeout(resolve, 200));
     } else {
-      proxy.$router.push('/login')
+      if (import.meta.env.VITE_DEV != 1) {
+        proxy.$router.push('/login')
+      }
     }
   }
   loadingData.value = true
@@ -122,7 +126,7 @@ const getChaperones = async () => {
     .then((data) => {
       chaperones.value = data;
       chaperone.value = data.find(c => c.id == props.chaperone_id)
-      document.title = `${chaperone.value.name}'s Schedule - Steel City Choristers`
+      document.title = `${chaperone.value?.name}'s Schedule - Steel City Choristers`
     })
     .catch((error) => {
       console.error('Error:', error)

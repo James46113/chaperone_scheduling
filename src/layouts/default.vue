@@ -21,6 +21,14 @@ import { useAppStore } from '@/stores/app';
 const { proxy } = getCurrentInstance();
 const store = useAppStore();
 
+onMounted(() => {
+  if (import.meta.env.VITE_DEV == 1) {
+    store.userEmail = "jamescaroe@gmail.com"
+    store.userID = 8
+    store.isAdmin = true
+  }
+})
+
 const goHome = (tab) => {
   store.tabView = tab;
   proxy.$router.push(`/?view=${tab}`)

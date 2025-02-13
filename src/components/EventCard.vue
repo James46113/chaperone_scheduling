@@ -14,8 +14,9 @@
           Loading...
         </v-card-text>
         <span v-for="chaperone in event.chaperones" v-else-if="event.chaperones?.length > 0 ?? false">
-          <v-card-text :style="chaperone == event.lead_chaperone ? 'font-weight: bold;' : ''" class="py-0">
-            {{ chaperones.find(c => c.id === chaperone).name }}<br>
+          <v-card-text v-if="!!chaperone" :style="chaperone == event.lead_chaperone ? 'font-weight: bold;' : ''"
+            class="py-0">
+            {{ chaperones.find(c => c.id === chaperone)?.name }}<br>
           </v-card-text>
         </span>
         <v-sheet v-else color="warning" class="pa-2">
@@ -23,7 +24,7 @@
         </v-sheet>
       </v-card-text>
     </div>
-    <availability-selector :event="event" small />
+    <availability-selector :event="event" small class="mt-n3" />
   </v-card>
 
 </template>

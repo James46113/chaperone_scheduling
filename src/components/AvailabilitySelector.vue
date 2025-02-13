@@ -1,8 +1,8 @@
 <template>
-  <div v-if="store.userID && !loadingAvailability">
+  <div v-if="store.userID && !loadingAvailability" :style="small ? '' : 'border: 1px solid #ccc; border-radius: 5px;'">
     <v-card-text v-if="small">Available:</v-card-text>
-    <v-card-title v-else>Available:</v-card-title>
-    <v-row class="mx-2 mt-1 mb-3">
+    <v-card-title v-else class="mb-3">Available:</v-card-title>
+    <v-row class="mx-2 mb-3">
       <v-btn variant="flat" max-width="100px" width="50%"
         :color="event.available === null ? '' : event.available ? 'green' : ''" @click="updateAvailable(true)"
         :ripple="false">✓</v-btn>

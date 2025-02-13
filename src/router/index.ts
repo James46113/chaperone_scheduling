@@ -37,11 +37,7 @@ router.isReady().then(() => {
 
 router.beforeEach((to, from, next) => {
   const store = useAppStore();
-  if (!store.userEmail && (
-    to.path.startsWith('/editEvent') ||
-    to.path.startsWith('/templateEvents') ||
-    to.path.startsWith('/users') ||
-    to.path.startsWith('/availability'))) {
+  if (!store.userEmail && to.path !== '/login' && import.meta.env.VITE_DEV != 1) {
     next(`/login?redirect=${to.fullPath}`);
   }
   else {
@@ -56,7 +52,7 @@ router.beforeEach((to, from, next) => {
     to.path.startsWith('/templateEvents') ||
     to.path.startsWith('/users') ||
     to.path.startsWith('/availability')
-  ) && !store.isAdmin && store.userEmail) {
+  ) && !store.isAdmin && store.userEmail && import.meta.env.VITE_DEV != 1) {
     next('/');
   } else {
     next();
