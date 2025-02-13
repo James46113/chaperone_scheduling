@@ -23,7 +23,7 @@
       <v-icon size="25">mdi-calendar</v-icon>
     </v-btn>
 
-    <v-btn v-if="store.userEmail" class="mt-4 mr-3" @click="logout">
+    <v-btn v-if="store.userEmail && !isMobile" class="mt-4 mr-3" @click="logout">
       <v-icon size="25">mdi-logout</v-icon>
     </v-btn>
   </v-app-bar>

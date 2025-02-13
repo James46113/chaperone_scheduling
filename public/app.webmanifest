@@ -11,5 +11,7 @@
       "type": "image/png",
       "sizes": "1600x772"
     }
-  ]
+  ],
+  "scope": "/",
+  "start_url": "/"
 }
