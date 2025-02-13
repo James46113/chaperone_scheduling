@@ -51,8 +51,7 @@
             </td>
           </tr>
         </table>
-        <v-btn v-if="isMobile" :width="isMobile ? '100vw' : '80vw'" color="primary" @click="saveTableAsImage"
-          variant="flat">Save as
+        <v-btn v-if="isMobile" width="80vw" color="primary" @click="saveTableAsImage" variant="flat">Save as
           Image</v-btn>
       </v-sheet>
       <v-card-text v-else>No events found in the selected range</v-card-text>
