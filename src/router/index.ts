@@ -9,6 +9,7 @@ import { createRouter, createWebHistory } from 'vue-router/auto'
 import { setupLayouts } from 'virtual:generated-layouts'
 import { routes } from 'vue-router/auto-routes'
 import { useAppStore } from '@/stores/app'
+import { decodeCredential, googleLogout } from 'vue3-google-login'
 
 
 const router = createRouter({
@@ -37,9 +38,38 @@ router.isReady().then(() => {
 
 router.beforeEach((to, from, next) => {
   const store = useAppStore();
+
   if (!store.userEmail && to.path !== '/login' && import.meta.env.VITE_DEV != 1) {
-    next(`/login?redirect=${to.fullPath}`);
+    if (Cookies.get('credential')) {
+      const credential = decodeCredential(Cookies.get('credential')) as { email: string };
+      store.userEmail = credential.email;
+      fetchAPI(`login/${store.userEmail}`, {
+        method: 'GET',
+      })
+        .then((response: any) => {
+          if (response.ok) {
+            return response.json();
+          }
+          return Promise.reject(response);
+        })
+        .then((data: any) => {
+          store.isAdmin = data.is_admin;
+          store.userID = data.id;
+          next();
+        })
+        .catch((error: any) => {
+          if (error.status === 401) {
+            googleLogout();
+            store.userEmail = '';
+            store.isAdmin = false;
+            store.userID = null
+            next(`/login?redirect=${to.fullPath}`);
+          }
+        }
+        );
+    }
   }
+
   else {
     next();
   }
