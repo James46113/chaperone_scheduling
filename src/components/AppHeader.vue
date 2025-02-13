@@ -4,6 +4,8 @@
     <v-card-title v-if="!isMobile" class="text-h5 mt-4 ml-4">Chaperones</v-card-title>
     <v-spacer />
 
+    <v-card-text v-if="isPwa">pwa</v-card-text>
+
     <v-btn v-if="!isMobile" href="mailto:jamescaroe@gmail.com" color="primary" class="mt-4">
       Report Error
     </v-btn>
@@ -40,6 +42,8 @@ const props = defineProps({
 
 const { proxy } = getCurrentInstance()
 const store = useAppStore();
+
+const isPWA = computed(() => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true)
 
 onMounted(() => {
   const credential = Cookies.get('credential');
