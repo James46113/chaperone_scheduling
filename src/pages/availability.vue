@@ -51,8 +51,10 @@
             </td>
           </tr>
         </table>
-        <v-btn v-if="isMobile" width="80vw" color="primary" @click="saveTableAsImage" variant="flat">Save as
-          Image</v-btn>
+        <div class="pa-4 d-flex justify-center">
+          <v-btn v-if="isMobile" width="100vw" color="primary" @click="saveTableAsImage" variant="flat">Save as
+            Image</v-btn>
+        </div>
       </v-sheet>
       <v-card-text v-else>No events found in the selected range</v-card-text>
     </v-card>
