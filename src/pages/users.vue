@@ -64,7 +64,7 @@ const required = (value) => !!value || 'This field is required.'
 
 const headers = computed(() => [
   { title: 'Name', key: 'name', mobile: true },
-  { title: 'Email', key: 'email', mobile: true },
+  { title: 'Email', key: 'email', mobile: false },
   { title: 'Admin', key: 'is_admin', mobile: true },
   { title: 'Delete', key: 'delete', width: '10%', mobile: false },
 ].filter(header => !isMobile.value || header.mobile))
