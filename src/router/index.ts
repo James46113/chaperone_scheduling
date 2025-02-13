@@ -54,7 +54,9 @@ router.beforeEach((to, from, next) => {
 
   if ((to.path.startsWith('/editEvent') ||
     to.path.startsWith('/templateEvents') ||
-    to.path.startsWith('/users')) && !store.isAdmin && store.userEmail) {
+    to.path.startsWith('/users') ||
+    to.path.startsWith('/availability')
+  ) && !store.isAdmin && store.userEmail) {
     next('/');
   } else {
     next();

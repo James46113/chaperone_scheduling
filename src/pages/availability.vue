@@ -8,15 +8,20 @@
   <div class="pa-4 d-flex justify-center">
     <v-card elevation="0" width="80vw">
       <v-card-title class="text-h5">Chaperone Availability</v-card-title>
-      <v-row class="mt-6">
+      <v-row class="mt-6" v-if="!isMobile">
         <v-date-input variant="outlined" label="Start" class="px-3" max-width="300" v-model="start" :max="end" />
         <v-date-input variant="outlined" label="End" class="px-3" max-width="300" v-model="end" :min="start" />
         <v-spacer />
         <v-btn v-if="showTable" color="primary" @click="saveTableAsImage" class="mr-4" variant="flat">Save as
           Image</v-btn>
       </v-row>
+      <v-div v-else>
+        <v-date-input variant="outlined" label="Start" class="px-3" max-width="300" v-model="start" :max="end" />
+        <v-date-input variant="outlined" label="End" class="px-3" max-width="300" v-model="end" :min="start" />
+      </v-div>
+
       <v-card-text v-if="loadingData">Loading...</v-card-text>
-      <div v-else-if="showTable" class="table_container pa-4">
+      <div v-else-if="showTable" class="table_container pa-4" style="display: inline-block;">
         <table class="ma-7">
           <tr>
             <th></th>
@@ -27,7 +32,7 @@
             </th>
           </tr>
 
-          <tr v-for=" chaperone in chaperones">
+          <tr v-for="chaperone in chaperones">
             <td>{{ chaperone.name }}</td>
             <td v-for="event in eventsInRange">
               <span
@@ -41,6 +46,8 @@
             </td>
           </tr>
         </table>
+        <v-btn v-if="isMobile" width="80vw" color="primary" @click="saveTableAsImage" class="mr-4 save-button"
+          variant="flat">Save as Image</v-btn>
       </div>
       <v-card-text v-else>No events found in the selected range</v-card-text>
     </v-card>
@@ -121,27 +128,37 @@ onMounted(async () => {
 
 const saveTableAsImage = () => {
   try {
-    const barcodeElement = document.querySelector('.table_container');
+    const tableElement = document.querySelector('.table_container');
 
     const footerText = document.createElement('div');
     footerText.style.textAlign = 'center';
     footerText.style.marginTop = '20px';
-    footerText.textContent = `Generated on ${new Date().toLocaleDateString()} - Steel City Choristers - Dates have been rotated to work with canvas formatting`;
-    barcodeElement.appendChild(footerText);
+    footerText.innerHTML = `<i style="font-size: small;">Generated on ${new Date().toLocaleDateString()} - Steel City Choristers<br /><span style="font-size: xx-small;">Date formatting changed to work with the canvas</span></i>`;
+    tableElement.appendChild(footerText);
 
-    barcodeElement.querySelectorAll('.rotate').forEach(element => {
+    tableElement.querySelectorAll('.rotate').forEach(element => {
       element.classList.remove('vertical-text');
     });
-    html2canvas(barcodeElement).then(canvas => {
+
+    tableElement.querySelectorAll('.save-button').forEach(element => {
+      element.style.display = 'none';
+    });
+
+    html2canvas(tableElement).then(canvas => {
       const link = document.createElement('a');
       link.download = `availability-${start.value.toLocaleDateString()}-${end.value.toLocaleDateString()}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
     });
-    barcodeElement.querySelectorAll('.rotate').forEach(element => {
+
+    tableElement.querySelectorAll('.save-button').forEach(element => {
+      element.style.display = 'block';
+    });
+
+    tableElement.querySelectorAll('.rotate').forEach(element => {
       element.classList.add('vertical-text');
     });
-    barcodeElement.removeChild(footerText);
+    tableElement.removeChild(footerText);
   } catch (error) { console.error('Error:', error) }
 }
 
