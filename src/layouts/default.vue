@@ -1,7 +1,7 @@
 <template>
   <v-main>
-    <v-alert type="warning">The listed chaperones were correct at the time of entry. As this system is not currently
-      live, please do not rely on it to provide accurate up-to-date information</v-alert>
+    <v-alert type="warning">The rota was correct at time of entry. This system is not currently
+      live,do not rely on it to provide up-to-date information</v-alert>
     <router-view />
     <AlertDialog />
     <v-bottom-navigation v-if="isMobile" grow color="primary">

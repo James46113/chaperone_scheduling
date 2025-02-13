@@ -15,13 +15,15 @@
       </div>
 
       <!-- <v-divider class="my-4"></v-divider> -->
-      <div :class="isMobile ? '' : 'ml-6 mt-4'" v-if="!loadingData">
+      <div :class="isMobile ? '' : 'ml-6 mt-4'" v-if="!loadingData && !isMobile">
         <availability-selector :event="event" />
       </div>
     </v-row>
 
     <v-btn v-if="isMobile" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)" color="primary"
       class="mt-10" width="100vw">Edit</v-btn>
+
+    <availability-selector :event="event" v-if="isMobile" class="mt-8" />
 
     <v-divider class="mb-4 mt-10"></v-divider>
     <v-card-title>Chaperones</v-card-title>
