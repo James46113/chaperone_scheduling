@@ -12,12 +12,28 @@
       "sizes": "192x192"
     },
     {
-      "src": "Steel-CityChoristers.png",
+      "src": "Steel-City-Choristers.png",
       "type": "image/png",
-      "sizes": "1600x772"
+      "sizes": "1600x722"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "2511x1367.png",
+      "sizes": "2511x1367",
+      "type": "image/png",
+      "description": "Main Calendar Page",
+      "form_factor": "wide"
+    },
+    {
+      "src": "555x1152.png",
+      "sizes": "555x1152",
+      "type": "image/png",
+      "description": "Main Calendar Page"
     }
   ],
   "scope": "/",
   "start_url": "/",
-  "display": "fullscreen"
+  "display": "fullscreen",
+  "orientation": "portrait"
 }
