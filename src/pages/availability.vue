@@ -21,8 +21,8 @@
       </v-div>
 
       <v-card-text v-if="loadingData">Loading...</v-card-text>
-      <div v-else-if="showTable" class="table_container pa-4" style="display: inline-block;">
-        <table class="ma-7">
+      <v-sheet v-else-if="showTable" class="table_container" style="display: inline-block;">
+        <table class="ma-6 mb-12">
           <tr>
             <th></th>
             <th v-for="event in eventsInRange">
@@ -45,10 +45,15 @@
               </span>
             </td>
           </tr>
+          <tr style="font-size: xx-small;">
+            <td colspan="100%">
+              Generated on {{ new Date().toLocaleDateString() }} - Steel City Choristers
+            </td>
+          </tr>
         </table>
-        <v-btn v-if="isMobile" width="80vw" color="primary" @click="saveTableAsImage" class="mr-4 save-button"
-          variant="flat">Save as Image</v-btn>
-      </div>
+        <v-btn v-if="isMobile" width="80vw" color="primary" @click="saveTableAsImage" variant="flat">Save as
+          Image</v-btn>
+      </v-sheet>
       <v-card-text v-else>No events found in the selected range</v-card-text>
     </v-card>
   </div>
@@ -56,7 +61,7 @@
 
 <script setup>
 import { VDateInput } from 'vuetify/labs/VDateInput'
-import html2canvas from 'html2canvas';
+import domtoimage from 'dom-to-image';
 
 
 const chaperones = ref([])
@@ -127,41 +132,19 @@ onMounted(async () => {
 })
 
 const saveTableAsImage = () => {
-  try {
-    const tableElement = document.querySelector('.table_container');
+  const tableElement = document.querySelector('.table_container');
 
-    const footerText = document.createElement('div');
-    footerText.style.textAlign = 'center';
-    footerText.style.marginTop = '20px';
-    footerText.innerHTML = `<i style="font-size: small;">Generated on ${new Date().toLocaleDateString()} - Steel City Choristers<br /><span style="font-size: xx-small;">Date formatting changed to work with the canvas</span></i>`;
-    tableElement.appendChild(footerText);
-
-    tableElement.querySelectorAll('.rotate').forEach(element => {
-      element.classList.remove('vertical-text');
-    });
-
-    tableElement.querySelectorAll('.save-button').forEach(element => {
-      element.style.display = 'none';
-    });
-
-    html2canvas(tableElement).then(canvas => {
+  domtoimage.toPng(tableElement, { filter: (element) => element.className !== 'v-btn' })
+    .then((dataUrl) => {
       const link = document.createElement('a');
       link.download = `availability-${start.value.toLocaleDateString()}-${end.value.toLocaleDateString()}.png`;
-      link.href = canvas.toDataURL('image/png');
+      link.href = dataUrl;
       link.click();
+    })
+    .catch(function (error) {
+      console.error('Error:', error)
     });
-
-    tableElement.querySelectorAll('.save-button').forEach(element => {
-      element.style.display = 'block';
-    });
-
-    tableElement.querySelectorAll('.rotate').forEach(element => {
-      element.classList.add('vertical-text');
-    });
-    tableElement.removeChild(footerText);
-  } catch (error) { console.error('Error:', error) }
 }
-
 
 </script>
 
