@@ -51,6 +51,7 @@ const { proxy } = getCurrentInstance()
 const events = ref([])
 const chaperone = ref({})
 const chaperones = ref([])
+const chaperone_slots = ref([])
 
 const props = defineProps({
   chaperone_id: Number,
@@ -62,61 +63,63 @@ onMounted(async () => {
   }
   loadingData.value = true
   await getChaperones();
+  await Promise.all([
 
-  fetchAPI(`events/chaperone/${props.chaperone_id}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      events.value = data.map((event) => ({
-        ...event,
-        lead_chaperone: chaperones.value.find(chaperone => chaperone.id === event.lead_chaperone)?.name ?? null,
-        start: new Date(event.start),
-        end: new Date(event.end),
-      }))
-      events.value.sort((a, b) => a.start - b.start)
-
-      events.value.forEach(event => {
-        fetchAPI(`events/${event.id}/${props.chaperone_id}`, {
-          method: 'GET',
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            event.chaperone_slots = data.map(slot => ({
-              ...slot,
-              start: new Date(slot.start),
-              end: new Date(slot.end),
-            }));
-            event.chaperone_slots.sort((a, b) => a.start - b.start);
-            loadingData.value = false
-          }).catch(error => {
-            console.error('Error:', error)
-            loadingData.value = false
-          })
-      })
-      loadingData.value = false;
-    }).catch((error) => {
-      console.error('Error:', error)
-      loadingData.value = false
-    });
-
-  fetchAPI(`chaperones/${props.chaperone_id}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      chaperone.value = data
-      document.title = `${chaperone.value.name}'s Schedule - Steel City Choristers`
+    fetchAPI(`events/chaperone/${props.chaperone_id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     })
-    .catch((error) => {
-      console.error('Error:', error)
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        events.value = data.map((event) => ({
+          ...event,
+          lead_chaperone: chaperones.value.find(chaperone => chaperone.id === event.lead_chaperone)?.name ?? null,
+          start: new Date(event.start),
+          end: new Date(event.end),
+        }))
+        events.value.sort((a, b) => a.start - b.start)
+      }).catch((error) => {
+        console.error('Error:', error)
+      }),
+
+    fetchAPI(`chaperone_slots/chaperone/${props.chaperone_id}`, {
+      method: 'GET',
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        chaperone_slots.value = data;
+      }).catch(error => {
+        console.error('Error:', error)
+      })
+  ])
+
+  events.value.forEach(event => {
+    event.chaperone_slots = chaperone_slots.value.filter(slot => slot.event_id === event.id).map(slot => ({
+      ...slot,
+      start: new Date(slot.start),
+      end: new Date(slot.end),
+    }));
+    event.chaperone_slots.sort((a, b) => a.start - b.start);
+  })
+
+  loadingData.value = false
+
+  // fetchAPI(`chaperones/${props.chaperone_id}`, {
+  //   method: 'GET',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  // })
+  //   .then((response) => response.json())
+  //   .then((data) => {
+  //     chaperone.value = data
+  //     document.title = `${chaperone.value.name}'s Schedule - Steel City Choristers`
+  //   })
+  //   .catch((error) => {
+  //     console.error('Error:', error)
+  //   });
 })
 
 const getChaperones = async () => {
@@ -129,6 +132,8 @@ const getChaperones = async () => {
     .then((response) => response.json())
     .then((data) => {
       chaperones.value = data;
+      chaperone.value = data.find(c => c.id == props.chaperone_id)
+      document.title = `${chaperone.value.name}'s Schedule - Steel City Choristers`
     })
     .catch((error) => {
       console.error('Error:', error)
