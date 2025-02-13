@@ -59,7 +59,11 @@ const props = defineProps({
 
 onMounted(async () => {
   if (!props.chaperone_id) {
-    proxy.$router.push('/chaperones')
+    if (Cookies.get('credential')) {
+      await new Promise(resolve => setTimeout(resolve, 200));
+    } else {
+      proxy.$router.push('/login')
+    }
   }
   loadingData.value = true
   await getChaperones();
@@ -105,21 +109,6 @@ onMounted(async () => {
   })
 
   loadingData.value = false
-
-  // fetchAPI(`chaperones/${props.chaperone_id}`, {
-  //   method: 'GET',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
-  // })
-  //   .then((response) => response.json())
-  //   .then((data) => {
-  //     chaperone.value = data
-  //     document.title = `${chaperone.value.name}'s Schedule - Steel City Choristers`
-  //   })
-  //   .catch((error) => {
-  //     console.error('Error:', error)
-  //   });
 })
 
 const getChaperones = async () => {
