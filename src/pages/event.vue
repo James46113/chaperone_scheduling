@@ -6,7 +6,7 @@
       <div>
         <v-card-title class="text-h4 mb-n5">{{ loadingData ? "Loading..." : event.title }}</v-card-title>
 
-        <v-btn v-if="store.isAdmin && !isMobile" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)"
+        <v-btn v-if="!isMobile && store.userID" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)"
           color="primary" style="position: absolute; right: 32px;">Edit</v-btn>
 
         <v-card-title v-if="!loadingData">{{ event.date }}, {{ event.start }} - {{ event.end }}</v-card-title>
@@ -21,7 +21,10 @@
       </div>
     </v-row>
 
-    <v-divider class="my-4"></v-divider>
+    <v-btn v-if="isMobile && store.userID" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)"
+      color="primary" class="mt-10" width="100vw">Edit</v-btn>
+
+    <v-divider class="mb-4 mt-10"></v-divider>
     <v-card-title>Chaperones</v-card-title>
     <v-card-text>Lead Chaperone: {{ event.lead_chaperone }}</v-card-text>
 

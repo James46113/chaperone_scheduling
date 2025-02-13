@@ -1,8 +1,8 @@
 <template>
   <app-header />
   <div class="pa-6">
-    <v-card class="pa-3">
-      <v-row>
+    <v-card class="pa-3" elevation="0">
+      <v-row v-if="!isMobile">
         <v-col>
           <v-text-field v-if="isTemplate" width="65vw" :rules="[required]" v-model="event.template_name"
             label="Template Name" variant="outlined" class="mb-1" />
@@ -25,8 +25,21 @@
           </div>
         </v-col>
       </v-row>
+      <div v-else>
+        <v-select v-if="!isTemplate && newEvent" :items="templateNames" v-model="selectedTemplate" variant="outlined"
+          @update:model-value="loadTemplate" placeholder="Load Template" width="80vw" />
 
-      <v-row class="mb-1">
+        <v-text-field v-if="isTemplate" width="80vw" :rules="[required]" v-model="event.template_name"
+          label="Template Name" variant="outlined" class="mb-1" />
+
+        <v-text-field width="80vw" :rules="[required]" v-model="event.title" label="Event Title" variant="outlined"
+          class="mb-1" />
+
+        <v-text-field width="80vw" :rules="[required]" v-model="event.location" label="Location" variant="outlined"
+          class="mb-1" />
+      </div>
+
+      <v-row class="mb-1" v-if="!isMobile">
         <v-col v-if="!isTemplate">
           <v-date-input v-if="!isTemplate" :rules="[required]" v-model="event.date" label="Date" variant="outlined"
             class="mt-3" :first-day-of-week="1" placeholder="dd/mm/yyyy" @input="formatDate" />
@@ -49,24 +62,44 @@
         <v-col v-if="isTemplate"><v-spacer /></v-col>
       </v-row>
 
-      <!-- <v-card-subtitle>{{ event.start ? event.start.toLocaleDateString('en-UK', {
-        weekday: 'short', day: 'numeric',
-        month: 'short', year: 'numeric'
-        }) : 'N/A' }}</v-card-subtitle> -->
-      <v-textarea v-model="event.details" label="Event Details" variant="outlined" auto-grow rows="2" />
+      <div v-else>
+        <v-date-input v-if="!isTemplate" :rules="[required]" v-model="event.date" label="Date" variant="outlined"
+          class="mt-3" :first-day-of-week="1" placeholder="dd/mm/yyyy" @input="formatDate" />
+
+        <v-row class="px-3">
+          <span class="ml-4 mt-5 mr-3">Start</span>
+          <v-spacer />
+          <time-picker :hours="event.startHours" :minutes="event.startMinutes" @update:hours="updateEventStartHours"
+            @update:minutes="updateEventStartMinutes" />
+        </v-row>
+
+        <v-row class="px-3">
+          <span class="ml-4 mt-5 mr-5">End</span>
+          <v-spacer />
+          <time-picker :hours="event.endHours" :minutes="event.endMinutes" @update:hours="updateEventEndHours"
+            @update:minutes="updateEventEndMinutes" />
+        </v-row>
+
+      </div>
+
+      <v-textarea class="mt-6" v-model="event.details" label="Event Details" variant="outlined" auto-grow rows="2" />
 
       <v-divider class="mt-4"></v-divider>
 
       <v-row class="my-3">
         <v-card-title class="mt-4">Chaperones</v-card-title>
-        <v-select v-if="!isTemplate" :items="assignedChaperones" v-model="event.lead_chaperone" label="Lead Chaperone"
-          variant="outlined" class="mt-3 ml-7" hide-no-data />
-        <v-spacer /> <v-spacer /> <v-spacer />
-        <v-btn color="primary" variant="outlined" class="mt-6 mr-6" @click="newSlot">Add Chaperone</v-btn>
+        <v-select v-if="!isTemplate && !isMobile" :items="assignedChaperones" v-model="event.lead_chaperone"
+          label="Lead Chaperone" variant="outlined" class="mt-3 ml-7" hide-no-data />
+        <v-spacer />
+        <v-btn v-if="!isMobile" color="primary" variant="outlined" class="mt-6 mr-6" @click="newSlot">Add
+          Chaperone</v-btn>
       </v-row>
+      <v-select v-if="!isTemplate && isMobile" :items="assignedChaperones" v-model="event.lead_chaperone"
+        label="Lead Chaperone" variant="outlined" hide-no-data />
+      <v-spacer />
 
       <v-data-table :height="chaperoneSlots.length > 0 ? (chaperoneSlots.length + 1) * 76 : undefined"
-        :items="chaperoneSlots" :headers="tableHeaders" items-per-page="-1" hide-default-footer>
+        :items="chaperoneSlots" :headers="tableHeaders" items-per-page="-1" hide-default-footer v-if="!isMobile">
         <template v-slot:item.chaperone="{ item }">
           <v-select :items="chaperoneNames" v-model="item.chaperone" variant="outlined" density="compact"
             class="mt-3 mb-1" auto-select-first />
@@ -98,10 +131,49 @@
           </v-alert>
         </template>
       </v-data-table>
+
+      <v-sheet color="primary" v-for="slot in chaperoneSlots" class="my-2" rounded style="padding: 1px;">
+        <v-card class="pa-2">
+          <v-text-field v-model="slot.title" label="Group" variant="outlined" density="compact" class="mt-3"
+            :rules="[required]" />
+          <v-textarea v-model="slot.details" label="Details" variant="outlined" density="compact" auto-grow rows="2"
+            class="mt-n2" />
+          <v-select :items="chaperoneNames" v-model="slot.chaperone" variant="outlined" density="compact"
+            auto-select-first class="mt-n2" />
+
+          <v-row>
+            <span class="mt-4 ml-7">Start</span>
+            <v-spacer />
+            <time-picker :hours="slot.startHours" :minutes="slot.startMinutes" @update:hours="slot.startHours = $event"
+              @update:minutes="slot.startMinutes = $event" class="mr-3" />
+          </v-row>
+
+          <v-row class="mt-n7">
+            <span class="mt-4 ml-7">End</span>
+            <v-spacer />
+            <time-picker :hours="slot.endHours" :minutes="slot.endMinutes" @update:hours="slot.endHours = $event"
+              @update:minutes="slot.endMinutes = $event" class="mr-3" />
+          </v-row>
+        </v-card>
+      </v-sheet>
+      <div v-if="isMobile">
+        <v-btn color="primary" variant="outlined" width="100vw" class="mt-6 mr-6" @click="newSlot">Add
+          Chaperone</v-btn>
+
+        <v-divider class="my-6" />
+
+        <v-btn v-if="!newEvent" color="primary" class="mt-2 mr-4" variant="outlined" width="100vw"
+          @click="showConfirmDeleteDialog = true">
+          Delete {{ isTemplate ? 'Template' : 'Event' }}</v-btn>
+
+        <v-btn color="primary" class="mt-4" @click="saveEvent" :loading="saving" width="100vw">Save</v-btn>
+      </div>
+
+
     </v-card>
   </div>
 
-  <v-dialog v-model="showConfirmDeleteDialog" width="30vw">
+  <v-dialog v-model="showConfirmDeleteDialog" :width="isMobile ? '100vw' : '30vw'">
     <v-card @keyup.enter="deleteEvent">
       <v-card-title>Confirm Delete</v-card-title>
       <v-card-text class="mt-3 mb-n2">Are you sure you want to delete this event?</v-card-text>
@@ -164,6 +236,8 @@ onMounted(async () => {
     isTemplate.value = proxy.$route.query.isTemplate === '1';
   }
 
+  loadingData.value = true;
+
   await getChaperones();
 
   if (proxy.$route.query.id === 'new') {
@@ -181,7 +255,7 @@ onMounted(async () => {
       lead_chaperone: '',
     };
 
-    fetchAPI('templates', {
+    await Promise.all([fetchAPI('templates', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -193,7 +267,7 @@ onMounted(async () => {
       })
       .catch((error) => {
         console.error('Error:', error)
-      });
+      }),
 
     fetchAPI(`template_chaperone_slots`, {
       method: 'GET',
@@ -207,12 +281,13 @@ onMounted(async () => {
       })
       .catch((error) => {
         console.error('Error:', error)
-      });
+      })]);
+    loadingData.value = false;
     return;
   }
 
   if (!isTemplate.value) {
-    fetchAPI(`events/${proxy.$route.query.id}`, {
+    await Promise.all([fetchAPI(`events/${proxy.$route.query.id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -233,7 +308,7 @@ onMounted(async () => {
       })
       .catch((error) => {
         console.error('Error:', error)
-      });
+      }),
 
     fetchAPI(`chaperone_slots/${proxy.$route.query.id}`, {
       method: 'GET',
@@ -257,54 +332,58 @@ onMounted(async () => {
       })
       .catch((error) => {
         console.error('Error:', error)
-      });
+      })]);
   }
 
   else {
-    fetchAPI(`templates/${proxy.$route.query.id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        data.start = new Date(data.start);
-        data.end = new Date(data.end);
-        data.startHours = String(data.start.getHours()).padStart(2, '0');
-        data.startMinutes = String(data.start.getMinutes()).padStart(2, '0');
-        data.endHours = String(data.end.getHours()).padStart(2, '0');
-        data.endMinutes = String(data.end.getMinutes()).padStart(2, '0');
-        data.date = data.start;
-        event.value = data;
-        document.title = `${data.template_name} Template - Steel City Choristers`;
-      })
-      .catch((error) => {
-        console.error('Error:', error)
-      });
+    await Promise.all([
 
-    fetchAPI(`template_chaperone_slots/${proxy.$route.query.id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        data.forEach(slot => {
-          slot.start = new Date(slot.start);
-          slot.end = new Date(slot.end);
-          slot.startHours = String(slot.start.getHours()).padStart(2, '0');
-          slot.startMinutes = String(slot.start.getMinutes()).padStart(2, '0');
-          slot.endHours = String(slot.end.getHours()).padStart(2, '0');
-          slot.endMinutes = String(slot.end.getMinutes()).padStart(2, '0');
-        });
-        chaperoneSlots.value = data;
+      fetchAPI(`templates/${proxy.$route.query.id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       })
-      .catch((error) => {
-        console.error('Error:', error)
-      });
+        .then((response) => response.json())
+        .then((data) => {
+          data.start = new Date(data.start);
+          data.end = new Date(data.end);
+          data.startHours = String(data.start.getHours()).padStart(2, '0');
+          data.startMinutes = String(data.start.getMinutes()).padStart(2, '0');
+          data.endHours = String(data.end.getHours()).padStart(2, '0');
+          data.endMinutes = String(data.end.getMinutes()).padStart(2, '0');
+          data.date = data.start;
+          event.value = data;
+          document.title = `${data.template_name} Template - Steel City Choristers`;
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+        }),
+
+      fetchAPI(`template_chaperone_slots/${proxy.$route.query.id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          data.forEach(slot => {
+            slot.start = new Date(slot.start);
+            slot.end = new Date(slot.end);
+            slot.startHours = String(slot.start.getHours()).padStart(2, '0');
+            slot.startMinutes = String(slot.start.getMinutes()).padStart(2, '0');
+            slot.endHours = String(slot.end.getHours()).padStart(2, '0');
+            slot.endMinutes = String(slot.end.getMinutes()).padStart(2, '0');
+          });
+          chaperoneSlots.value = data;
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+        })
+    ]);
   }
+  loadingData.value = false;
 });
 
 const leadChaperoneAssigned = () => {
