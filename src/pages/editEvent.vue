@@ -132,7 +132,7 @@
         </template>
       </v-data-table>
 
-      <v-sheet color="primary" v-for="slot in chaperoneSlots" class="my-2" rounded style="padding: 1px;">
+      <v-sheet color="primary" v-for="slot in chaperoneSlots" class="my-4" rounded style="padding: 1px;">
         <v-card class="pa-2">
           <v-text-field v-model="slot.title" label="Group" variant="outlined" density="compact" class="mt-3"
             :rules="[required]" />
@@ -154,8 +154,11 @@
             <time-picker :hours="slot.endHours" :minutes="slot.endMinutes" @update:hours="slot.endHours = $event"
               @update:minutes="slot.endMinutes = $event" class="mr-3" />
           </v-row>
+
+          <v-btn variant="outlined" width="100%" color="primary">Remove Chaperone</v-btn>
         </v-card>
       </v-sheet>
+
       <div v-if="isMobile">
         <v-btn color="primary" variant="outlined" width="100vw" class="mt-6 mr-6" @click="newSlot">Add
           Chaperone</v-btn>

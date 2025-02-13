@@ -2,7 +2,6 @@
   <app-header />
   <v-card class="pa-4">
     <v-row>
-
       <div>
         <v-card-title class="text-h4 mb-n5">{{ loadingData ? "Loading..." : event.title }}</v-card-title>
 
@@ -16,7 +15,7 @@
       </div>
 
       <!-- <v-divider class="my-4"></v-divider> -->
-      <div class="ml-6" v-if="!loadingData && store.userID">
+      <div :class="isMobile ? '' : 'ml-6'" v-if="!loadingData && store.userID">
         <availability-selector :event="event" />
       </div>
     </v-row>
