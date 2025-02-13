@@ -11,9 +11,11 @@ declare module 'vue' {
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     AppHeader: typeof import('./components/AppHeader.vue')['default']
     AvailabilitySelector: typeof import('./components/AvailabilitySelector.vue')['default']
+    ChaperonesPage: typeof import('./components/chaperonesPage.vue')['default']
     EventCard: typeof import('./components/EventCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SchedulePage: typeof import('./components/SchedulePage.vue')['default']
     TimePicker: typeof import('./components/TimePicker.vue')['default']
   }
 }

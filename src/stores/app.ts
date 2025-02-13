@@ -8,6 +8,7 @@ export const useAppStore = defineStore('app', () => {
   const userEmail = ref('');
   const isAdmin = ref(false);
   const userID = ref(null);
+  const tabView = ref(isMobile.value ? 'list' : 'calendar');
 
   const showAlert = (title: string, message: string) => {
     alertTitle.value = title;
@@ -23,5 +24,6 @@ export const useAppStore = defineStore('app', () => {
     userEmail,
     isAdmin,
     userID,
+    tabView,
   }
 })

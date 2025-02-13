@@ -77,6 +77,8 @@
     "isMobile": true,
     "loadingData": true,
     "loadingAvailability": true,
-    "Cookies": true
+    "Cookies": true,
+    "view": true,
+    "tabView": true
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <app-header />
   <div class="pa-4 d-flex justify-center">
-    <v-card width="80vw" elevation="0">
+    <v-card :width="isMobile ? '100vw' : '80vw'" elevation="0">
       <v-row>
         <v-card-title class="text-h5 ml-3 mt-3">Event Templates</v-card-title>
         <v-spacer />

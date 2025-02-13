@@ -6,7 +6,7 @@
   </table> -->
   <app-header />
   <div class="pa-4 d-flex justify-center">
-    <v-card elevation="0" width="80vw">
+    <v-card elevation="0" :width="isMobile ? '100vw' : '80vw'">
       <v-card-title class="text-h5">Chaperone Availability</v-card-title>
       <v-row class="mt-6" v-if="!isMobile">
         <v-date-input variant="outlined" label="Start" class="px-3" max-width="300" v-model="start" :max="end" />
@@ -51,7 +51,8 @@
             </td>
           </tr>
         </table>
-        <v-btn v-if="isMobile" width="80vw" color="primary" @click="saveTableAsImage" variant="flat">Save as
+        <v-btn v-if="isMobile" :width="isMobile ? '100vw' : '80vw'" color="primary" @click="saveTableAsImage"
+          variant="flat">Save as
           Image</v-btn>
       </v-sheet>
       <v-card-text v-else>No events found in the selected range</v-card-text>

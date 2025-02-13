@@ -1,7 +1,7 @@
 <template>
   <app-header />
   <div class="pa-4 d-flex justify-center">
-    <v-card elevation="0" width="80vw">
+    <v-card elevation="0" :width="isMobile ? '100vw' : '80vw'">
       <v-row class="pt-3 px-3">
         <v-card-title class="text-h5">Users</v-card-title>
         <v-spacer />

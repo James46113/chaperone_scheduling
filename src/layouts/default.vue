@@ -4,30 +4,25 @@
       live, please do not rely on it to provide accurate up-to-date information</v-alert>
     <router-view />
     <AlertDialog />
+    <v-bottom-navigation v-if="isMobile" grow>
+      <v-btn @click="goHome('calendar')"><v-icon>mdi-calendar</v-icon></v-btn>
+      <v-btn @click="goHome('list')"><v-icon>mdi-format-list-bulleted</v-icon></v-btn>
+      <v-btn @click="goHome('chaperones')"><v-icon>mdi-account-multiple</v-icon></v-btn>
+      <v-btn v-if="store.userID" @click="goHome('schedule')"><v-icon>mdi-account</v-icon></v-btn>
+    </v-bottom-navigation>
   </v-main>
 
-  <AppFooter />
+  <AppFooter v-if="!isMobile" />
 </template>
 
-<script lang="js" setup>
+<script setup>
+import { useAppStore } from '@/stores/app';
 
 const { proxy } = getCurrentInstance();
+const store = useAppStore();
 
-const updateOnlineStatus = () => {
-  if (navigator.onLine) {
-    proxy.$router.push(router.currentRoute.value.path);
-  } else {
-    proxy.$router.push('/noInternet');
-  }
-};
-
-onMounted(() => {
-  window.addEventListener('online', updateOnlineStatus);
-  window.addEventListener('offline', updateOnlineStatus);
-});
-
-onUnmounted(() => {
-  window.removeEventListener('online', updateOnlineStatus);
-  window.removeEventListener('offline', updateOnlineStatus);
-});
+const goHome = (tab) => {
+  store.tabView = tab;
+  proxy.$router.push(`/?view=${tab}`)
+}
 </script>

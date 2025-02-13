@@ -3,12 +3,12 @@
   <div class="pa-3">
     <GoogleLogin v-if="isMobile && !store.userEmail" :callback="onSignIn" />
 
-    <v-tabs v-model="tab" grow color="primary">
+    <v-tabs v-model="store.tabView" grow color="primary" v-if="!isMobile">
       <v-tab value="calendar">Calendar</v-tab>
       <v-tab value="list">List</v-tab>
     </v-tabs>
 
-    <v-tabs-window v-model="tab">
+    <v-tabs-window v-model="store.tabView">
 
       <v-tabs-window-item value="calendar">
 
@@ -35,6 +35,14 @@
         <event-card v-for="event in events" :event="event" :chaperones="chaperones" />
       </v-tabs-window-item>
 
+      <v-tabs-window-item value="chaperones">
+        <chaperones-page />
+      </v-tabs-window-item>
+
+      <v-tabs-window-item value="schedule">
+        <schedule-page :chaperone_id="store.userID" />
+      </v-tabs-window-item>
+
     </v-tabs-window>
 
 
@@ -50,7 +58,6 @@ import { GoogleLogin, decodeCredential, googleLogout } from 'vue3-google-login';
 const events = ref([])
 const { proxy } = getCurrentInstance()
 const store = useAppStore();
-const tab = ref(isMobile.value ? 'list' : 'calendar');
 const chaperones = ref([]);
 
 const availability = ref([]);
@@ -58,6 +65,9 @@ const availability = ref([]);
 document.title = "Chaperones' Calendar - Steel City Choristers"
 
 onMounted(async () => {
+  if (proxy.$route.query.view) {
+    store.tabView = proxy.$route.query.view;
+  }
   loadingData.value = true
   const credential = Cookies.get('credential');
   if (credential) {
