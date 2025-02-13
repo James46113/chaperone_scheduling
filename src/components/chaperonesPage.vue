@@ -20,10 +20,10 @@
         </template>
       </v-data-table>
       <div v-if="store.isAdmin && isMobile">
-        <v-btn variant="flat" class="mt-6 mr-6" color="primary"
+        <v-btn variant="flat" class="mt-6 mr-6" color="primary" width="100vw"
           @click="proxy.$router.push('/availability')">Availability</v-btn>
-        <v-btn variant="flat" color="primary" @click="proxy.$router.push('/users')" :width="isMobile ? '100vw' : '80vw'"
-          class="mt-4">Manage Users</v-btn>
+        <v-btn variant="flat" color="primary" @click="proxy.$router.push('/users')" width="100vw" class="mt-4">Manage
+          Users</v-btn>
       </div>
     </v-card>
   </div>
