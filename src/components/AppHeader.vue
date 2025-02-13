@@ -10,6 +10,7 @@
 
     <GoogleLogin v-if="!store.userEmail && !isMobile" :callback="onSignIn" class="mt-4 mx-3" />
 
+
     <v-btn v-if="store.isAdmin && !isMobile" class="mt-4 mr-3" @click="proxy.$router.push('/templateEvents')">
       <v-icon size="25">mdi-note-text</v-icon>
     </v-btn>
@@ -20,6 +21,10 @@
 
     <v-btn class="mt-4 mr-3" @click="proxy.$router.push('/')">
       <v-icon size="25">mdi-calendar</v-icon>
+    </v-btn>
+
+    <v-btn v-if="store.userEmail" class="mt-4 mr-3" @click="logout">
+      <v-icon size="25">mdi-logout</v-icon>
     </v-btn>
   </v-app-bar>
 </template>
@@ -72,6 +77,14 @@ function onSignIn(response) {
       }
       console.error('Error:', error)
     });
+}
+
+const logout = () => {
+  googleLogout();
+  store.userEmail = null;
+  store.isAdmin = false;
+  store.userID = null;
+  Cookies.remove('credential');
 }
 
 </script>
