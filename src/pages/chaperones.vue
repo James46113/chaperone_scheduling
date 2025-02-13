@@ -11,11 +11,8 @@
           @click="proxy.$router.push('/users')">Manage Users</v-btn>
       </v-row>
       <v-card-text>Click on a chaperone below to view their schedule</v-card-text>
-      <v-data-table :items="chaperones" hide-default-footer items-per-page="-1" @click:row="showSchedule"
-        hide-default-header>
-        <template #item.chaperone="{ item }">
-          <v-card-text>{{ item.chaperone.name }}</v-card-text>
-        </template>
+      <v-data-table :items="chaperones" :headers="headers" hide-default-footer items-per-page="-1"
+        @click:row="showSchedule" hide-default-header>
         <template v-slot:no-data>
           <v-card-text v-if="loadingData">Loading...</v-card-text>
           <v-card-text v-else>
@@ -39,14 +36,14 @@ document.title = "Chaperones - Steel City Choristers"
 
 const chaperones = ref([])
 const headers = [
-  { title: 'Name', key: 'chaperone' }
+  { title: 'Name', key: 'name' }
 ]
 
 const { proxy } = getCurrentInstance();
 const store = useAppStore();
 
 const showSchedule = (value, row) => {
-  proxy.$router.push(`/schedule?id=${row.item.chaperone.id}`)
+  proxy.$router.push(`/schedule?id=${row.item.id}`)
 }
 
 
@@ -60,8 +57,8 @@ onMounted(() => {
   })
     .then((response) => response.json())
     .then((data) => {
-      chaperones.value = data.map(chaperone => { return { chaperone: chaperone } })
-      chaperones.value.sort((a, b) => a.chaperone.localeCompare(b.chaperone));
+      chaperones.value = data;
+      chaperones.value.sort((a, b) => a.name.localeCompare(b.name));
       loadingData.value = false;
     })
     .catch((error) => {
