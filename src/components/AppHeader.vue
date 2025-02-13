@@ -8,7 +8,7 @@
       Report Error
     </v-btn>
 
-    <GoogleLogin v-if="!store.userEmail && !isMobile" :callback="onSignIn" auto-login prompt class="mt-4 mx-3" />
+    <GoogleLogin v-if="!store.userEmail && !isMobile" :callback="onSignIn" class="mt-4 mx-3" />
 
     <v-btn v-if="store.isAdmin && !isMobile" class="mt-4 mr-3" @click="proxy.$router.push('/templateEvents')">
       <v-icon size="25">mdi-note-text</v-icon>

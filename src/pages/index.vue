@@ -1,7 +1,7 @@
 <template>
   <app-header :update-availability="getAvailability" />
   <div class="pa-3">
-    <GoogleLogin v-if="isMobile && !store.userEmail" :callback="onSignIn" auto-login prompt />
+    <GoogleLogin v-if="isMobile && !store.userEmail" :callback="onSignIn" />
 
     <v-tabs v-model="tab" grow color="primary">
       <v-tab value="calendar">Calendar</v-tab>

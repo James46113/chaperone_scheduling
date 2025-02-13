@@ -5,7 +5,7 @@
       <v-card-title>Login</v-card-title>
       <v-card-text>Please login with Google to access the chaperone rota.</v-card-text>
       <div style="display: flex; justify-content: center;">
-        <GoogleLogin :callback="onSignIn" auto-login prompt />
+        <GoogleLogin :callback="onSignIn" />
       </div>
     </v-card>
   </div>

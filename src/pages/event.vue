@@ -70,7 +70,7 @@
     </v-card-text>
     <v-card-text v-else>
       <i>Login to view details</i>
-      <GoogleLogin class="mt-4" :callback="onSignIn" auto-login prompt />
+      <GoogleLogin class="mt-4" :callback="onSignIn" />
     </v-card-text>
   </v-card>
 </template>
