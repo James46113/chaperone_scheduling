@@ -15,6 +15,7 @@
     "@mdi/font": "7.4.47",
     "core-js": "^3.37.1",
     "dom-to-image": "^2.6.0",
+    "js-cookie": "^3.0.5",
     "roboto-fontface": "*",
     "vue": "^3.4.31",
     "vue3-google-login": "^2.0.33",

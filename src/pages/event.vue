@@ -100,6 +100,12 @@ onMounted(async () => {
   if (!proxy.$route.query.id) {
     proxy.$router.push('/')
   }
+
+  const credential = Cookies.get('credential');
+  if (credential) {
+    onSignIn({ credential });
+  }
+
   loadingData.value = true
   await getChaperones();
   let availability = null;
@@ -158,9 +164,10 @@ const getAvailability = () => {
   }
 }
 
-function onSignIn(response) {
+const onSignIn = async (response) => {
+  Cookies.set('credential', response.credential);
   store.userEmail = decodeCredential(response.credential).email;
-  fetchAPI(`login/${store.userEmail}`, {
+  await fetchAPI(`login/${store.userEmail}`, {
     method: 'GET',
   })
     .then((response) => {

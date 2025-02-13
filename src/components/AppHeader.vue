@@ -36,8 +36,15 @@ const props = defineProps({
 const { proxy } = getCurrentInstance()
 const store = useAppStore();
 
+onMounted(() => {
+  const credential = Cookies.get('credential');
+  if (credential) {
+    onSignIn({ credential });
+  }
+})
 
 function onSignIn(response) {
+  Cookies.set('credential', response.credential);
   store.userEmail = decodeCredential(response.credential).email;
   fetchAPI(`login/${store.userEmail}`, {
     method: 'GET',

@@ -59,6 +59,10 @@ document.title = "Chaperones' Calendar - Steel City Choristers"
 
 onMounted(async () => {
   loadingData.value = true
+  const credential = Cookies.get('credential');
+  if (credential) {
+    await onSignIn({ credential });
+  }
   try {
     if (store.userID) {
       getAvailability();
@@ -120,9 +124,10 @@ onMounted(async () => {
   }
 })
 
-function onSignIn(response) {
+const onSignIn = async (response) => {
+  Cookies.set('credential', response.credential);
   store.userEmail = decodeCredential(response.credential).email;
-  fetchAPI(`login/${store.userEmail}`, {
+  await fetchAPI(`login/${store.userEmail}`, {
     method: 'GET',
   })
     .then((response) => {

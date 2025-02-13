@@ -19,7 +19,15 @@ import { getCurrentInstance } from 'vue';
 const store = useAppStore();
 const { proxy } = getCurrentInstance();
 
+onMounted(() => {
+  const credential = Cookies.get('credential');
+  if (credential) {
+    onSignIn({ credential });
+  }
+})
+
 function onSignIn(response) {
+  Cookies.set('credential', response.credential);
   store.userEmail = decodeCredential(response.credential).email;
   fetchAPI(`login/${store.userEmail}`, {
     method: 'GET',

@@ -76,6 +76,7 @@
     "fetchAPI": true,
     "isMobile": true,
     "loadingData": true,
-    "loadingAvailability": true
+    "loadingAvailability": true,
+    "Cookies": true
   }
 }
