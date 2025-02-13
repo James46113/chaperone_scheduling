@@ -9,6 +9,25 @@
   <AppFooter />
 </template>
 
-<script lang="ts" setup>
-//
+<script lang="js" setup>
+
+const { proxy } = getCurrentInstance();
+
+const updateOnlineStatus = () => {
+  if (navigator.onLine) {
+    proxy.$router.push(router.currentRoute.value.path);
+  } else {
+    proxy.$router.push('/noInternet');
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('online', updateOnlineStatus);
+  window.addEventListener('offline', updateOnlineStatus);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('online', updateOnlineStatus);
+  window.removeEventListener('offline', updateOnlineStatus);
+});
 </script>
