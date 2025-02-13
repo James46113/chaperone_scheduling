@@ -1,10 +1,11 @@
 <template>
   <v-main>
-    <v-alert type="warning">The rota was correct at time of entry. This system is not currently
-      live,do not rely on it to provide up-to-date information</v-alert>
+    <v-alert type="warning" v-if="proxy.$route.path != '/login'">The rota was correct at time of entry. This system is
+      not currently
+      live, do not rely on it to provide up-to-date information</v-alert>
     <router-view />
     <AlertDialog />
-    <v-bottom-navigation v-if="isMobile" grow color="primary">
+    <v-bottom-navigation v-if="isMobile && proxy.$route.path != '/login'" grow color="primary">
       <v-btn @click="goHome('calendar')"><v-icon>mdi-calendar</v-icon></v-btn>
       <v-btn @click="goHome('list')"><v-icon>mdi-format-list-bulleted</v-icon></v-btn>
       <v-btn @click="goHome('chaperones')"><v-icon>mdi-account-multiple</v-icon></v-btn>
