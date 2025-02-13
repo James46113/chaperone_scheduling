@@ -142,7 +142,7 @@ function onSignIn(response) {
         store.userEmail = '';
         store.isAdmin = false;
         store.userID = null
-        store.showAlert('Unauthorised', "You are not authorised to access the chaperones' schedule. If you believe this is in error, please contact the chaperoning team.");
+        store.showAlert('Unauthorised', "You are not authorised to access the chaperones' rota. If you believe this is in error, please contact the chaperoning team.");
       }
       console.error('Error:', error)
     });

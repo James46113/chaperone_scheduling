@@ -1,0 +1,20 @@
+{
+  "name": "Chaperones' Rota- Steel City Choristers",
+  "theme_color": "#a80056",
+  "background_color": "#ffffff",
+  "short_name": "Chaperones' Rota- SCC",
+  "id": "Chaperones' Rota- Steel City Choristers",
+  "description": "Manage your availability for events, see when you're chaperoning on a calendar, and as a list.\n\nSteel City Choristers - James Caroe",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "Steel-CityChoristers.png",
+      "type": "image/png",
+      "sizes": "1600x772"
+    }
+  ]
+}

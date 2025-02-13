@@ -22,7 +22,7 @@
 
       <v-card-text v-if="loadingData">Loading...</v-card-text>
       <v-sheet v-else-if="showTable" class="table_container" style="display: inline-block;">
-        <table class="ma-6 mb-12">
+        <table class="ma-6 mb-11  ">
           <tr>
             <th></th>
             <th v-for="event in eventsInRange">

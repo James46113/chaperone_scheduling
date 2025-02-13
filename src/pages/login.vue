@@ -3,7 +3,7 @@
     <v-card :width="isMobile ? '100vw' : '30vw'" class="pa-4">
       <!-- <v-img src="/Steel-City-Choristers.png" max-width="200" /> -->
       <v-card-title>Login</v-card-title>
-      <v-card-text>Please login with Google to access the chaperone schedule.</v-card-text>
+      <v-card-text>Please login with Google to access the chaperone rota.</v-card-text>
       <div style="display: flex; justify-content: center;">
         <GoogleLogin :callback="onSignIn" auto-login prompt />
       </div>
@@ -45,7 +45,7 @@ function onSignIn(response) {
         store.userEmail = '';
         store.isAdmin = false;
         store.userID = null
-        store.showAlert('Unauthorised', "You are not authorised to access the chaperones' schedule. If you believe this is in error, please contact the chaperoning team.");
+        store.showAlert('Unauthorised', "You are not authorised to access the chaperones' rota. If you believe this is in error, please contact the chaperoning team.");
       }
       console.error('Error:', error)
     });
