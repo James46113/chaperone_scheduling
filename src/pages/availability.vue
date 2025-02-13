@@ -51,8 +51,8 @@
             </td>
           </tr>
         </table>
-        <div class="pa-4 d-flex justify-center">
-          <v-btn v-if="isMobile" width="100vw" color="primary" @click="saveTableAsImage" variant="flat">Save as
+        <div class="pa-4 pl-5 d-flex justify-center">
+          <v-btn v-if="isMobile" width="80vw" color="primary" @click="saveTableAsImage" variant="flat">Save as
             Image</v-btn>
         </div>
       </v-sheet>
