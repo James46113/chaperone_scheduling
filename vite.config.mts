@@ -28,7 +28,7 @@ export default defineConfig({
           '@/services/functions': ['fetchAPI', 'isMobile', 'loadingData', 'loadingAvailability'],
         },
         {
-          'js-cookie': ['Cookies']
+          'js-cookie': [['default', 'Cookies']],
         }
       ],
       dts: 'src/auto-imports.d.ts',
