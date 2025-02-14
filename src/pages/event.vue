@@ -5,8 +5,8 @@
       <div>
         <v-card-title class="text-h4 mb-n5">{{ loadingData ? "Loading..." : event.title }}</v-card-title>
 
-        <v-btn v-if="!isMobile" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)" color="primary"
-          style="position: absolute; right: 32px;">Edit</v-btn>
+        <v-btn v-if="!isMobile && isAdmin" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)"
+          color="primary" style="position: absolute; right: 32px;">Edit</v-btn>
 
         <v-card-title v-if="!loadingData">{{ event.date }}, {{ event.start }} - {{ event.end }}</v-card-title>
         <v-card-subtitle>
@@ -20,8 +20,8 @@
       </div>
     </v-row>
 
-    <v-btn v-if="isMobile" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)" color="primary"
-      class="mt-10" width="100vw">Edit</v-btn>
+    <v-btn v-if="isMobile && isAdmin" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)"
+      color="primary" class="mt-10" width="100vw">Edit</v-btn>
 
     <availability-selector :event="event" v-if="isMobile" class="mt-8" />
 
