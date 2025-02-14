@@ -4,7 +4,7 @@ const CACHE = "pwabuilder-offline-page";
 
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
 
-const offlineFallbackPage = "offline.html";
+const offlineFallbackPage = "offline";
 
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SKIP_WAITING") {
@@ -17,6 +17,22 @@ self.addEventListener('install', async (event) => {
     caches.open(CACHE)
       .then((cache) => cache.add(offlineFallbackPage))
   );
+  self.skipWaiting(); // Force the waiting service worker to become the active service worker
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+  self.clients.claim(); // Ensure that the service worker takes control immediately
 });
 
 if (workbox.navigationPreload.isSupported()) {
