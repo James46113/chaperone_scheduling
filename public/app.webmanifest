@@ -4,7 +4,7 @@
   "background_color": "#ffffff",
   "short_name": "Chaperones' Rota- SCC",
   "id": "Chaperones' Rota- Steel City Choristers",
-  "description": "Manage your availability for events, see when you're chaperoning on a calendar, and as a list.\n\nSteel City Choristers - James Caroe",
+  "description": "Manage your availability for events, see when you're chaperoning on a calendar or list.\n\nSteel City Choristers - James Caroe",
   "icons": [
     {
       "src": "favicon.png",
@@ -28,6 +28,30 @@
     {
       "src": "555x1152.png",
       "sizes": "555x1152",
+      "type": "image/png",
+      "description": "Main Calendar Page"
+    },
+    {
+      "src": "signin.png",
+      "sizes": "553x1145",
+      "type": "image/png",
+      "description": "Sign in Page"
+    },
+    {
+      "src": "schedule.png",
+      "sizes": "549x1152",
+      "type": "image/png",
+      "description": "Individual Schedule Page"
+    },
+    {
+      "src": "allschedules.png",
+      "sizes": "555x1149",
+      "type": "image/png",
+      "description": "All Schedules Page"
+    },
+    {
+      "src": "upcomingevents.png",
+      "sizes": "554x1147",
       "type": "image/png",
       "description": "Main Calendar Page"
     }

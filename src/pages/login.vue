@@ -1,12 +1,20 @@
 <template>
-  <div style="display: flex; justify-content: center; align-items: center; height: 60vh;">
+  <div style="display: flex; justify-content: center; align-items: center; height: 60vh;" v-if="!isMobile">
     <v-card :width="isMobile ? '100vw' : '30vw'" class="pa-4">
       <v-img src="/Steel-City-Choristers.png" max-width="200" />
       <v-card-title>Login</v-card-title>
-      <v-card-text>Please login with Google to access the chaperone rota.</v-card-text>
+      <v-card-text>Please sign in with Google to access the chaperone rota.</v-card-text>
       <div style="display: flex; justify-content: center;">
         <GoogleLogin :callback="onSignIn" />
       </div>
+    </v-card>
+  </div>
+  <div v-else style="display: flex; justify-content: center; align-items: center; height: 80vh;" class="pa-6">
+    <v-card :width="'100vw'" class="pa-4" elevation="0">
+      <v-img src="/Steel-City-Choristers.png" max-width="200" />
+      <v-card-title class="text-h5">Welcome!</v-card-title>
+      <v-card-text class="my-4">Please sign in with Google to get started.</v-card-text>
+      <GoogleLogin :callback="onSignIn" />
     </v-card>
   </div>
 </template>

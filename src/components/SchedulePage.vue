@@ -93,6 +93,7 @@ onMounted(async () => {
           start: new Date(event.start),
           end: new Date(event.end),
         }))
+          .filter(event => event.end > new Date());
         events.value.sort((a, b) => a.start - b.start)
       }).catch((error) => {
         console.error('Error:', error)
