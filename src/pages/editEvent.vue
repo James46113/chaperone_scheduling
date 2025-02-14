@@ -159,7 +159,8 @@
               @update:minutes="slot.endMinutes = $event" class="mr-3" />
           </v-row>
 
-          <v-btn variant="outlined" width="100%" color="primary">Remove Chaperone</v-btn>
+          <v-btn variant="outlined" width="100%" color="primary"
+            @click="chaperoneSlots.splice(chaperoneSlots.indexOf(slot), 1)">Remove Chaperone</v-btn>
         </v-card>
       </v-sheet>
 
