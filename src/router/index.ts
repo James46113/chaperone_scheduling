@@ -41,32 +41,9 @@ router.beforeEach((to, from, next) => {
 
   if (!store.userEmail && to.path !== '/login' && import.meta.env.VITE_DEV != 1) {
     if (Cookies.get('credential')) {
-      const credential = decodeCredential(Cookies.get('credential')) as { email: string };
-      store.userEmail = credential.email;
-      fetchAPI(`login/${store.userEmail}`, {
-        method: 'GET',
-      })
-        .then((response: any) => {
-          if (response.ok) {
-            return response.json();
-          }
-          return Promise.reject(response);
-        })
-        .then((data: any) => {
-          store.isAdmin = data.is_admin;
-          store.userID = data.id;
-          next();
-        })
-        .catch((error: any) => {
-          if (error.status === 401) {
-            googleLogout();
-            store.userEmail = '';
-            store.isAdmin = false;
-            store.userID = null
-            next(`/login?redirect=${to.fullPath}`);
-          }
-        }
-        );
+      next()
+    } else {
+      next(`/login?redirect=${to.fullPath}`);
     }
   }
 
