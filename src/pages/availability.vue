@@ -21,7 +21,9 @@
         <v-date-input variant="outlined" label="End" class="px-3" max-width="300" v-model="end" :min="start" />
       </v-div>
 
-      <v-card-text v-if="loadingData">Loading...</v-card-text>
+      <div v-if="loadingData" class="d-flex justify-center align-center" style="height: 40vh;">
+        <v-progress-circular color="primary" indeterminate size="40" />
+      </div>
       <v-sheet v-else-if="showTable" class="table_container" style="display: inline-block;">
         <table class="ma-6 mb-11  ">
           <tr>

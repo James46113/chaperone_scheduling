@@ -1,6 +1,6 @@
 <template>
   <app-header />
-  <v-card class="pa-4">
+  <v-card class="pa-4" v-if="!loadingData">
     <v-row>
       <div>
         <v-card-title class="text-h4 mb-n5">{{ loadingData ? "Loading..." : event.title }}</v-card-title>
@@ -73,6 +73,9 @@
       </span>
     </v-card-text>
   </v-card>
+  <div v-else class="d-flex justify-center align-center" style="height: 70vh;">
+    <v-progress-circular color="primary" indeterminate size="40" />
+  </div>
 </template>
 
 <script setup>

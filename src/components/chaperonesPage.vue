@@ -1,5 +1,5 @@
 <template>
-  <div class="pa-4 d-flex justify-center">
+  <div class="pa-4 d-flex justify-center" v-if="!loadingData">
     <v-card elevation="0" :width="isMobile ? '100vw' : '80vw'">
       <v-row>
         <v-card-title class="text-h5 mt-3 ml-3">Chaperones' Schedules</v-card-title>
@@ -13,7 +13,7 @@
       <v-data-table :items="chaperones" :headers="headers" hide-default-footer items-per-page="-1"
         @click:row="showSchedule" hide-default-header>
         <template v-slot:no-data>
-          <v-card-text v-if="loadingData">Loading...</v-card-text>
+          <v-progress-circular v-if="loadingData" color="primary" indeterminate size="40" />
           <v-card-text v-else>
             No chaperones found
           </v-card-text>

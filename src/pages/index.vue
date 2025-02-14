@@ -32,7 +32,10 @@
       </v-tabs-window-item>
 
       <v-tabs-window-item value="list">
-        <event-card v-for="event in events" :event="event" :chaperones="chaperones" />
+        <event-card v-if="!loadingData" v-for="event in events" :event="event" :chaperones="chaperones" />
+        <div v-else class="d-flex justify-center align-center" style="height: 70vh;">
+          <v-progress-circular color="primary" indeterminate size="40" />
+        </div>
       </v-tabs-window-item>
 
       <v-tabs-window-item value="chaperones">

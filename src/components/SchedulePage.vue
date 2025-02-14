@@ -1,7 +1,7 @@
 <template>
-  <div class="pa-4 d-flex justify-center">
+  <div class="pa-4 d-flex justify-center" v-if="!loadingData">
     <v-card :width="isMobile ? '100vw' : '80vw'" elevation="0">
-      <v-card-title class="text-h5" v-if="!loadingData && chaperone.name">{{ chaperone.name }}'s
+      <v-card-title class="text-h5" v-if="chaperone.name">{{ chaperone.name }}'s
         Schedule</v-card-title>
       <v-card-title class="text-h5" v-else>Loading...</v-card-title>
       <v-sheet v-for="event in events" class="ma-2" variant="outlined" color="primary" style="padding: 1px;" rounded>
@@ -30,18 +30,16 @@
               <i v-else>No Details Available</i>
             </v-card-text>
           </div>
-          <div v-if="loadingData">
-            <v-divider></v-divider>
-            <v-card-text>Loading...</v-card-text>
-          </div>
         </v-card>
       </v-sheet>
 
-      <v-card-text v-if="events.length === 0">
-        <span v-if="loadingData">Loading...</span>
-        <i v-else>No upcoming events scheduled</i>
+      <v-card-text v-if="events.length === 0 && !loadingData">
+        <i>No upcoming events scheduled</i>
       </v-card-text>
     </v-card>
+  </div>
+  <div v-else class="d-flex justify-center align-center" style="height: 70vh;">
+    <v-progress-circular color="primary" indeterminate size="40" />
   </div>
 </template>
 

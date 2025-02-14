@@ -14,8 +14,9 @@
       </v-alert>
 
       <div class="d-flex justify-center">
-        <v-data-table :items="users" :hide-default-header="loadingData" hide-default-footer items-per-page="-1"
-          :headers="headers" density="compact" :height="loadingData ? 120 : (users.length + 1) * 64">
+        <v-data-table :items="users" class="mt-4" :hide-default-header="loadingData" hide-default-footer
+          items-per-page="-1" :headers="headers" density="compact"
+          :height="loadingData ? 120 : (users.length + 1) * 64">
           <template #item.is_admin="{ item }">
             <v-switch @click="updateAdmin(item)" class="mb-n6" v-model="item.is_admin" color="primary" />
           </template>
@@ -23,7 +24,7 @@
             <v-btn @click="deleteUser(item.id)" variant="flat"><v-icon>mdi-delete</v-icon></v-btn>
           </template>
           <template v-slot:no-data>
-            <v-card-text v-if="loadingData">Loading...</v-card-text>
+            <v-progress-circular v-if="loadingData" color="primary" indeterminate size="40" class="mt-4" />
             <v-card-text v-else>No users found</v-card-text>
           </template>
         </v-data-table>
