@@ -2,6 +2,9 @@
   <app-header />
   <div class="pa-6">
     <v-card class="pa-3" elevation="0">
+      <v-card-title class="text-h5 ml-n6 mb-4" v-if="newEvent">New {{ isTemplate ? 'Template' : 'Event'
+        }}</v-card-title>
+      <v-card-title class="text-h5 ml-n6 mb-4" v-else>Edit {{ isTemplate ? 'Template' : 'Event' }}</v-card-title>
       <v-row v-if="!isMobile">
         <v-col>
           <v-text-field v-if="isTemplate" width="65vw" :rules="[required]" v-model="event.template_name"
@@ -132,7 +135,8 @@
         </template>
       </v-data-table>
 
-      <v-sheet color="primary" v-for="slot in chaperoneSlots" class="my-4" rounded style="padding: 1px;">
+      <v-sheet color="primary" v-for="slot in chaperoneSlots" v-if="isMobile" class="my-4" rounded
+        style="padding: 1px;">
         <v-card class="pa-2">
           <v-text-field v-model="slot.title" label="Group" variant="outlined" density="compact" class="mt-3"
             :rules="[required]" />
@@ -214,7 +218,7 @@ const showConfirmDeleteDialog = ref(false);
 
 const assignedChaperones = computed(() => {
   const chaperoneSlotsCopy = [...chaperoneSlots.value];
-  return [... new Set(chaperoneSlotsCopy.map(slot => slot.chaperone))].sort()
+  return [... new Set(chaperoneSlotsCopy.map(slot => slot.chaperone))].sort().filter(chaperone => chaperone);
 });
 
 const required = value => !!value || 'Field is required.';
@@ -393,6 +397,7 @@ const leadChaperoneAssigned = () => {
   if (assignedChaperones.value.length > 0 && !event.value.lead_chaperone) {
     return false
   }
+  if (assignedChaperones.value.length == 0) return true
 
   if (!assignedChaperones.value.includes(chaperones.value.find(chaperone => chaperone.name === event.value.lead_chaperone)?.id ?? null) && event.value.lead_chaperone) {
     return false
@@ -611,8 +616,11 @@ const saveNewEvent = () => {
           if (success) {
             store.showAlert("Success", "Event saved successfully.");
             proxy.$router.push(`/event?id=${event.value.id}`)
-            saving.value = false;
+          } else {
+            proxy.$router.push(`/editEvent?id=${event.value.id}`)
+            newEvent = false
           }
+          saving.value = false;
         });
     });
 }
@@ -753,13 +761,14 @@ const saveChaperoneSlots = async () => {
     slot.end = end;
     slot.chaperone = chaperones.value.find(chaperone => chaperone.name === slot.chaperone)?.id ?? null;
 
-    if (!slot.chaperone || !slot.title || !slot.start || !slot.end) {
+    if (!slot.title || !slot.start || !slot.end) {
       validData = false;
     }
     if (slot.end <= slot.start) {
       validTimes = false;
     }
   });
+
   if (!validData) {
     store.showAlert('Invalid Data', 'Please fill in all required fields.');
     saving.value = false;
@@ -780,6 +789,7 @@ const saveChaperoneSlots = async () => {
   await fetchAPI(`chaperone_slots/${event.value.id}`, {
     method: 'DELETE'
   })
+
 
   await Promise.all(chaperoneSlots.value.map(slot => {
     return fetchAPI("chaperone_slots", {

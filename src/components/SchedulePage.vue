@@ -4,7 +4,9 @@
       <v-card-title class="text-h5" v-if="chaperone.name">{{ chaperone.name }}'s
         Schedule</v-card-title>
       <v-card-title class="text-h5" v-else>Loading...</v-card-title>
-      <v-sheet v-for="event in events" class="ma-2" variant="outlined" color="primary" style="padding: 1px;" rounded>
+
+      <v-sheet v-for="event in events" elevation="2" class="ma-2" variant="outlined" color="primary"
+        style="padding: 1px;" rounded>
         <v-card class="pa-1">
           <v-row class="pa-3" @click="proxy.$router.push(`/event?id=${event.id}`)" style="cursor: pointer;">
             <v-card-title style="white-space: pre; ">
@@ -14,7 +16,13 @@
             <v-spacer />
             <v-icon v-if="isMobile" color="primary" size="25" class="mt-3 mr-3">mdi-open-in-new</v-icon>
           </v-row>
+
           <v-card-subtitle>{{ event.location }}</v-card-subtitle>
+          <v-card-subtitle>
+            {{ event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }} -
+            {{ event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
+          </v-card-subtitle>
+
           <v-card-text>Lead Chaperone: {{ event.lead_chaperone }}</v-card-text>
           <div v-for="slot in event.chaperone_slots">
             <v-divider></v-divider>

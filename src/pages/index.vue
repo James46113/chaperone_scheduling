@@ -28,12 +28,27 @@
             <!-- <v-chip class=" py-0 px-1" style="font-size: x-small;" color="primary"></v-chip> -->
           </template>
         </v-calendar>
-
+        <div class="d-flex justify-center">
+          <v-btn v-if="store.isAdmin" width="90vw" variant="flat" color="primary" class="my-3"
+            @click="proxy.$router.push('/editEvent?id=new')">New Event</v-btn>
+        </div>
       </v-tabs-window-item>
 
       <v-tabs-window-item value="list">
-        <event-card v-if="!loadingData" v-for="event in events" :event="event" :chaperones="chaperones" />
-        <div v-else class="d-flex justify-center align-center" style="height: 0vh;">
+        <v-btn v-if="store.isAdmin && !isMobile" @click="proxy.$router.push('/editEvent?id=new')"
+          style="position: absolute; right: 16px;" class="mt-4" color="primary">Add
+          Event</v-btn>
+        <v-card-title :class="isMobile ? 'text-h5 mt-5' : 'text-h5'">Upcoming Events</v-card-title>
+
+        <div class="d-flex justify-center">
+          <v-btn v-if="store.isAdmin" width="90vw" variant="flat" color="primary" class="my-3"
+            @click="proxy.$router.push('/editEvent?id=new')">New Event</v-btn>
+        </div>
+        <v-divider v-if="store.isAdmin" class="mt-3" />
+
+        <div class="my-8"></div>
+        <event-card v-if="!loadingData" v-for="event in upcomingEvents" :event="event" :chaperones="chaperones" />
+        <div v-else class="d-flex justify-center align-center" style="height: 50vh;">
           <v-progress-circular color="primary" indeterminate size="40" />
         </div>
       </v-tabs-window-item>
@@ -59,6 +74,8 @@ import { useAppStore } from '@/stores/app'
 import { GoogleLogin, decodeCredential, googleLogout } from 'vue3-google-login';
 
 const events = ref([])
+const upcomingEvents = computed(() => events.value.filter(event => event.start > new Date()))
+
 const { proxy } = getCurrentInstance()
 const store = useAppStore();
 const chaperones = ref([]);
@@ -109,6 +126,7 @@ onMounted(async () => {
       lead_chaperone: event.lead_chaperone,
       available: availability.value.filter(slot => slot.event_id == event.id)[0]?.available,
     }));
+    events.value.sort((a, b) => a.start - b.start);
 
     const eventsChaperonesResponse = await fetchAPI('events_chaperones', {
       method: 'GET',

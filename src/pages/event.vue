@@ -1,11 +1,11 @@
 <template>
   <app-header />
-  <v-card class="pa-4" v-if="!loadingData">
+  <v-card :class="isMobile ? 'pa-4' : 'pa-10'" v-if="!loadingData">
     <v-row>
       <div>
         <v-card-title class="text-h4 mb-n5">{{ loadingData ? "Loading..." : event.title }}</v-card-title>
 
-        <v-btn v-if="!isMobile && isAdmin" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)"
+        <v-btn v-if="!isMobile && store.isAdmin" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)"
           color="primary" style="position: absolute; right: 32px;">Edit</v-btn>
 
         <v-card-title v-if="!loadingData">{{ event.date }}, {{ event.start }} - {{ event.end }}</v-card-title>
@@ -20,7 +20,7 @@
       </div>
     </v-row>
 
-    <v-btn v-if="isMobile && isAdmin" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)"
+    <v-btn v-if="isMobile && store.isAdmin" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)"
       color="primary" class="mt-10" width="100vw">Edit</v-btn>
 
     <availability-selector :event="event" v-if="isMobile" class="mt-8" />
@@ -37,7 +37,10 @@
         {{ new Date(item.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
       </template>
       <template #item.chaperone="{ item }">
-        <span>{{ chaperones.find(chaperone => chaperone.id === item.chaperone)?.name }}</span>
+        <span v-if="item.chaperone">{{ chaperones.find(chaperone => chaperone.id === item.chaperone)?.name }}</span>
+        <v-alert v-else type="warning" class="pa-2">
+          <span>No chaperone</span>
+        </v-alert>
       </template>
       <template #item.details="{ item }">
         <span v-if="item.details?.length > 0">
@@ -52,8 +55,11 @@
         </v-alert>
       </template>
     </v-data-table>
+
     <v-card v-else v-for="slot in chaperoneSlots" class="mb-4">
-      <v-card-title>{{ chaperones.find(chaperone => chaperone.id === slot.chaperone)?.name }}</v-card-title>
+      <v-card-title v-if="slot.chaperone">{{ chaperones.find(chaperone => chaperone.id === slot.chaperone)?.name
+        }}</v-card-title>
+      <v-alert v-else type="warning" class="mb-6">No Chaperone</v-alert>
       <v-card-subtitle class="mt-n2">{{ slot.title }}</v-card-subtitle>
       <v-card-subtitle>{{ new Date(slot.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }} -
         {{ new Date(slot.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</v-card-subtitle>
