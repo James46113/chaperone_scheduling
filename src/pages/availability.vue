@@ -14,6 +14,7 @@
         <v-spacer />
         <v-btn v-if="showTable" color="primary" @click="saveTableAsImage" class="mr-4" variant="flat">Save as
           Image</v-btn>
+        <v-btn v-if="showTable" color="primary" @click="printTable" class="mr-4" variant="flat">Print</v-btn>
       </v-row>
       <v-div v-else>
         <v-date-input variant="outlined" label="Start" class="px-3" max-width="300" v-model="start" :max="end" />
@@ -132,6 +133,20 @@ onMounted(async () => {
   ])
   loadingData.value = false
 })
+
+const printTable = () => {
+  const tableElement = document.querySelector('.table_container');
+  domtoimage.toPng(tableElement, {
+    filter: (element) => element.className !== 'v-btn',
+    quality: 1
+  })
+    .then((dataUrl) => {
+      const pwin = window.open();
+      pwin.document.write(`<img src='${dataUrl}' />`)
+      pwin.focus()
+      pwin.print()
+    });
+}
 
 const saveTableAsImage = () => {
   const tableElement = document.querySelector('.table_container');
