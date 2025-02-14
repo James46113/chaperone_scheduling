@@ -1,6 +1,6 @@
 <template>
   <v-main>
-    <v-alert type="warning" v-if="proxy.$route.path != '/login' && !dev">The rota was correct
+    <v-alert type="warning" v-if="proxy.$route.path != '/login' && !isDev">The rota was correct
       at time of entry. This system is
       not currently
       live, do not rely on it to provide up-to-date information</v-alert>
@@ -22,15 +22,15 @@ import { useAppStore } from '@/stores/app';
 
 const { proxy } = getCurrentInstance();
 const store = useAppStore();
-const dev = computed(() => import.meta.env.VITE_DEV == 1)
 
-onMounted(() => {
-  if (import.meta.env.VITE_DEV == 1) {
-    store.userEmail = "jamescaroe@gmail.com"
-    store.userID = 8
-    store.isAdmin = true
-  }
-})
+// onMounted(() => {
+if (isDev.value) {
+  store.userEmail = "jamescaroe@gmail.com"
+  store.userID = 8
+  store.isAdmin = true
+  console.log('Dev mode')
+}
+// })
 
 const goHome = (tab) => {
   store.tabView = tab;

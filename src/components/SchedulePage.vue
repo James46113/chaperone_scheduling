@@ -62,7 +62,7 @@ onMounted(async () => {
     if (Cookies.get('credential')) {
       await new Promise(resolve => setTimeout(resolve, 200));
     } else {
-      if (import.meta.env.VITE_DEV != 1) {
+      if (!isDev.value) {
         proxy.$router.push('/login')
       }
     }

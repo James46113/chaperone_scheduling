@@ -25,7 +25,7 @@ export default defineConfig({
           'vue-router/auto': ['useRoute', 'useRouter'],
         },
         {
-          '@/services/functions': ['fetchAPI', 'isMobile', 'loadingData', 'loadingAvailability'],
+          '@/services/functions': ['fetchAPI', 'isMobile', 'loadingData', 'loadingAvailability', 'isDev'],
         },
         {
           'js-cookie': [['default', 'Cookies']],

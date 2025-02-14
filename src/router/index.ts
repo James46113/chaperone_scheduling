@@ -39,7 +39,7 @@ router.isReady().then(() => {
 router.beforeEach((to, from, next) => {
   const store = useAppStore();
 
-  if (!store.userEmail && to.path !== '/login' && import.meta.env.VITE_DEV != 1) {
+  if (!store.userEmail && to.path !== '/login' && !isDev.value) {
     if (Cookies.get('credential')) {
       next()
     } else {
@@ -59,7 +59,7 @@ router.beforeEach((to, from, next) => {
     to.path.startsWith('/templateEvents') ||
     to.path.startsWith('/users') ||
     to.path.startsWith('/availability')
-  ) && !store.isAdmin && store.userEmail && import.meta.env.VITE_DEV != 1) {
+  ) && !store.isAdmin && store.userEmail && !isDev.value) {
     next('/');
   } else {
     next();

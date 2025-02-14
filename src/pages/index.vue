@@ -33,7 +33,7 @@
 
       <v-tabs-window-item value="list">
         <event-card v-if="!loadingData" v-for="event in events" :event="event" :chaperones="chaperones" />
-        <div v-else class="d-flex justify-center align-center" style="height: 70vh;">
+        <div v-else class="d-flex justify-center align-center" style="height: 0vh;">
           <v-progress-circular color="primary" indeterminate size="40" />
         </div>
       </v-tabs-window-item>
@@ -77,7 +77,7 @@ onMounted(async () => {
     await onSignIn({ credential });
   }
   try {
-    if (store.userID || import.meta.env.VITE_DEV == 1) {
+    if (store.userID || isDev.value) {
       getAvailability();
     }
 
@@ -184,8 +184,11 @@ const getAvailability = () => {
       events.value.forEach((event) => {
         event.available = availability.value.filter(slot => slot.event_id == event.id)[0]?.available;
       });
-      loadingAvailability.value = false;
-    }).catch((error) => console.error('Error:', error));
+    })
+    .catch((error) => console.error('Error:', error))
+    .finally(() => {
+      loadingAvailability.value = false
+    });
 }
 
 </script>

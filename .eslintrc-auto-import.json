@@ -79,6 +79,7 @@
     "loadingAvailability": true,
     "Cookies": true,
     "view": true,
-    "tabView": true
+    "tabView": true,
+    "isDev": true
   }
 }
