@@ -29,7 +29,7 @@
           </template>
         </v-calendar>
         <div class="d-flex justify-center">
-          <v-btn v-if="store.isAdmin" width="90vw" variant="flat" color="primary" class="my-3"
+          <v-btn v-if="store.isAdmin && isMobile" width="90vw" variant="flat" color="primary" class="my-3"
             @click="proxy.$router.push('/editEvent?id=new')">New Event</v-btn>
         </div>
       </v-tabs-window-item>
@@ -41,7 +41,7 @@
         <v-card-title :class="isMobile ? 'text-h5 mt-5' : 'text-h5'">Upcoming Events</v-card-title>
 
         <div class="d-flex justify-center">
-          <v-btn v-if="store.isAdmin" width="90vw" variant="flat" color="primary" class="my-3"
+          <v-btn v-if="store.isAdmin && isMobile" width="90vw" variant="flat" color="primary" class="my-3"
             @click="proxy.$router.push('/editEvent?id=new')">New Event</v-btn>
         </div>
         <v-divider v-if="store.isAdmin" class="mt-3" />

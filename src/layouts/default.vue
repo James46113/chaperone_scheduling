@@ -6,7 +6,8 @@
       live, do not rely on it to provide up-to-date information</v-alert>
     <router-view />
     <AlertDialog />
-    <v-bottom-navigation v-if="isMobile && proxy.$route.path != '/login'" grow color="primary">
+    <v-bottom-navigation v-if="isMobile && proxy.$route.path != '/login' && proxy.$route.path != '/offline'" grow
+      color="primary">
       <v-btn @click="goHome('calendar')"><v-icon>mdi-calendar</v-icon></v-btn>
       <v-btn @click="goHome('list')"><v-icon>mdi-format-list-bulleted</v-icon></v-btn>
       <v-btn @click="goHome('chaperones')"><v-icon>mdi-account-multiple</v-icon></v-btn>

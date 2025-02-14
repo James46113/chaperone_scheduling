@@ -16,6 +16,10 @@
       <v-icon size="25">mdi-note-text</v-icon>
     </v-btn>
 
+    <v-btn v-if="!isMobile" class="mt-4 mr-3" @click="proxy.$router.push(`/schedule?id=${store.userID}`)">
+      <v-icon size="25">mdi-account</v-icon>
+    </v-btn>
+
     <v-btn v-if="!isMobile" class="mt-4 mr-3" @click="proxy.$router.push('/chaperones')">
       <v-icon size="25">mdi-account-multiple</v-icon>
     </v-btn>
@@ -86,7 +90,7 @@ const logout = () => {
   store.isAdmin = false;
   store.userID = null;
   Cookies.remove('credential');
-  proxy.$router.push('/')
+  proxy.$router.push('/login')
 }
 
 </script>
