@@ -2,11 +2,32 @@
   <v-sheet elevation="2" class="ma-2" variant="outlined" color="primary" style="padding: 1px;" rounded>
     <v-card class="pa-1">
       <div @click="goToEvent" style="cursor: pointer;">
-        <v-card-title>{{ event.start.toLocaleDateString('en-GB', {
-          weekday: 'short', day: 'numeric',
-          month: 'short', year: 'numeric'
-        }) + ' - ' }}{{ event.title
-          }}</v-card-title>
+        <div v-if="isMobile">
+          <v-icon v-if="isMobile" color="primary" size="25" class="mt-2 mr-3"
+            style="position: absolute; right: 0px">mdi-open-in-new</v-icon>
+          <v-card-title>
+            {{
+              event.start.toLocaleDateString('en-GB', {
+                weekday: 'short', day: 'numeric',
+                month: 'short', year: 'numeric'
+              })
+            }}
+          </v-card-title>
+          <v-divider class="mt-n1" />
+          <v-card-title class="mt-n1">
+            {{ event.title }}
+          </v-card-title>
+        </div>
+
+        <v-card-title v-else>
+          {{
+            event.start.toLocaleDateString('en-GB', {
+              weekday: 'short', day: 'numeric',
+              month: 'short', year: 'numeric'
+            }) + ' - ' }}{{ event.title
+          }}
+          <v-icon v-if="!isMobile" color="primary" size="25" class="mt-n1 ml-2">mdi-open-in-new</v-icon>
+        </v-card-title>
         <v-card-subtitle class="mt-n3">
           {{ event.location }}
         </v-card-subtitle>
@@ -14,11 +35,9 @@
           {{ new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }} -
           {{ new Date(event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
         </v-card-subtitle>
+
         <v-card-text class="pl-0">
-          <v-card-text v-if="loadingData" class="ma-0">
-            Loading...
-          </v-card-text>
-          <span v-for="chaperone in event.chaperones" v-else-if="event.chaperones?.length > 0 ?? false">
+          <span v-for="chaperone in event.chaperones" v-if="event.chaperones?.length > 0 ?? false">
             <v-card-text v-if="!!chaperone" :style="chaperone == event.lead_chaperone ? 'font-weight: bold;' : ''"
               class="py-0">
               {{ chaperones.find(c => c.id === chaperone)?.name }}<br>
@@ -40,6 +59,7 @@ const { proxy } = getCurrentInstance()
 const props = defineProps({
   event: Object,
   chaperones: Array,
+  small: Boolean
 })
 
 

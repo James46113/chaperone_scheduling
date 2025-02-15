@@ -3,10 +3,14 @@ export const fetchAPI = async (url, params) => {
     ...(params.headers || {}),
     'Authorization': `${import.meta.env.VITE_API_KEY}`
   };
+
   return fetch(import.meta.env.VITE_API_URL + url, {
     ...params,
     headers
-  });
+  })
+    .catch((e) => {
+      console.error(e);
+    })
 };
 
 
@@ -20,7 +24,6 @@ const handleResize = () => {
 window.addEventListener('resize', handleResize);
 
 export const isMobile = computed(() => windowWidth.value < 768);
-
 export const loadingData = ref(false);
 export const loadingAvailability = ref(false);
 export const isDev = computed(() => import.meta.env.VITE_DEV == 1);

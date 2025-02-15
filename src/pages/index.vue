@@ -20,7 +20,7 @@
 
         <v-calendar class="pa-0" :events="events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" hide-week-number>
           <template #event="{ event }" v-if="!isMobile" :interval-height="20">
-            <event-card :event="event" :chaperones="chaperones" />
+            <event-card :event="event" :chaperones="chaperones" small />
           </template>
           <template #event="{ event }" v-if="isMobile">
             <v-card-text style="font-size: x-small; border-left: 2px solid; padding-left: 0.2em; border-color: #a80056;"
@@ -60,7 +60,7 @@
 
         <div class="my-8"></div>
         <event-card v-if="!loadingData" v-for="event in upcomingEvents" :event="event" :chaperones="chaperones" />
-        <div v-else class="d-flex justify-center align-center" style="height: 50vh;">
+        <div v-else class="d-flex justify-center align-center" style="height: 23vh;">
           <v-progress-circular color="primary" indeterminate size="40" />
         </div>
       </v-tabs-window-item>

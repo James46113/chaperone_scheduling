@@ -5,13 +5,14 @@
       not currently
       live. Do not rely on it to provide up-to-date information</v-alert>
     <router-view />
+
     <AlertDialog />
     <v-bottom-navigation v-if="isMobile && proxy.$route.path != '/login' && proxy.$route.path != '/offline'" grow
       color="primary">
       <v-btn @click="goHome('calendar')"><v-icon>mdi-calendar</v-icon></v-btn>
       <v-btn @click="goHome('list')"><v-icon>mdi-format-list-bulleted</v-icon></v-btn>
-      <v-btn @click="goHome('chaperones')"><v-icon>mdi-account-multiple</v-icon></v-btn>
-      <v-btn v-if="store.userID" @click="goHome('schedule')"><v-icon>mdi-account</v-icon></v-btn>
+      <v-btn v-if="store.isAdmin" @click="goHome('chaperones')"><v-icon>mdi-account-multiple</v-icon></v-btn>
+      <v-btn @click="goHome('schedule')"><v-icon>mdi-account</v-icon></v-btn>
     </v-bottom-navigation>
   </v-main>
 
@@ -28,7 +29,7 @@ const store = useAppStore();
 if (isDev.value) {
   store.userEmail = "jamescaroe@gmail.com"
   store.userID = 8
-  store.isAdmin = true
+  store.isAdmin = false
   console.log('Dev mode')
 }
 // })

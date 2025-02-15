@@ -40,7 +40,8 @@ const updateAvailable = (availability) => {
   })
     .then((response) => {
       if (!response.ok) {
-        store.showAlert('Error updating availability', 'Please try again later, if this persists contact jamescaroe@gmail.com')
+        store.showAlert('Failed to update availability', 'Are you connected to the internet?')
+        props.event.available = !availability
       }
     })
 }

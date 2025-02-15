@@ -5,19 +5,30 @@
         : "'s" }} Schedule</v-card-title>
 
       <v-sheet v-for="event in events" elevation="2" class="ma-2" variant="outlined" color="primary"
-        style="padding: 1px;" rounded>
+        style="padding: 1px;" rounded @click="proxy.$router.push(`/event?id=${event.id}`)">
         <v-card class="pa-1">
-          <v-row class="pa-3" @click="proxy.$router.push(`/event?id=${event.id}`)" style="cursor: pointer;">
-            <v-card-title style="white-space: pre; ">
-              {{ event.title }}{{ isMobile ? '\n' : ' - ' }}{{ event.start.toLocaleDateString('en-GB', {
+          <v-icon v-if="isMobile" color="primary" size="25" class="mt-2 mr-3"
+            style="position: absolute; right: 0px">mdi-open-in-new</v-icon>
+
+          <v-card-title v-if="!isMobile">
+            {{ event.title }} - {{ event.start.toLocaleDateString('en-GB', {
+              weekday: 'short', day: 'numeric',
+              month: 'short', year: 'numeric'
+            }) }}
+            <v-icon v-if="!isMobile" color="primary" size="25" class="mt-n1 ml-2">mdi-open-in-new</v-icon>
+          </v-card-title>
+          <div v-else>
+            <v-card-title>
+              {{ event.start.toLocaleDateString('en-GB', {
                 weekday: 'short', day: 'numeric',
                 month: 'short', year: 'numeric'
               }) }}
-              <v-icon v-if="!isMobile" color="primary" size="25" class="mt-n1 ml-2">mdi-open-in-new</v-icon>
             </v-card-title>
-            <v-spacer />
-            <v-icon v-if="isMobile" color="primary" size="25" class="mt-3 mr-3">mdi-open-in-new</v-icon>
-          </v-row>
+            <v-divider class="mt-n1" />
+            <v-card-title class="mt-n1 mb-n2">
+              {{ event.title }}
+            </v-card-title>
+          </div>
 
           <v-card-subtitle>{{ event.location }}</v-card-subtitle>
           <v-card-subtitle>
@@ -48,7 +59,7 @@
       </v-card-text>
     </v-card>
   </div>
-  <div v-else class="d-flex justify-center align-center" style="height: 70vh;">
+  <div v-else class="d-flex justify-center align-center" style="height: 68vh;">
     <v-progress-circular color="primary" indeterminate size="40" />
   </div>
 </template>

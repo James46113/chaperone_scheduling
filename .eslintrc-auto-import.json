@@ -80,6 +80,7 @@
     "Cookies": true,
     "view": true,
     "tabView": true,
-    "isDev": true
+    "isDev": true,
+    "loadingFailed": true
   }
 }
