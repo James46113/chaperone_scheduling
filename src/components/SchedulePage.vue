@@ -1,8 +1,8 @@
 <template>
   <div class="pa-4 d-flex justify-center" v-if="!loadingData">
     <v-card :width="isMobile ? '100vw' : '80vw'" elevation="0">
-      <v-card-title class="text-h5" v-if="chaperone.name">{{ chaperone.name }}'s
-        Schedule</v-card-title>
+      <v-card-title class="text-h5" v-if="chaperone.name">{{ chaperone.name }}{{ chaperone.name.slice(-1) === 's' ? "'"
+        : "'s" }} Schedule</v-card-title>
 
       <v-sheet v-for="event in events" elevation="2" class="ma-2" variant="outlined" color="primary"
         style="padding: 1px;" rounded>
