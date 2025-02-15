@@ -27,12 +27,12 @@ import { getCurrentInstance } from 'vue';
 const store = useAppStore();
 const { proxy } = getCurrentInstance();
 
-onMounted(() => {
-  const credential = Cookies.get('credential');
-  if (credential) {
-    onSignIn({ credential });
-  }
-})
+// onMounted(() => {
+const credential = Cookies.get('credential');
+if (credential) {
+  onSignIn({ credential });
+}
+// })
 
 function onSignIn(response) {
   Cookies.set('credential', response.credential);

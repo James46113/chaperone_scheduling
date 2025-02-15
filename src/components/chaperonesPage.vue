@@ -50,23 +50,23 @@ const showSchedule = (value, row) => {
 }
 
 
-onMounted(() => {
-  loadingData.value = true;
-  fetchAPI('chaperones', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      chaperones.value = data;
-      chaperones.value.sort((a, b) => a.name.localeCompare(b.name));
-      loadingData.value = false;
-    })
-    .catch((error) => {
-      console.error('Error:', error)
-    });
+// onMounted(() => {
+loadingData.value = true;
+fetchAPI('chaperones', {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+  },
 })
+  .then((response) => response.json())
+  .then((data) => {
+    chaperones.value = data;
+    chaperones.value.sort((a, b) => a.name.localeCompare(b.name));
+    loadingData.value = false;
+  })
+  .catch((error) => {
+    console.error('Error:', error)
+  });
+// })
 
 </script>

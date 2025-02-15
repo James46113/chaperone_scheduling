@@ -33,24 +33,24 @@ const headers = [
   { key: 'template_name' }
 ]
 
-onMounted(() => {
-  loadingData.value = true;
-  fetchAPI('templates/list', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      data.sort((a, b) => a.template_name.localeCompare(b.template_name));
-      templates.value = data;
-      loadingData.value = false;
-    })
-    .catch((error) => {
-      console.error('Error:', error)
-    });
+// onMounted(() => {
+loadingData.value = true;
+fetchAPI('templates/list', {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+  },
 })
+  .then((response) => response.json())
+  .then((data) => {
+    data.sort((a, b) => a.template_name.localeCompare(b.template_name));
+    templates.value = data;
+    loadingData.value = false;
+  })
+  .catch((error) => {
+    console.error('Error:', error)
+  });
+// })
 
 const editTemplate = (value, row) => {
   proxy.$router.push(`/editEvent?id=${row.item.id}&isTemplate=1`)

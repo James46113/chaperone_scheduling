@@ -70,24 +70,24 @@ const headers = computed(() => [
   { title: 'Delete', key: 'delete', width: '10%', mobile: false },
 ].filter(header => !isMobile.value || header.mobile))
 
-onMounted(() => {
-  loadingData.value = true;
-  fetchAPI('chaperones', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      data.sort((a, b) => a.email.localeCompare(b.email));
-      users.value = data;
-      loadingData.value = false;
-    })
-    .catch((error) => {
-      console.error('Error:', error)
-    });
+// onMounted(() => {
+loadingData.value = true;
+fetchAPI('chaperones', {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+  },
 })
+  .then((response) => response.json())
+  .then((data) => {
+    data.sort((a, b) => a.email.localeCompare(b.email));
+    users.value = data;
+    loadingData.value = false;
+  })
+  .catch((error) => {
+    console.error('Error:', error)
+  });
+// })
 
 const createUser = () => {
   if (!newUser.value.email) {

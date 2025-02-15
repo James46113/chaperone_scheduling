@@ -1,0 +1,154 @@
+<template>
+  <v-card class="pa-6" elevation="0">
+    <v-card-title class="text-h5 mb-3">Create Term Rehearsals</v-card-title>
+    <v-date-input v-model="start" :max="end" label="Term Start" />
+    <v-date-input v-model="end" :min="start" label="Term End" />
+    <div class="d-flex justify-center">
+      <v-btn color="primary" variant="flat" class="mt-3" @click="createTerm" width="100vw">Create</v-btn>
+    </div>
+  </v-card>
+</template>
+
+<script setup>
+import { VDateInput } from 'vuetify/labs/VDateInput'
+
+const start = ref()
+const end = ref()
+const templates = ref()
+const templateChaperoneSlots = ref()
+
+const props = defineProps({
+  close: Function,
+})
+
+fetchAPI('templates', {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+  .then((response) => response.json())
+  .then((data) => {
+    templates.value = data;
+  })
+  .catch((error) => {
+    console.error('Error:', error)
+  })
+
+
+fetchAPI(`template_chaperone_slots`, {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+  .then((response) => response.json())
+  .then((data) => {
+    templateChaperoneSlots.value = data;
+  })
+  .catch((error) => {
+    console.error('Error:', error)
+  })
+
+
+
+const createTerm = () => {
+  if (!start.value || !end.value) {
+    return;
+  }
+  props.close();
+
+  let currentDate = new Date(start.value);
+  let day = currentDate.getDay();
+  let diff = currentDate.getDate() - day + 1//(day === 0 ? -6 : 1); // adjust when day is sunday
+  currentDate.setDate(diff);
+  if (currentDate < start.value) {
+    currentDate.setDate(currentDate.getDate() + 7);
+  }
+
+  while (currentDate <= end.value) {
+    createMondayRehearsal(currentDate);
+    currentDate.setDate(currentDate.getDate() + 7);
+  }
+
+  currentDate = new Date(start.value);
+  day = currentDate.getDay();
+  diff = currentDate.getDate() - day + 5//(day === 0 ? -6 : 1); // adjust when day is sunday
+
+  currentDate.setDate(diff);
+  if (currentDate < start.value) {
+    currentDate.setDate(currentDate.getDate() + 7);
+  }
+
+  while (currentDate <= end.value) {
+    createFridayRehearsal(currentDate);
+    currentDate.setDate(currentDate.getDate() + 7);
+  }
+}
+
+const createMondayRehearsal = (date) => {
+  console.log('Creating rehearsal for', date);
+  const template_id = 2;
+  createRehearsal(template_id, date);
+}
+
+const createFridayRehearsal = (date) => {
+  console.log('Creating rehearsal for', date);
+  const template_id = 3;
+  createRehearsal(template_id, date);
+}
+
+const createRehearsal = (template_id, date) => {
+  const rehearsal = templates.value.find(template => template.id === template_id);
+  // const rehearsal = {
+  //   ...template,
+  //   start: new Date(date.setHours(new Date(template.start).getHours(), new Date(template.start).getMinutes())).toISOString(),
+  //   end: new Date(date.setHours(new Date(template.end).getHours(), new Date(template.end).getMinutes())).toISOString()
+  // };
+  const start = new Date(date);
+  start.setHours(new Date(rehearsal.start).getHours(), new Date(rehearsal.start).getMinutes(), 0, 0);
+  rehearsal.start = start.toISOString();
+
+  const end = new Date(date);
+  end.setHours(new Date(rehearsal.end).getHours(), new Date(rehearsal.end).getMinutes(), 0, 0);
+  rehearsal.end = end.toISOString();
+
+  let chaperoneSlots = templateChaperoneSlots.value.filter(slot => slot.template_id === template_id);
+  console.log(JSON.stringify(rehearsal));
+
+
+  fetchAPI("events", {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(rehearsal),
+  }).then((response) => {
+    if (!response.ok) {
+      store.showAlert("Error", "Failed to save event.");
+      saving.value = false;
+      return;
+    }
+    return response.json()
+  })
+    .then((data) => {
+      rehearsal.id = data.id;
+      chaperoneSlots.forEach(slot => {
+        fetchAPI("chaperone_slots", {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...slot,
+            event_id: rehearsal.id,
+            start: new Date(slot.start).toISOString(),
+            end: new Date(slot.end).toISOString(),
+            chaperone: null,
+          }),
+        })
+      });
+    });
+}
+
+</script>

@@ -2,7 +2,11 @@
   <v-sheet elevation="2" class="ma-2" variant="outlined" color="primary" style="padding: 1px;" rounded>
     <v-card class="pa-1">
       <div @click="goToEvent" style="cursor: pointer;">
-        <v-card-title>{{ isMobile ? event.start.toLocaleDateString() + ' - ' : '' }}{{ event.title }}</v-card-title>
+        <v-card-title>{{ event.start.toLocaleDateString('en-GB', {
+          weekday: 'short', day: 'numeric',
+          month: 'short', year: 'numeric'
+        }) + ' - ' }}{{ event.title
+          }}</v-card-title>
         <v-card-subtitle class="mt-n3">
           {{ event.location }}
         </v-card-subtitle>

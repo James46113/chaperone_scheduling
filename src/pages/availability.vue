@@ -24,37 +24,39 @@
       <div v-if="loadingData" class="d-flex justify-center align-center" style="height: 40vh;">
         <v-progress-circular color="primary" indeterminate size="40" />
       </div>
-      <v-sheet v-else-if="showTable" class="table_container" style="display: inline-block;">
-        <table class="ma-6 mb-11  ">
-          <tr>
-            <th></th>
-            <th v-for="event in eventsInRange">
-              <div class="vertical-text rotate">
-                {{ event.start.toLocaleDateString() }}
-              </div>
-            </th>
-          </tr>
+      <v-sheet v-else-if="showTable" class="table_container">
+        <div style="max-width: 100vw; overflow: scroll;" class="justify-center">
+          <table class="mt-6 mb-11">
+            <tr>
+              <th></th>
+              <th v-for="event in eventsInRange">
+                <div class="vertical-text rotate">
+                  {{ event.start.toLocaleDateString() }}
+                </div>
+              </th>
+            </tr>
 
-          <tr v-for="chaperone in chaperones">
-            <td>{{ chaperone.name }}</td>
-            <td v-for="event in eventsInRange">
-              <span
-                v-if="availabilities.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available">
-                <v-icon>mdi-check</v-icon>
-              </span>
-              <span
-                v-else-if="availabilities.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available === null">
-                <pre> ?</pre>
-              </span>
-            </td>
-          </tr>
-          <tr style="font-size: xx-small;">
-            <td colspan="100%">
-              Generated on {{ new Date().toLocaleDateString() }} - Steel City Choristers
-            </td>
-          </tr>
-        </table>
-        <div class="pa-4 pl-5 d-flex justify-center">
+            <tr v-for="chaperone in chaperones">
+              <td>{{ chaperone.name }}</td>
+              <td v-for="event in eventsInRange">
+                <span
+                  v-if="availabilities.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available">
+                  <v-icon>mdi-check</v-icon>
+                </span>
+                <span
+                  v-else-if="availabilities.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available === null">
+                  <pre> ?</pre>
+                </span>
+              </td>
+            </tr>
+            <tr style="font-size: xx-small;">
+              <td colspan="100%">
+                Generated on {{ new Date().toLocaleDateString() }} - Steel City Choristers
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="d-flex justify-center">
           <v-btn v-if="isMobile" width="80vw" color="primary" @click="saveTableAsImage" variant="flat">Save as
             Image</v-btn>
         </div>
@@ -77,7 +79,7 @@ const showTable = computed(() => eventsInRange.value.length > 0)
 
 const start = ref(new Date())
 const end = ref(new Date())
-end.value.setMonth(start.value.getMonth() + 1)
+end.value = new Date(start.value.getFullYear(), start.value.getMonth() + 2, 0)
 
 onMounted(async () => {
   loadingData.value = true

@@ -15,6 +15,8 @@
         <v-btn v-if="store.isAdmin && !isMobile" @click="proxy.$router.push('/editEvent?id=new')"
           style="position: absolute; right: 16px;" class="mt-4" color="primary">Add
           Event</v-btn>
+        <v-btn v-if="store.isAdmin && !isMobile && isDev" @click="() => showCreateTerm = true"
+          style="position: absolute; right: 160px;" class="mt-4" color="primary">Create Term</v-btn>
 
         <v-calendar class="pa-0" :events="events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" hide-week-number>
           <template #event="{ event }" v-if="!isMobile" :interval-height="20">
@@ -35,10 +37,15 @@
       </v-tabs-window-item>
 
       <v-tabs-window-item value="list">
+
         <v-btn v-if="store.isAdmin && !isMobile" @click="proxy.$router.push('/editEvent?id=new')"
           style="position: absolute; right: 16px;" class="mt-4" color="primary">Add
           Event</v-btn>
         <v-card-title :class="isMobile ? 'text-h5 mt-5' : 'text-h5'">Upcoming Events</v-card-title>
+
+        <v-card-text>
+          To give your availability, press on the tick or the cross on each event.
+        </v-card-text>
 
         <div class="d-flex justify-center">
           <v-btn v-if="store.isAdmin && isMobile" width="90vw" variant="flat" color="primary" class="my-3"
@@ -62,9 +69,11 @@
       </v-tabs-window-item>
 
     </v-tabs-window>
-
-
   </div>
+
+  <v-dialog v-model="showCreateTerm" :width="isMobile ? '100vw' : '30vw'">
+    <create-term :close="createdTerm" />
+  </v-dialog>
 </template>
 
 <script lang="js" setup>
@@ -82,78 +91,88 @@ const chaperones = ref([]);
 
 const availability = ref([]);
 
+const showCreateTerm = ref(false);
+
 document.title = "Chaperones' Calendar - Steel City Choristers"
 
 onMounted(async () => {
   if (proxy.$route.query.view) {
     store.tabView = proxy.$route.query.view;
   }
-  loadingData.value = true
   const credential = Cookies.get('credential');
   if (credential) {
     await onSignIn({ credential });
   }
   try {
-    if (store.userID || isDev.value) {
-      getAvailability();
-    }
-
-    const [chaperonesResponse, eventsResponse] = await Promise.all([
-      fetchAPI('chaperones', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }),
-      fetchAPI('events', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-    ]);
-
-    const chaperonesData = await chaperonesResponse.json();
-    chaperones.value = chaperonesData;
-
-    const eventsData = await eventsResponse.json();
-    events.value = eventsData.map((event) => ({
-      id: event.id,
-      title: event.title,
-      start: new Date(event.start),
-      end: new Date(event.end),
-      location: event.location,
-      lead_chaperone: event.lead_chaperone,
-      available: availability.value.filter(slot => slot.event_id == event.id)[0]?.available,
-    }));
-    events.value.sort((a, b) => a.start - b.start);
-
-    const eventsChaperonesResponse = await fetchAPI('events_chaperones', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const eventsChaperonesData = await eventsChaperonesResponse.json();
-    events.value.forEach((event) => {
-      event.chaperones = eventsChaperonesData.filter(slot => slot.event_id == event.id)[0]?.chaperones;
-      if (event.chaperones) {
-        event.chaperones = [...new Set(event.chaperones)];
-        const leadIndex = event.chaperones.indexOf(event.lead_chaperone);
-        if (leadIndex !== -1) {
-          event.chaperones.splice(leadIndex, 1);
-          event.chaperones.unshift(event.lead_chaperone);
-        }
-      }
-    });
-
+    await loadData();
   } catch (error) {
     console.error('Error:', error);
   } finally {
     loadingData.value = false;
   }
 })
+
+const createdTerm = () => {
+  showCreateTerm.value = false;
+  setTimeout(() => loadData, 2000)
+}
+
+const loadData = async () => {
+  loadingData.value = true
+  if (store.userID) {
+    getAvailability();
+  }
+
+  const [chaperonesResponse, eventsResponse] = await Promise.all([
+    fetchAPI('chaperones', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }),
+    fetchAPI('events', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  ]);
+
+  const chaperonesData = await chaperonesResponse.json();
+  chaperones.value = chaperonesData;
+
+  const eventsData = await eventsResponse.json();
+  events.value = eventsData.map((event) => ({
+    id: event.id,
+    title: event.title,
+    start: new Date(event.start),
+    end: new Date(event.end),
+    location: event.location,
+    lead_chaperone: event.lead_chaperone,
+    available: availability.value.filter(slot => slot.event_id == event.id)[0]?.available,
+  }));
+  events.value.sort((a, b) => a.start - b.start);
+
+  const eventsChaperonesResponse = await fetchAPI('events_chaperones', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const eventsChaperonesData = await eventsChaperonesResponse.json();
+  events.value.forEach((event) => {
+    event.chaperones = eventsChaperonesData.filter(slot => slot.event_id == event.id)[0]?.chaperones;
+    if (event.chaperones) {
+      event.chaperones = [...new Set(event.chaperones)];
+      const leadIndex = event.chaperones.indexOf(event.lead_chaperone);
+      if (leadIndex !== -1) {
+        event.chaperones.splice(leadIndex, 1);
+        event.chaperones.unshift(event.lead_chaperone);
+      }
+    }
+  });
+}
 
 const onSignIn = async (response) => {
   Cookies.set('credential', response.credential);

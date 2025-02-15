@@ -1,6 +1,6 @@
 <template>
   <app-header />
-  <div class="pa-6">
+  <div class="pa-6" v-if="!loadingData">
     <v-card class="pa-3" elevation="0">
       <v-card-title class="text-h5 ml-n6 mb-4" v-if="newEvent">New {{ isTemplate ? 'Template' : 'Event'
         }}</v-card-title>
@@ -21,7 +21,7 @@
             <v-select v-if="!isTemplate && newEvent" :items="templateNames" v-model="selectedTemplate"
               variant="outlined" class="mx-6" @update:model-value="loadTemplate" placeholder="Load Template" />
 
-            <v-btn v-if="!newEvent" color="primary" class="mt-2 mr-4" variant="outlined"
+            <v-btn v-if="!newEvent && !isDefaultTemplate" color="primary" class="mt-2 mr-4" variant="outlined"
               @click="showConfirmDeleteDialog = true">
               Delete {{ isTemplate ? 'Template' : 'Event' }}</v-btn>
             <v-btn color="primary" class="mt-2" @click="saveEvent" :loading="saving">Save</v-btn>
@@ -170,7 +170,7 @@
 
         <v-divider class="my-6" />
 
-        <v-btn v-if="!newEvent" color="primary" class="mt-2 mr-4" variant="outlined" width="100vw"
+        <v-btn v-if="!newEvent && !isDefaultTemplate" color="primary" class="mt-2 mr-4" variant="outlined" width="100vw"
           @click="showConfirmDeleteDialog = true">
           Delete {{ isTemplate ? 'Template' : 'Event' }}</v-btn>
 
@@ -179,6 +179,9 @@
 
 
     </v-card>
+  </div>
+  <div v-else class="d-flex justify-center align-center" style="height: 70vh;">
+    <v-progress-circular color="primary" indeterminate size="40" />
   </div>
 
   <v-dialog v-model="showConfirmDeleteDialog" :width="isMobile ? '100vw' : '30vw'">
@@ -214,6 +217,10 @@ const templates = ref([]);
 const templateNames = computed(() => templates.value.map(template => template.template_name).sort());
 const selectedTemplate = ref('Load Template');
 const templateChaperoneSlots = ref([]);
+
+const isDefaultTemplate = computed(() => {
+  return (proxy.$route.query.id == '2' || proxy.$route.query.id == '3') && proxy.$route.query.isTemplate == 1;
+})
 
 const showConfirmDeleteDialog = ref(false);
 
@@ -431,6 +438,10 @@ const loadTemplate = () => {
 const deleteEvent = () => {
   let failed = false;
   if (isTemplate.value) {
+    if (event.value.id == '2' || event.value.id == '3') {
+      store.showAlert("Error", "Cannot delete default templates.");
+      return;
+    }
     fetchAPI(`templates/${event.value.id}`, {
       method: 'DELETE',
     }).then((response) => {

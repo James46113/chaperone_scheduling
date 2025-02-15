@@ -3,14 +3,16 @@
     <v-card :width="isMobile ? '100vw' : '80vw'" elevation="0">
       <v-card-title class="text-h5" v-if="chaperone.name">{{ chaperone.name }}'s
         Schedule</v-card-title>
-      <v-card-title class="text-h5" v-else>Loading...</v-card-title>
 
       <v-sheet v-for="event in events" elevation="2" class="ma-2" variant="outlined" color="primary"
         style="padding: 1px;" rounded>
         <v-card class="pa-1">
           <v-row class="pa-3" @click="proxy.$router.push(`/event?id=${event.id}`)" style="cursor: pointer;">
             <v-card-title style="white-space: pre; ">
-              {{ event.title }}{{ isMobile ? '\n' : ' - ' }}{{ event.start.toLocaleDateString() }}
+              {{ event.title }}{{ isMobile ? '\n' : ' - ' }}{{ event.start.toLocaleDateString('en-GB', {
+                weekday: 'short', day: 'numeric',
+                month: 'short', year: 'numeric'
+              }) }}
               <v-icon v-if="!isMobile" color="primary" size="25" class="mt-n1 ml-2">mdi-open-in-new</v-icon>
             </v-card-title>
             <v-spacer />
@@ -52,12 +54,16 @@
 </template>
 
 <script setup>
+import { useAppStore } from '@/stores/app'
+
 
 const { proxy } = getCurrentInstance()
 const events = ref([])
 const chaperone = ref({})
 const chaperones = ref([])
 const chaperone_slots = ref([])
+
+const store = useAppStore();
 
 
 const props = defineProps({
