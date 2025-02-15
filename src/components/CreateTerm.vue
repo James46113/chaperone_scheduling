@@ -1,6 +1,6 @@
 <template>
   <v-card class="pa-6" elevation="0">
-    <v-card-title class="text-h5 mb-3">Create Term Rehearsals</v-card-title>
+    <v-card-title class="text-h5 mb-3">Create Term</v-card-title>
     <v-date-input v-model="start" :max="end" label="Term Start" />
     <v-date-input v-model="end" :min="start" label="Term End" />
     <div class="d-flex justify-center">

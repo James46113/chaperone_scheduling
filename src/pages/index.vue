@@ -15,7 +15,7 @@
         <v-btn v-if="store.isAdmin && !isMobile" @click="proxy.$router.push('/editEvent?id=new')"
           style="position: absolute; right: 16px;" class="mt-4" color="primary">Add
           Event</v-btn>
-        <v-btn v-if="store.isAdmin && !isMobile && isDev" @click="() => showCreateTerm = true"
+        <v-btn v-if="store.isAdmin && !isMobile" @click="() => showCreateTerm = true"
           style="position: absolute; right: 160px;" class="mt-4" color="primary">Create Term</v-btn>
 
         <v-calendar class="pa-0" :events="events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" hide-week-number>
@@ -30,10 +30,10 @@
             <!-- <v-chip class=" py-0 px-1" style="font-size: x-small;" color="primary"></v-chip> -->
           </template>
         </v-calendar>
-        <div class="d-flex justify-center">
-          <v-btn v-if="store.isAdmin && isMobile" width="90vw" variant="flat" color="primary" class="my-3"
-            @click="proxy.$router.push('/editEvent?id=new')">New Event</v-btn>
-        </div>
+        <v-btn v-if="store.isAdmin && isMobile" width="100vw" variant="flat" color="primary" class="my-3"
+          @click="proxy.$router.push('/editEvent?id=new')">New Event</v-btn>
+        <v-btn v-if="store.isAdmin && isMobile" @click="() => showCreateTerm = true" width="100vw" class="mt-2 mb-3"
+          color="primary">Create Term</v-btn>
       </v-tabs-window-item>
 
       <v-tabs-window-item value="list">
@@ -41,16 +41,21 @@
         <v-btn v-if="store.isAdmin && !isMobile" @click="proxy.$router.push('/editEvent?id=new')"
           style="position: absolute; right: 16px;" class="mt-4" color="primary">Add
           Event</v-btn>
+
+        <v-btn v-if="store.isAdmin && !isMobile" @click="() => showCreateTerm = true"
+          style="position: absolute; right: 160px;" class="mt-4" color="primary">Create Term</v-btn>
+
         <v-card-title :class="isMobile ? 'text-h5 mt-5' : 'text-h5'">Upcoming Events</v-card-title>
 
         <v-card-text>
           To give your availability, press on the tick or the cross on each event.
         </v-card-text>
 
-        <div class="d-flex justify-center">
-          <v-btn v-if="store.isAdmin && isMobile" width="90vw" variant="flat" color="primary" class="my-3"
-            @click="proxy.$router.push('/editEvent?id=new')">New Event</v-btn>
-        </div>
+        <v-btn v-if="store.isAdmin && isMobile" width="100vw" variant="flat" color="primary" class="my-3"
+          @click="proxy.$router.push('/editEvent?id=new')">New Event</v-btn>
+        <v-btn v-if="store.isAdmin && isMobile" @click="() => showCreateTerm = true" width="100vw" class="mt-2 mb-3"
+          color="primary">Create Term</v-btn>
+
         <v-divider v-if="store.isAdmin" class="mt-3" />
 
         <div class="my-8"></div>
