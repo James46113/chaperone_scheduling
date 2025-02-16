@@ -484,23 +484,25 @@ onMounted(async () => {
 });
 
 const loadAvailability = () => {
-  fetchAPI(`/events/${proxy.$route.query.id}/availability`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      availability.value = data.map(a => (
-        {
-          name: chaperones.value.find(chaperone => chaperone.id === a.chaperone_id).name,
-          available: a.available
-        }));
+  if (!newEvent) {
+    fetchAPI(`events/${proxy.$route.query.id}/availability`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     })
-    .catch((error) => {
-      console.error('Error:', error)
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        availability.value = data.map(a => (
+          {
+            name: chaperones.value.find(chaperone => chaperone.id === a.chaperone_id).name,
+            available: a.available
+          }));
+      })
+      .catch((error) => {
+        console.error('Error:', error)
+      });
+  }
 }
 
 const leadChaperoneAssigned = () => {
@@ -709,7 +711,7 @@ const saveNewTemplate = async () => {
     });
 }
 
-const savenewEvent = () => {
+const saveNewEvent = () => {
   fetchAPI("events", {
     method: 'PUT',
     headers: {
