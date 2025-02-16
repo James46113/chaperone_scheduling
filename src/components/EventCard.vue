@@ -19,13 +19,13 @@
           </v-card-title>
         </div>
 
-        <v-card-title v-if="small">
+        <v-card-title v-if="small && !isMobile">
           {{ event.title }}
           <v-icon v-if="!small" color="primary" size="25" class="mt-n1 ml-2">mdi-open-in-new</v-icon>
           <v-icon v-else color="primary" size="25" style="position: absolute; right: 12px">mdi-open-in-new</v-icon>
         </v-card-title>
 
-        <div v-else>
+        <div v-else-if="!isMobile">
           <v-card-title>
             {{ event.start.toLocaleDateString('en-GB', {
               weekday: 'short', day: 'numeric',

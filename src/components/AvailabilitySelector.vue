@@ -1,5 +1,6 @@
 <template>
-  <div v-if="store.userID && !loadingAvailability" :style="small ? '' : 'border: 1px solid #ccc; border-radius: 5px;'">
+  <div v-if="store.userID && !loadingAvailability && !isPastEvent"
+    :style="small ? '' : 'border: 1px solid #ccc; border-radius: 5px;'">
     <v-card-text v-if="small">Available:</v-card-text>
     <v-card-title v-else class="mb-3">Available:</v-card-title>
     <v-row class="mx-2 mb-3">
@@ -23,6 +24,7 @@ const props = defineProps({
 })
 
 const store = useAppStore();
+const isPastEvent = computed(() => props.event.end < new Date())
 
 
 const updateAvailable = (availability) => {
@@ -39,7 +41,10 @@ const updateAvailable = (availability) => {
     })
   })
     .then((response) => {
-      if (!response.ok) {
+      if (response.status === 403) {
+        store.showAlert('Assigned', 'You are already assigned to this event, please contact Angela if you need to change your availability.')
+        props.event.available = !availability
+      } else if (!response.ok) {
         store.showAlert('Failed to update availability', 'Are you connected to the internet?')
         props.event.available = !availability
       }

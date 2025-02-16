@@ -21,8 +21,8 @@
             <v-select v-if="!isTemplate && newEvent" :items="templateNames" v-model="selectedTemplate"
               variant="outlined" class="mx-6" @update:model-value="loadTemplate" placeholder="Load Template" />
 
-            <v-btn v-if="!newEvent && !isDefaultTemplate" color="primary" class="mt-2 mr-4" variant="outlined"
-              @click="showConfirmDeleteDialog = true">
+            <v-btn v-if="!newEvent && !isDefaultTemplate && !isPastEvent" color="primary" class="mt-2 mr-4"
+              variant="outlined" @click="showConfirmDeleteDialog = true">
               Delete {{ isTemplate ? 'Template' : 'Event' }}</v-btn>
             <v-btn color="primary" class="mt-2" @click="saveEvent" :loading="saving">Save</v-btn>
           </div>
@@ -91,14 +91,14 @@
 
       <v-row class="my-3">
         <v-card-title class="mt-4">Chaperones</v-card-title>
-        <v-select v-if="!isTemplate && !isMobile" :items="assignedChaperones" v-model="event.lead_chaperone"
+        <!-- <v-select v-if="!isTemplate && !isMobile" :items="assignedChaperones" v-model="event.lead_chaperone"
           label="Lead Chaperone" variant="outlined" class="mt-3 ml-7" hide-no-data max-width="300" />
-        <v-spacer />
+        <v-spacer /> -->
         <v-btn v-if="!isMobile" color="primary" variant="outlined" class="mt-6 mr-6" @click="newSlot">Add
           Chaperone</v-btn>
       </v-row>
-      <v-select v-if="!isTemplate && isMobile" :items="assignedChaperones" v-model="event.lead_chaperone"
-        label="Lead Chaperone" variant="outlined" hide-no-data />
+      <!-- <v-select v-if="!isTemplate && isMobile" :items="assignedChaperones" v-model="event.lead_chaperone"
+        label="Lead Chaperone" variant="outlined" hide-no-data /> -->
       <v-spacer />
 
       <v-data-table :height="chaperoneSlots.length > 0 ? (chaperoneSlots.length + 1) * 76 : undefined"
@@ -139,7 +139,7 @@
 
       <!-- <v-sheet v-if="!isMobile && !isTemplate && isDev && !loadingData" color="primary" class="my-4" rounded
         style="padding: 1px;" elevation="2"> -->
-      <v-card elevation="0" v-if="!isMobile && !isTemplate">
+      <v-card elevation="0" v-if="!isMobile && !isTemplate && !newEvent">
         <v-card-title class="text-h5 mt-4 mb-n4">Availability</v-card-title>
         <v-row class="mt-n3 mb-4">
           <v-col class="pl-7 pt-7">
@@ -174,7 +174,7 @@
       </v-card>
       <!-- </v-sheet> -->
 
-      <div v-if="isMobile && !isTemplate">
+      <div v-if="isMobile && !isTemplate && !newEvent">
         <v-card>
           <v-card-title>Available</v-card-title>
           <v-card-text>
@@ -241,8 +241,8 @@
 
         <v-divider class="my-6" />
 
-        <v-btn v-if="!newEvent && !isDefaultTemplate" color="primary" class="mt-2 mr-4" variant="outlined" width="100vw"
-          @click="showConfirmDeleteDialog = true">
+        <v-btn v-if="!newEvent && !isDefaultTemplate && !isPastEvent" color="primary" class="mt-2 mr-4"
+          variant="outlined" width="100vw" @click="showConfirmDeleteDialog = true">
           Delete {{ isTemplate ? 'Template' : 'Event' }}</v-btn>
 
         <v-btn color="primary" class="mt-4" @click="saveEvent" :loading="saving" width="100vw">Save</v-btn>
@@ -268,7 +268,6 @@
 
 <script lang="js" setup>
 import { useAppStore } from '@/stores/app';
-import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
 import { getCurrentInstance } from 'vue';
 import { VDateInput } from 'vuetify/labs/VDateInput'
 
@@ -281,8 +280,10 @@ const chaperoneNames = ref([])
 
 const saving = ref(false);
 const store = useAppStore();
-let newEvent = false;
-let isTemplate = ref(false);
+const newEvent = ref(false);
+const isTemplate = ref(false);
+const isPastEvent = computed(() => event.value?.start < new Date());
+
 
 const templates = ref([]);
 const templateNames = computed(() => templates.value.map(template => template.template_name).sort());
@@ -337,7 +338,7 @@ onMounted(async () => {
   if (!isTemplate.value) loadAvailability();
 
   if (proxy.$route.query.id === 'new') {
-    newEvent = true;
+    newEvent.value = true;
     document.title = (isTemplate.value ? "New Template" : "New Event") + " - Steel City Choristers";
     event.value = {
       date: new Date(),
@@ -503,6 +504,7 @@ const loadAvailability = () => {
 }
 
 const leadChaperoneAssigned = () => {
+  return true;
   if (assignedChaperones.value.length > 0 && !event.value.lead_chaperone) {
     return false
   }
@@ -665,7 +667,7 @@ const saveEvent = async () => {
     return;
   }
 
-  if (newEvent) {
+  if (newEvent.value) {
     if (isTemplate.value) {
       await saveNewTemplate();
     } else {
@@ -707,7 +709,7 @@ const saveNewTemplate = async () => {
     });
 }
 
-const saveNewEvent = () => {
+const savenewEvent = () => {
   fetchAPI("events", {
     method: 'PUT',
     headers: {
@@ -731,7 +733,7 @@ const saveNewEvent = () => {
             proxy.$router.push(`/event?id=${event.value.id}`)
           } else {
             proxy.$router.push(`/editEvent?id=${event.value.id}`)
-            newEvent = false
+            newEvent.value = false
           }
           saving.value = false;
         });

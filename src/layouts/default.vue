@@ -1,9 +1,9 @@
 <template>
   <v-main>
-    <v-alert type="warning" v-if="proxy.$route.path != '/login' && !isDev">The rota was correct
+    <!-- <v-alert type="warning" v-if="proxy.$route.path != '/login' && !isDev">The rota was correct
       at time of entry. This system is
       not currently
-      live. Do not rely on it to provide up-to-date information</v-alert>
+      live. Do not rely on it to provide up-to-date information</v-alert> -->
     <router-view />
 
     <AlertDialog />
