@@ -12,9 +12,11 @@
         <v-date-input variant="outlined" label="Start" class="px-3" max-width="300" v-model="start" :max="end" />
         <v-date-input variant="outlined" label="End" class="px-3" max-width="300" v-model="end" :min="start" />
         <v-spacer />
+        <v-btn v-if="showTable" color="primary" @click="sendAvailabilityEmail" class="mr-4" variant="flat">Send
+          Availability Email</v-btn>
         <v-btn v-if="showTable" color="primary" @click="saveTableAsImage" class="mr-4" variant="flat">Save as
           Image</v-btn>
-        <v-btn v-if="showTable" color="primary" @click="printTable" class="mr-4" variant="flat">Print</v-btn>
+        <v-btn v-if="showTable && isDev" color="primary" @click="printTable" class="mr-4" variant="flat">Print</v-btn>
       </v-row>
       <v-div v-else>
         <v-date-input variant="outlined" label="Start" class="px-3" max-width="300" v-model="start" :max="end" />
@@ -56,12 +58,14 @@
             </tr>
           </table>
         </div>
-        <div class="d-flex justify-center mt-3">
-          <v-btn v-if="isMobile" width="80vw" color="primary" @click="saveTableAsImage" variant="flat">Save as
-            Image</v-btn>
-        </div>
+        <!-- <v-btn v-if="isMobile" class="mt-3" width="100vw" color="primary" @click="saveTableAsImage" variant="flat">Save
+          as
+          Image</v-btn> -->
       </v-sheet>
       <v-card-text v-else>No events found in the selected range</v-card-text>
+      <v-btn v-if="isMobile" class="mt-4" width="100vw" color="primary" @click="sendAvailabilityEmail"
+        variant="flat">Send
+        Availability Email</v-btn>
     </v-card>
   </div>
 </template>
@@ -69,8 +73,9 @@
 <script setup>
 import { VDateInput } from 'vuetify/labs/VDateInput'
 import domtoimage from 'dom-to-image';
+import { useAppStore } from '@/stores/app';
 
-
+const store = useAppStore();
 const chaperones = ref([])
 const events = ref([])
 const eventsInRange = computed(() => events.value.filter(event => event.start >= start.value && event.end <= end.value))
@@ -137,6 +142,25 @@ onMounted(async () => {
   ])
   loadingData.value = false
 })
+
+const sendAvailabilityEmail = () => {
+  fetchAPI('availability/mail', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => {
+      if (response.ok) {
+        store.showAlert("Email Sent", "Availability email sent successfully")
+      } else {
+        store.showAlert("Error", "An error occurred while sending the availability email")
+      }
+    })
+    .catch((error) => {
+      console.error('Error:', error)
+    });
+}
 
 const printTable = () => {
   const tableElement = document.querySelector('.table_container');

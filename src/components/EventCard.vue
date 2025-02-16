@@ -50,10 +50,7 @@
               {{ chaperones.find(c => c.id === chaperone)?.name }}<br>
             </v-card-text>
           </span>
-          <v-alert v-else-if="!loadingData" type="warning" class="ml-1 pa-2" max-width="400px">
-            No chaperones assigned
-          </v-alert>
-          <div v-else class="d-flex justify-center align-center">
+          <div v-if="loadingData" class="d-flex justify-center align-center">
             <v-progress-circular color="primary" indeterminate />
           </div>
         </v-card-text>
