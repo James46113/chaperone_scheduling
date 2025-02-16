@@ -12,7 +12,8 @@
         <v-date-input variant="outlined" label="Start" class="px-3" max-width="300" v-model="start" :max="end" />
         <v-date-input variant="outlined" label="End" class="px-3" max-width="300" v-model="end" :min="start" />
         <v-spacer />
-        <v-btn v-if="showTable" color="primary" @click="sendAvailabilityEmail" class="mr-4" variant="flat">Send
+        <v-btn v-if="showTable" color="primary" :loading="sendingEmails" @click="sendAvailabilityEmail" class="mr-4"
+          variant="flat">Send
           Availability Email</v-btn>
         <v-btn v-if="showTable" color="primary" @click="saveTableAsImage" class="mr-4" variant="flat">Save as
           Image</v-btn>
@@ -63,8 +64,8 @@
           Image</v-btn> -->
       </v-sheet>
       <v-card-text v-else>No events found in the selected range</v-card-text>
-      <v-btn v-if="isMobile" class="mt-4" width="100vw" color="primary" @click="sendAvailabilityEmail"
-        variant="flat">Send
+      <v-btn v-if="isMobile" :loading="sendingEmails" class="mt-4" width="100vw" color="primary"
+        @click="sendAvailabilityEmail" variant="flat">Send
         Availability Email</v-btn>
     </v-card>
   </div>
@@ -81,6 +82,8 @@ const events = ref([])
 const eventsInRange = computed(() => events.value.filter(event => event.start >= start.value && event.end <= end.value))
 const availabilities = ref([])
 const showTable = computed(() => eventsInRange.value.length > 0)
+
+const sendingEmails = ref(false)
 
 const start = ref(new Date())
 const end = ref(new Date())
@@ -144,6 +147,7 @@ onMounted(async () => {
 })
 
 const sendAvailabilityEmail = () => {
+  sendingEmails.value = true
   fetchAPI('availability/mail', {
     method: 'POST',
     headers: {
@@ -156,6 +160,7 @@ const sendAvailabilityEmail = () => {
       } else {
         store.showAlert("Error", "An error occurred while sending the availability email")
       }
+      sendingEmails.value = false
     })
     .catch((error) => {
       console.error('Error:', error)
