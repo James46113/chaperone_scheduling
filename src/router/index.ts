@@ -36,9 +36,10 @@ router.isReady().then(() => {
   localStorage.removeItem('vuetify:dynamic-reload')
 })
 
+router.afterEach((to, from) => window.scrollTo(0, 0))
+
 router.beforeEach((to, from, next) => {
   const store = useAppStore();
-
   if (!store.userEmail && to.path !== '/login' && !isDev.value) {
     if (Cookies.get('credential')) {
       next()
@@ -46,24 +47,16 @@ router.beforeEach((to, from, next) => {
       next(`/login?redirect=${to.fullPath}`);
     }
   }
-
-  else {
-    next();
-  }
-});
-
-router.beforeEach((to, from, next) => {
-  const store = useAppStore();
-
   if ((to.path.startsWith('/editEvent') ||
     to.path.startsWith('/templateEvents') ||
     to.path.startsWith('/users') ||
     to.path.startsWith('/availability')
-  ) && !store.isAdmin && store.userEmail && !isDev.value) {
+  ) && !store.isAdmin && !isDev.value) {
     next('/');
-  } else {
+  }
+  else {
     next();
   }
-})
+});
 
 export default router

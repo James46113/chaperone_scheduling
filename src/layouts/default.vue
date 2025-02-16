@@ -29,10 +29,12 @@ const store = useAppStore();
 if (isDev.value) {
   store.userEmail = "jamescaroe@gmail.com"
   store.userID = 8
-  store.isAdmin = false
+  store.isAdmin = true
   console.log('Dev mode')
 }
 // })
+
+onMounted(() => window.scrollTo(0, 0))
 
 const goHome = (tab) => {
   store.tabView = tab;

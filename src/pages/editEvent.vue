@@ -104,8 +104,8 @@
       <v-data-table :height="chaperoneSlots.length > 0 ? (chaperoneSlots.length + 1) * 76 : undefined"
         :items="chaperoneSlots" :headers="tableHeaders" items-per-page="-1" hide-default-footer v-if="!isMobile">
         <template v-slot:item.chaperone="{ item }">
-          <v-select :items="chaperoneNames" v-model="item.chaperone" variant="outlined" density="compact"
-            class="mt-3 mb-1" auto-select-first />
+          <v-select :items="chaperoneNames" label="Chaperone" v-model="item.chaperone" variant="outlined"
+            density="compact" class="mt-3 mb-1" auto-select-first />
         </template>
         <template v-slot:item.startTime="{ item }">
           <time-picker :hours="item.startHours" :minutes="item.startMinutes" @update:hours="item.startHours = $event"
@@ -116,11 +116,11 @@
             @update:minutes="item.endMinutes = $event" />
         </template>
         <template v-slot:item.details="{ item }">
-          <v-textarea v-model="item.details" variant="outlined" density="compact" class="mt-3 mb-1" auto-grow
-            rows="1" />
+          <v-textarea v-model="item.details" label="Details" variant="outlined" density="compact" class="mt-3 mb-1"
+            auto-grow rows="1" />
         </template>
         <template v-slot:item.title="{ item }">
-          <v-text-field v-model="item.title" variant="outlined" density="compact" class="mt-3 mb-1"
+          <v-text-field v-model="item.title" label="Group" variant="outlined" density="compact" class="mt-3 mb-1"
             :rules="[required]" />
         </template>
         <template v-slot:item.remove="{ item }">
@@ -142,8 +142,8 @@
             :rules="[required]" />
           <v-textarea v-model="slot.details" label="Details" variant="outlined" density="compact" auto-grow rows="2"
             class="mt-n2" />
-          <v-select :items="chaperoneNames" v-model="slot.chaperone" variant="outlined" density="compact"
-            auto-select-first class="mt-n2" />
+          <v-select :items="chaperoneNames" label="Chaperone" v-model="slot.chaperone" variant="outlined"
+            density="compact" auto-select-first class="mt-n2" />
 
           <v-row>
             <span class="mt-4 ml-7">Start</span>
@@ -402,12 +402,15 @@ onMounted(async () => {
 });
 
 const leadChaperoneAssigned = () => {
+  console.log(assignedChaperones.value);
+  console.log(event.value.lead_chaperone);
+  console.log(chaperones.value.find(chaperone => chaperone.name === event.value.lead_chaperone))
   if (assignedChaperones.value.length > 0 && !event.value.lead_chaperone) {
     return false
   }
   if (assignedChaperones.value.length == 0) return true
 
-  if (!assignedChaperones.value.includes(chaperones.value.find(chaperone => chaperone.name === event.value.lead_chaperone)?.id ?? null) && event.value.lead_chaperone) {
+  if (!assignedChaperones.value.includes(chaperones.value.find(chaperone => chaperone.name === event.value.lead_chaperone)?.name) && event.value.lead_chaperone) {
     return false
   }
   return true
@@ -763,7 +766,8 @@ const saveTemplateChaperoneSlots = async () => {
 const saveChaperoneSlots = async () => {
   let validData = true;
   let validTimes = true;
-  chaperoneSlots.value.forEach(slot => {
+  const chaperoneSlotsCopy = chaperoneSlots.value.map(slot => ({ ...slot }));
+  chaperoneSlotsCopy.forEach(slot => {
     const start = new Date(event.value.date);
     start.setHours(slot.startHours, slot.startMinutes, 0, 0);
     slot.start = start;
@@ -803,7 +807,7 @@ const saveChaperoneSlots = async () => {
   })
 
 
-  await Promise.all(chaperoneSlots.value.map(slot => {
+  await Promise.all(chaperoneSlotsCopy.map(slot => {
     return fetchAPI("chaperone_slots", {
       method: 'PUT',
       headers: {

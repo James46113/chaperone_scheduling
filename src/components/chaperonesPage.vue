@@ -1,5 +1,5 @@
 <template>
-  <div class="pa-4 d-flex justify-center" v-if="!loadingData">
+  <div class="pa-4 d-flex justify-center">
     <v-card elevation="0" :width="isMobile ? '100vw' : '80vw'">
       <v-row>
         <v-card-title class="text-h5 mt-3 ml-3">Chaperones' Schedules</v-card-title>
@@ -27,6 +27,7 @@
       </div>
     </v-card>
   </div>
+
 </template>
 
 

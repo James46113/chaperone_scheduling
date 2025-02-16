@@ -7,7 +7,7 @@
   <app-header />
   <div class="pa-4 d-flex justify-center">
     <v-card elevation="0" :width="isMobile ? '100vw' : '80vw'">
-      <v-card-title class="text-h5">Chaperone Availability</v-card-title>
+      <v-card-title class="text-h5 mb-3">Chaperone Availability</v-card-title>
       <v-row class="mt-6" v-if="!isMobile">
         <v-date-input variant="outlined" label="Start" class="px-3" max-width="300" v-model="start" :max="end" />
         <v-date-input variant="outlined" label="End" class="px-3" max-width="300" v-model="end" :min="start" />
@@ -26,7 +26,7 @@
       </div>
       <v-sheet v-else-if="showTable" class="table_container">
         <div style="max-width: 100vw; overflow: scroll;" class="justify-center">
-          <table class="mt-6 mb-11">
+          <table class="my-6">
             <tr>
               <th></th>
               <th v-for="event in eventsInRange">
@@ -56,7 +56,7 @@
             </tr>
           </table>
         </div>
-        <div class="d-flex justify-center">
+        <div class="d-flex justify-center mt-3">
           <v-btn v-if="isMobile" width="80vw" color="primary" @click="saveTableAsImage" variant="flat">Save as
             Image</v-btn>
         </div>
