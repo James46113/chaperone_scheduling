@@ -19,11 +19,22 @@
           </v-card-title>
         </div>
 
-        <v-card-title v-else>
+        <v-card-title v-if="small">
           {{ event.title }}
           <v-icon v-if="!small" color="primary" size="25" class="mt-n1 ml-2">mdi-open-in-new</v-icon>
           <v-icon v-else color="primary" size="25" style="position: absolute; right: 12px">mdi-open-in-new</v-icon>
         </v-card-title>
+
+        <div v-else>
+          <v-card-title>
+            {{ event.start.toLocaleDateString('en-GB', {
+              weekday: 'short', day: 'numeric',
+              month: 'short', year: 'numeric'
+            }) }} - {{ event.title }}
+            <v-icon color="primary" size="25" class="mt-n1 ml-2">mdi-open-in-new</v-icon>
+          </v-card-title>
+        </div>
+
         <v-card-subtitle class="mt-n3">
           {{ event.location }}
         </v-card-subtitle>
@@ -39,9 +50,12 @@
               {{ chaperones.find(c => c.id === chaperone)?.name }}<br>
             </v-card-text>
           </span>
-          <v-alert v-else type="warning" class="ml-1 pa-2" max-width="400px">
+          <v-alert v-else-if="!loadingData" type="warning" class="ml-1 pa-2" max-width="400px">
             No chaperones assigned
           </v-alert>
+          <div v-else class="d-flex justify-center align-center">
+            <v-progress-circular color="primary" indeterminate />
+          </div>
         </v-card-text>
       </div>
       <availability-selector :event="event" small class="mt-n3" />

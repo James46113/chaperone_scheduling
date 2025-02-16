@@ -92,7 +92,7 @@
       <v-row class="my-3">
         <v-card-title class="mt-4">Chaperones</v-card-title>
         <v-select v-if="!isTemplate && !isMobile" :items="assignedChaperones" v-model="event.lead_chaperone"
-          label="Lead Chaperone" variant="outlined" class="mt-3 ml-7" hide-no-data />
+          label="Lead Chaperone" variant="outlined" class="mt-3 ml-7" hide-no-data max-width="300" />
         <v-spacer />
         <v-btn v-if="!isMobile" color="primary" variant="outlined" class="mt-6 mr-6" @click="newSlot">Add
           Chaperone</v-btn>
@@ -134,6 +134,77 @@
           </v-alert>
         </template>
       </v-data-table>
+
+      <v-divider />
+
+      <!-- <v-sheet v-if="!isMobile && !isTemplate && isDev && !loadingData" color="primary" class="my-4" rounded
+        style="padding: 1px;" elevation="2"> -->
+      <v-card elevation="0" v-if="!isMobile && !isTemplate">
+        <v-card-title class="text-h5 mt-4 mb-n4">Availability</v-card-title>
+        <v-row class="mt-n3 mb-4">
+          <v-col class="pl-7 pt-7">
+            <v-card-title>Available</v-card-title>
+            <v-card-text>
+              <span class="ml-2" v-if="availableChaperones.length === 0"><i>None available</i></span>
+              <ul class="ml-7">
+                <li v-for="chaperone in availableChaperones">{{ chaperone.name }}</li>
+              </ul>
+            </v-card-text>
+          </v-col>
+          <v-col class="pl-7 pt-7">
+            <v-card-title>Not Available</v-card-title>
+            <v-card-text>
+              <span class="ml-2" v-if="unavailableChaperones.length === 0"><i>None unavailable</i></span>
+              <ul class="ml-7">
+                <li v-for="chaperone in unavailableChaperones">{{ chaperone.name }}</li>
+              </ul>
+            </v-card-text>
+          </v-col>
+          <v-col class="pl-7 pt-7">
+            <v-card-title>Not Answered</v-card-title>
+            <v-card-text>
+              <span v-if="unansweredChaperones.length === 0" class="ml-2"><i>All chaperones have
+                  responded</i></span>
+              <ul class="ml-7">
+                <li v-for="chaperone in unansweredChaperones">{{ chaperone.name }}</li>
+              </ul>
+            </v-card-text>
+          </v-col>
+        </v-row>
+      </v-card>
+      <!-- </v-sheet> -->
+
+      <div v-if="isMobile && !isTemplate">
+        <v-card>
+          <v-card-title>Available</v-card-title>
+          <v-card-text>
+            <span v-if="availableChaperones.length === 0"><i>None available</i></span>
+            <ul class="ml-5">
+              <li v-for="chaperone in availableChaperones">{{ chaperone.name }}</li>
+            </ul>
+          </v-card-text>
+        </v-card>
+        <v-card class="mt-2">
+          <v-card-title>Not Available</v-card-title>
+          <v-card-text>
+            <span v-if="unavailableChaperones.length === 0"><i>None unavailable</i></span>
+            <ul class="ml-5">
+              <li v-for="chaperone in unavailableChaperones">{{ chaperone.name }}</li>
+            </ul>
+          </v-card-text>
+        </v-card>
+        <v-card class="mt-2">
+          <v-card-title>Not Answered</v-card-title>
+          <v-card-text>
+            <span v-if="unansweredChaperones.length === 0"><i>All chaperones have responded</i></span>
+            <ul class="ml-5">
+              <li v-for="chaperone in unansweredChaperones">{{ chaperone.name }}</li>
+            </ul>
+          </v-card-text>
+        </v-card>
+      </div>
+
+      <v-divider class="my-4" />
 
       <v-sheet color="primary" v-for="slot in chaperoneSlots" v-if="isMobile" class="my-4" rounded
         style="padding: 1px;">
@@ -177,7 +248,6 @@
         <v-btn color="primary" class="mt-4" @click="saveEvent" :loading="saving" width="100vw">Save</v-btn>
       </div>
 
-
     </v-card>
   </div>
   <div v-else class="d-flex justify-center align-center" style="height: 70vh;">
@@ -198,6 +268,7 @@
 
 <script lang="js" setup>
 import { useAppStore } from '@/stores/app';
+import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
 import { getCurrentInstance } from 'vue';
 import { VDateInput } from 'vuetify/labs/VDateInput'
 
@@ -217,6 +288,13 @@ const templates = ref([]);
 const templateNames = computed(() => templates.value.map(template => template.template_name).sort());
 const selectedTemplate = ref('Load Template');
 const templateChaperoneSlots = ref([]);
+
+const availability = ref([]);
+const availableChaperones = computed(() => availability.value.filter(a => a.available));
+const unavailableChaperones = computed(() => availability.value.filter(a => a.available === false));
+const unansweredChaperones = computed(() => availability.value.filter(a => a.available === null));
+
+
 
 const isDefaultTemplate = computed(() => {
   return (proxy.$route.query.id == '2' || proxy.$route.query.id == '3') && proxy.$route.query.isTemplate == 1;
@@ -253,7 +331,10 @@ onMounted(async () => {
 
   loadingData.value = true;
 
+
   await getChaperones();
+
+  if (!isTemplate.value) loadAvailability();
 
   if (proxy.$route.query.id === 'new') {
     newEvent = true;
@@ -401,10 +482,27 @@ onMounted(async () => {
   loadingData.value = false;
 });
 
+const loadAvailability = () => {
+  fetchAPI(`/events/${proxy.$route.query.id}/availability`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      availability.value = data.map(a => (
+        {
+          name: chaperones.value.find(chaperone => chaperone.id === a.chaperone_id).name,
+          available: a.available
+        }));
+    })
+    .catch((error) => {
+      console.error('Error:', error)
+    });
+}
+
 const leadChaperoneAssigned = () => {
-  console.log(assignedChaperones.value);
-  console.log(event.value.lead_chaperone);
-  console.log(chaperones.value.find(chaperone => chaperone.name === event.value.lead_chaperone))
   if (assignedChaperones.value.length > 0 && !event.value.lead_chaperone) {
     return false
   }
@@ -828,3 +926,23 @@ const saveChaperoneSlots = async () => {
 }
 
 </script>
+
+
+<style scoped>
+table,
+th,
+td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  font-weight: normal;
+}
+</style>
