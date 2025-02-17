@@ -70,6 +70,7 @@
       </v-tabs-window-item>
 
       <v-tabs-window-item value="schedule">
+        <v-card-text v-if="isPWA">test</v-card-text>
         <schedule-page :chaperone_id="store.userID" />
       </v-tabs-window-item>
 
@@ -101,6 +102,7 @@ const showCreateTerm = ref(false);
 document.title = "Chaperones' Calendar - Steel City Choristers"
 
 onMounted(async () => {
+  console.log((window.matchMedia('(display-mode: standalone)').matches))
   if (proxy.$route.query.view) {
     store.tabView = proxy.$route.query.view;
   }
@@ -150,6 +152,7 @@ const loadData = async () => {
   events.value = eventsData.map((event) => ({
     id: event.id,
     title: event.title,
+    date: new Date(event.start),
     start: new Date(event.start),
     end: new Date(event.end),
     location: event.location,

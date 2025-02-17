@@ -3,7 +3,7 @@
   <v-card :class="isMobile ? 'pa-4' : 'pa-10'" v-if="!loadingData">
     <v-row>
       <div>
-        <v-card-title class="text-h4 mb-n5">{{ loadingData ? "Loading..." : event.title }}</v-card-title>
+        <v-card-title class="text-h4 mb-n5" style="white-space: pre-wrap;">{{ event.title }}</v-card-title>
 
         <v-btn v-if="!isMobile && store.isAdmin && !isPastEvent"
           @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)" color="primary"
