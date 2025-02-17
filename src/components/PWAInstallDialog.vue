@@ -6,7 +6,7 @@
         Install App
       </v-card-title>
       <v-card-text>
-        Install this app on your device for quick and easy access when you're on the go.
+        Install this app on your device for quick and easy access.
         This is strongly recommended for the best experience.
       </v-card-text>
       <v-card-text v-if="isIOS">
