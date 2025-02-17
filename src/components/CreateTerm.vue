@@ -5,7 +5,9 @@
       website. Until this is
       fixed, DO
       NOT type dates into
-      the date picker. You MUST use the calendar." class="mb-6" />
+      the date picker. You MUST use the calendar." class="mb-6"><a
+        href="https://github.com/vuetifyjs/vuetify/issues/19803" target="_blank" rel="noopener noreferrer"><br /><v-btn
+          class="mt-2">Bug Status</v-btn></a></v-alert>
     <v-date-input v-model="start" :max="end" label="Term Start" />
     <v-date-input v-model="end" :min="start" label="Term End" />
     <div class="d-flex justify-center">

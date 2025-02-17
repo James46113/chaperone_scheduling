@@ -12,7 +12,8 @@
       website. Until this is
       fixed, DO
       NOT type dates into
-      the date picker. You MUST use the calendar." />
+      the date picker. You MUST use the calendar."><a href="https://github.com/vuetifyjs/vuetify/issues/19803"
+          target="_blank" rel="noopener noreferrer"><br /><v-btn class="mt-2">Bug Status</v-btn></a></v-alert>
       <v-row class="mt-6" v-if="!isMobile">
         <v-date-input variant="outlined" label="Start" class="px-3" max-width="300" v-model="start" :max="end" />
         <v-date-input variant="outlined" label="End" class="px-3" max-width="300" v-model="end" :min="start" />

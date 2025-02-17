@@ -5,7 +5,8 @@
       website. Until this is
       fixed, DO
       NOT type dates into
-      the date picker. You MUST use the calendar." />
+      the date picker. You MUST use the calendar."><a href="https://github.com/vuetifyjs/vuetify/issues/19803"
+        target="_blank" rel="noopener noreferrer"><br /><v-btn class="mt-2">Bug Status</v-btn></a></v-alert>
     <v-card class="pa-3" elevation="0">
       <v-card-title class="text-h5 ml-n6 mb-4" v-if="newEvent">New {{ isTemplate ? 'Template' : 'Event'
         }}</v-card-title>

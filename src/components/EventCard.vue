@@ -51,7 +51,8 @@
               {{ chaperone.name }}<br>
             </v-card-text>
           </span>
-          <v-alert v-if="missingChaperones" density="compact" type="warning" class="mt-1" max-width="400px">Empty
+          <v-alert v-if="missingChaperones && store.isAdmin" density="compact" type="warning" class="mt-1"
+            max-width="400px">Empty
             Slot(s)</v-alert>
           <div v-if="loadingData" class="d-flex justify-center align-center">
             <v-progress-circular color="primary" indeterminate />
@@ -64,8 +65,11 @@
 </template>
 
 <script setup>
+import { useAppStore } from '@/stores/app'
+
 
 const { proxy } = getCurrentInstance()
+const store = useAppStore();
 const props = defineProps({
   event: Object,
   chaperones: Array,
