@@ -1,12 +1,6 @@
 <template>
   <app-header />
   <div class="pa-6" v-if="!loadingData">
-    <v-alert type="error" title="Framework Bug" text="Please be aware that there is a bug in the framework used to create this
-      website. Until this is
-      fixed, DO
-      NOT type dates into
-      the date picker. You MUST use the calendar."><a href="https://github.com/vuetifyjs/vuetify/issues/19803"
-        target="_blank" rel="noopener noreferrer"><br /><v-btn class="mt-2">Bug Status</v-btn></a></v-alert>
     <v-card class="pa-3" elevation="0">
       <v-card-title class="text-h5 ml-n6 mb-4" v-if="newEvent">New {{ isTemplate ? 'Template' : 'Event'
         }}</v-card-title>
@@ -50,8 +44,18 @@
 
       <v-row class="mb-1" v-if="!isMobile">
         <v-col v-if="!isTemplate">
-          <v-date-input v-if="!isTemplate" :rules="[required]" v-model="event.date" label="Date" variant="outlined"
-            class="mt-3" :first-day-of-week="1" />
+          <!-- <v-date-input v-if="!isTemplate" :rules="[required]" v-model="event.date" label="Date" variant="outlined"
+            class="mt-3" :first-day-of-week="1" /> -->
+
+          <v-text-field v-if="!isTemplate" type="text" readonly variant="outlined" class="mt-3"
+            prepend-icon="mdi-calendar">
+            {{ new Date(event.date).toLocaleDateString() }}
+            <v-menu activator="parent" :close-on-content-click="false">
+              <v-date-picker v-model="event.date" />
+            </v-menu>
+          </v-text-field>
+
+
         </v-col>
         <v-col>
           <v-row class="my-2">
@@ -72,8 +76,13 @@
       </v-row>
 
       <div v-else>
-        <v-date-input v-if="!isTemplate" :rules="[required]" v-model="event.date" label="Date" variant="outlined"
-          class="mt-3" :first-day-of-week="1" placeholder="dd/mm/yyyy" @input="formatDate" />
+        <v-text-field v-if="!isTemplate" type="text" readonly variant="outlined" class="mt-3"
+          prepend-icon="mdi-calendar">
+          {{ new Date(event.date).toLocaleDateString() }}
+          <v-menu activator="parent" :close-on-content-click="false">
+            <v-date-picker v-model="event.date" />
+          </v-menu>
+        </v-text-field>
 
         <v-row class="px-3">
           <span class="ml-4 mt-5 mr-3">Start</span>
@@ -313,7 +322,7 @@ const store = useAppStore();
 const newEvent = ref(false);
 const isTemplate = ref(false);
 const isPastEvent = computed(() => event.value?.start < new Date());
-
+const menu = ref(false)
 
 const templates = ref([]);
 const templateNames = computed(() => templates.value.map(template => template.template_name).sort());
@@ -678,7 +687,7 @@ const newSlot = () => {
 
 const saveEvent = async () => {
   saving.value = true;
-  if (isPastEvent.value && !isTemplate.value && newEvent.value) {
+  if (isPastEvent.value && !isTemplate.value && !newEvent.value) {
     store.showAlert('Past Event', 'Cannot edit past events.');
     saving.value = false;
     return;

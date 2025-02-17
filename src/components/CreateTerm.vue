@@ -1,15 +1,23 @@
 <template>
   <v-card class="pa-6" elevation="0">
     <v-card-title class="text-h5 mb-3">Create Term</v-card-title>
-    <v-alert type="error" title="Framework Bug" text="Please be aware that there is a bug in the framework used to create this
-      website. Until this is
-      fixed, DO
-      NOT type dates into
-      the date picker. You MUST use the calendar." class="mb-6"><a
-        href="https://github.com/vuetifyjs/vuetify/issues/19803" target="_blank" rel="noopener noreferrer"><br /><v-btn
-          class="mt-2">Bug Status</v-btn></a></v-alert>
-    <v-date-input v-model="start" :max="end" label="Term Start" />
-    <v-date-input v-model="end" :min="start" label="Term End" />
+
+    <v-card-subtitle class="ml-n4">Term Start</v-card-subtitle>
+    <v-text-field type="text" readonly variant="outlined" class="mt-3" prepend-icon="mdi-calendar">
+      {{ start.toLocaleDateString() }}
+      <v-menu activator="parent" :close-on-content-click="false">
+        <v-date-picker v-model="start" :max="end" />
+      </v-menu>
+    </v-text-field>
+
+    <v-card-subtitle class="ml-n4">Term End</v-card-subtitle>
+    <v-text-field type="text" readonly variant="outlined" class="mt-3" prepend-icon="mdi-calendar">
+      {{ end.toLocaleDateString() }}
+      <v-menu activator="parent" :close-on-content-click="false">
+        <v-date-picker v-model="end" :min="start" />
+      </v-menu>
+    </v-text-field>
+
     <div class="d-flex justify-center">
       <v-btn color="primary" variant="flat" class="mt-3" @click="createTerm" width="100vw">Create</v-btn>
     </div>
@@ -19,8 +27,8 @@
 <script setup>
 import { VDateInput } from 'vuetify/labs/VDateInput'
 
-const start = ref()
-const end = ref()
+const start = ref(new Date())
+const end = ref(new Date(new Date().setMonth(new Date().getMonth() + 1)))
 const templates = ref()
 const templateChaperoneSlots = ref()
 
