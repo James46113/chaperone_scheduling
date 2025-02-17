@@ -23,6 +23,22 @@
           <template #item.delete="{ item }">
             <v-btn @click="deleteUser(item.id)" variant="flat"><v-icon>mdi-delete</v-icon></v-btn>
           </template>
+          <template #item.email="{ item }">
+            <v-row>
+              <v-col>
+                <v-card-text v-if="!item.editEmail">
+                  {{ item.email }}
+                </v-card-text>
+                <v-text-field v-else v-model="item.email" class="mb-n3 mt-2" :rules="[required]" label="Email" required
+                  @keyup.enter="saveEmail(item)" variant="outlined" density="compact"></v-text-field>
+              </v-col>
+              <v-col>
+                <v-btn v-if="!item.editEmail" variant="flat" class="mt-2"
+                  @click="item.editEmail = true"><v-icon>mdi-pencil</v-icon></v-btn>
+                <v-btn v-else variant="flat" class="mt-2" @click="saveEmail(item)"><v-icon>mdi-check</v-icon></v-btn>
+              </v-col>
+            </v-row>
+          </template>
           <template v-slot:no-data>
             <v-progress-circular v-if="loadingData" color="primary" indeterminate size="40" class="mt-4" />
             <v-card-text v-else>No users found</v-card-text>
@@ -67,7 +83,7 @@ const headers = computed(() => [
   { title: 'Name', key: 'name', mobile: true },
   { title: 'Email', key: 'email', mobile: false },
   { title: 'Admin', key: 'is_admin', mobile: true },
-  { title: 'Delete', key: 'delete', width: '10%', mobile: true },
+  { title: 'Delete', key: 'delete', mobile: true },
 ].filter(header => !isMobile.value || header.mobile))
 
 // onMounted(() => {
@@ -80,7 +96,8 @@ fetchAPI('chaperones', {
 })
   .then((response) => response.json())
   .then((data) => {
-    data.sort((a, b) => a.email.localeCompare(b.email));
+    data.sort((a, b) => a.name.localeCompare(b.name));
+    data.forEach(user => user.editEmail = false);
     users.value = data;
     loadingData.value = false;
   })
@@ -88,6 +105,21 @@ fetchAPI('chaperones', {
     console.error('Error:', error)
   });
 // })
+
+const saveEmail = (user) => {
+  user.editEmail = false;
+  fetchAPI(`chaperones/${user.id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email: user.email })
+  })
+    .then((response) => response.json())
+    .catch(() => {
+      store.showAlert('Error', 'An error occurred while updating the user')
+    });
+}
 
 const createUser = () => {
   if (!newUser.value.email) {

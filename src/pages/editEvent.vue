@@ -225,8 +225,20 @@
             :rules="[required]" />
           <v-textarea v-model="slot.details" label="Details" variant="outlined" density="compact" auto-grow rows="2"
             class="mt-n2" />
-          <v-select :items="chaperoneNames" label="Chaperone" v-model="slot.chaperone" variant="outlined"
-            density="compact" auto-select-first class="mt-n2" />
+          <v-select :items="availability" item-title="name" label="Chaperone" v-model="slot.chaperone"
+            variant="outlined" density="compact" auto-select-first class="mt-n2">
+            <template v-slot:item="{ props, item }">
+              <v-list-item v-bind="props" :disabled="item.raw.available === false">
+                <v-list-item-subtitle>
+                  <v-chip width="100px" height="100%" density="compact" size="small"
+                    :color="item.raw.available ? 'green' : item.raw.available === false ? 'red' : 'orange'">
+                    {{ item.raw.available ? 'Available' : item.raw.available === false ? 'Unavailable' : 'Not Answered'
+                    }}
+                  </v-chip>
+                </v-list-item-subtitle>
+              </v-list-item>
+            </template>
+          </v-select>
 
           <v-row>
             <span class="mt-4 ml-7">Start</span>
@@ -508,7 +520,8 @@ const loadAvailability = () => {
         {
           name: chaperones.value.find(chaperone => chaperone.id === a.chaperone_id).name,
           available: a.available
-        }));
+        })).sort((a, b) => a.name.localeCompare(b.name));
+      availability.value = [...availableChaperones.value, ...unansweredChaperones.value, ...unavailableChaperones.value]
     })
     .catch((error) => {
       console.error('Error:', error)
