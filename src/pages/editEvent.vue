@@ -672,7 +672,7 @@ const newSlot = () => {
 
 const saveEvent = async () => {
   saving.value = true;
-  if (isPastEvent.value) {
+  if (isPastEvent.value && !isTemplate.value) {
     store.showAlert('Past Event', 'Cannot edit past events.');
     saving.value = false;
     return;
