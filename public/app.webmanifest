@@ -26,12 +26,6 @@
       "form_factor": "wide"
     },
     {
-      "src": "555x1152.png",
-      "sizes": "555x1152",
-      "type": "image/png",
-      "description": "Main Calendar Page"
-    },
-    {
       "src": "signin.png",
       "sizes": "553x1145",
       "type": "image/png",

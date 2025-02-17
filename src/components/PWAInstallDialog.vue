@@ -9,8 +9,23 @@
         Install this app on your device for quick and easy access when you're on the go.
         This is strongly reccomended for the best experience.
       </v-card-text>
+      <v-card-text v-if="isIOS">
+        Steps to install:
+        <ol class="ml-8 mt-3">
+          <li>
+            Press the "share" icon:
+            <img src="/ios-share.svg" width="20px" />
+          </li>
+          <li>
+            Scroll down until you see "Add to Home Screen"
+          </li>
+          <li>
+            Press "Add to Home Screen"
+          </li>
+        </ol>
+      </v-card-text>
       <v-checkbox class="ml-7" v-model="dontShowAgain" label="Don't show this again" />
-      <v-card-actions>
+      <v-card-actions v-if="!isIOS">
         <v-btn text @click="close">
           Cancel
         </v-btn>
@@ -18,14 +33,18 @@
           Install
         </v-btn>
       </v-card-actions>
+      <v-card-actions v-else>
+        <v-btn text @click="close">
+          Close
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script setup>
-const showPWAinstall = ref(!isPWA.value && !(Cookies.get('dontShowPWA') == 'true'))
-const isAndroid = computed(() => navigator.userAgent.match(/Android/i))
 const isIOS = computed(() => navigator.userAgent.match(/iPhone|iPad|iPod/i))
+const showPWAinstall = ref(!isPWA.value && !(Cookies.get('dontShowPWA') == 'true'))
 const dontShowAgain = ref(false)
 let installPrompt = null;
 console.log(showPWAinstall.value)
