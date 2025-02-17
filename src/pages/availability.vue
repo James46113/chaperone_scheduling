@@ -11,7 +11,9 @@
       <v-row class="mt-6" v-if="!isMobile">
         <v-date-input variant="outlined" label="Start" class="px-3" max-width="300" v-model="start" :max="end" />
         <v-date-input variant="outlined" label="End" class="px-3" max-width="300" v-model="end" :min="start" />
+
         <v-spacer />
+
         <v-btn v-if="showTable" color="primary" :loading="sendingEmails" @click="sendAvailabilityEmail" class="mr-4"
           variant="flat">Send
           Availability Email</v-btn>
@@ -19,6 +21,7 @@
           Image</v-btn>
         <v-btn v-if="showTable && isDev" color="primary" @click="printTable" class="mr-4" variant="flat">Print</v-btn>
       </v-row>
+
       <v-div v-else>
         <v-date-input variant="outlined" label="Start" class="px-3" max-width="300" v-model="start" :max="end" />
         <v-date-input variant="outlined" label="End" class="px-3" max-width="300" v-model="end" :min="start" />

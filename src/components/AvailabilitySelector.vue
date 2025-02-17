@@ -24,10 +24,11 @@ const props = defineProps({
 })
 
 const store = useAppStore();
-const isPastEvent = computed(() => props.event.end < new Date())
+const isPastEvent = computed(() => props.event.date < new Date())
 
 
 const updateAvailable = (availability) => {
+  const originalAvailability = props.event.available
   props.event.available = availability
   fetchAPI(`chaperones/availability/${store.userID}`, {
     // fetchAPI(`chaperones/availability/1`, { // DEBUG ONLY
@@ -37,16 +38,16 @@ const updateAvailable = (availability) => {
     },
     body: JSON.stringify({
       event_id: props.event.id,
-      available: props.event.available
+      available: availability
     })
   })
     .then((response) => {
       if (response.status === 403) {
-        store.showAlert('Assigned', 'You are already assigned to this event, please contact Angela if you need to change your availability.')
-        props.event.available = !availability
+        store.showAlert('Assigned', 'You are already assigned to this event, please contact Angela on +44 7985 925570 if you are no longer available.')
+        props.event.available = originalAvailability
       } else if (!response.ok) {
         store.showAlert('Failed to update availability', 'Are you connected to the internet?')
-        props.event.available = !availability
+        props.event.available = originalAvailability
       }
     })
 }

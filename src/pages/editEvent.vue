@@ -104,8 +104,20 @@
       <v-data-table :height="chaperoneSlots.length > 0 ? (chaperoneSlots.length + 1) * 76 : undefined"
         :items="chaperoneSlots" :headers="tableHeaders" items-per-page="-1" hide-default-footer v-if="!isMobile">
         <template v-slot:item.chaperone="{ item }">
-          <v-select :items="chaperoneNames" label="Chaperone" v-model="item.chaperone" variant="outlined"
-            density="compact" class="mt-3 mb-1" auto-select-first />
+          <v-select :items="availability" item-title="name" label="Chaperone" v-model="item.chaperone"
+            variant="outlined" density="compact" class="mt-3 mb-1" auto-select-first>
+            <template v-slot:item="{ props, item }">
+              <v-list-item v-bind="props" :disabled="item.raw.available === false">
+                <v-list-item-subtitle>
+                  <v-chip width="100px" height="100%" density="compact" size="small"
+                    :color="item.raw.available ? 'green' : item.raw.available === false ? 'red' : 'orange'">
+                    {{ item.raw.available ? 'Available' : item.raw.available === false ? 'Unavailable' : 'Not Answered'
+                    }}
+                  </v-chip>
+                </v-list-item-subtitle>
+              </v-list-item>
+            </template>
+          </v-select>
         </template>
         <template v-slot:item.startTime="{ item }">
           <time-picker :hours="item.startHours" :minutes="item.startMinutes" @update:hours="item.startHours = $event"
@@ -484,25 +496,24 @@ onMounted(async () => {
 });
 
 const loadAvailability = () => {
-  if (!newEvent) {
-    fetchAPI(`events/${proxy.$route.query.id}/availability`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+  fetchAPI(`events/${proxy.$route.query.id}/availability`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      availability.value = data.map(a => (
+        {
+          name: chaperones.value.find(chaperone => chaperone.id === a.chaperone_id).name,
+          available: a.available
+        }));
     })
-      .then((response) => response.json())
-      .then((data) => {
-        availability.value = data.map(a => (
-          {
-            name: chaperones.value.find(chaperone => chaperone.id === a.chaperone_id).name,
-            available: a.available
-          }));
-      })
-      .catch((error) => {
-        console.error('Error:', error)
-      });
-  }
+    .catch((error) => {
+      console.error('Error:', error)
+    });
+
 }
 
 const leadChaperoneAssigned = () => {
@@ -648,6 +659,11 @@ const newSlot = () => {
 
 const saveEvent = async () => {
   saving.value = true;
+  if (isPastEvent.value) {
+    store.showAlert('Past Event', 'Cannot edit past events.');
+    saving.value = false;
+    return;
+  }
   getChaperones();
   if (!event.value.title || !event.value.location || !event.value.date) {
     store.showAlert('Invalid Data', 'Please fill in all required fields.');

@@ -5,10 +5,11 @@
       <div>
         <v-card-title class="text-h4 mb-n5">{{ loadingData ? "Loading..." : event.title }}</v-card-title>
 
-        <v-btn v-if="!isMobile && store.isAdmin" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)"
-          color="primary" style="position: absolute; right: 32px;">Edit</v-btn>
+        <v-btn v-if="!isMobile && store.isAdmin && !isPastEvent"
+          @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)" color="primary"
+          style="position: absolute; right: 32px;">Edit</v-btn>
 
-        <v-card-title v-if="!loadingData">{{ event.date }}, {{ event.start }} - {{ event.end }}</v-card-title>
+        <v-card-title v-if="!loadingData">{{ event.dateString }}, {{ event.start }} - {{ event.end }}</v-card-title>
         <v-card-subtitle>
           {{ event.location }}
         </v-card-subtitle>
@@ -20,14 +21,15 @@
       </div>
     </v-row>
 
-    <v-btn v-if="isMobile && store.isAdmin" @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)"
-      color="primary" class="mt-10" width="100vw">Edit</v-btn>
+    <v-btn v-if="isMobile && store.isAdmin && !isPastEvent"
+      @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)" color="primary" class="mt-10"
+      width="100vw">Edit</v-btn>
 
     <availability-selector :event="event" v-if="isMobile" class="mt-8" />
 
     <v-divider class="mb-4 mt-10"></v-divider>
     <v-card-title>Chaperones</v-card-title>
-    <v-card-text>Lead Chaperone: {{ event.lead_chaperone }}</v-card-text>
+    <v-card-text v-if="false">Lead Chaperone: {{ event.lead_chaperone }}</v-card-text>
 
     <v-data-table :headers="tableHeaders" :items="chaperoneSlots" hide-default-footer v-if="!isMobile">
       <template #item.startTime="{ item }">
@@ -96,6 +98,9 @@ const store = useAppStore();
 const event = ref({})
 const chaperoneSlots = ref([])
 const chaperones = ref([])
+const isPastEvent = computed(() => {
+  return event.value.date < new Date()
+})
 
 const tableHeaders = [
   { title: 'Group', key: 'title', width: '20%' },
@@ -135,7 +140,8 @@ onMounted(async () => {
     }).then((response) => response.json())
   ]);
 
-  eventData.date = new Date(eventData.start).toLocaleDateString('en-UK', {
+  eventData.date = new Date(eventData.start)
+  eventData.dateString = eventData.date.toLocaleDateString('en-UK', {
     weekday: 'short', day: 'numeric',
     month: 'short', year: 'numeric'
   });
