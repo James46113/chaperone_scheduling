@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loadingData">
+  <div v-if="!loadingData">
     <div style="display: flex; justify-content: center; align-items: center; height: 60vh;" v-if="!isMobile">
       <v-card :width="isMobile ? '100vw' : '30vw'" class="pa-4">
         <v-img src="/Steel-City-Choristers.png" max-width="200" />
