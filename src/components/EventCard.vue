@@ -44,10 +44,10 @@
         </v-card-subtitle>
 
         <v-card-text class="pl-0">
-          <span v-for="chaperone in event.chaperones" v-if="event.chaperones?.length > 0 ?? false">
-            <v-card-text v-if="!!chaperone" :style="chaperone == event.lead_chaperone ? 'font-weight: bold;' : ''"
+          <span v-for="chaperone in sortedChaperones">
+            <v-card-text v-if="chaperone" :style="chaperone.id == event.lead_chaperone ? 'font-weight: bold;' : ''"
               class="py-0">
-              {{ chaperones.find(c => c.id === chaperone)?.name }}<br>
+              {{ chaperone.name }}<br>
             </v-card-text>
           </span>
           <div v-if="loadingData" class="d-flex justify-center align-center">
@@ -69,6 +69,7 @@ const props = defineProps({
   small: Boolean
 })
 
+const sortedChaperones = computed(() => props.event.chaperones?.map(chaperone => props.chaperones.find(c => c.id === chaperone)).sort((a, b) => a.name.localeCompare(b.name)))
 
 const goToEvent = (value) => {
   if (!value.target.closest('.v-btn')) {
