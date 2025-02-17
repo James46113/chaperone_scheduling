@@ -14,6 +14,8 @@ declare module 'vue' {
     ChaperonesPage: typeof import('./components/ChaperonesPage.vue')['default']
     CreateTerm: typeof import('./components/CreateTerm.vue')['default']
     EventCard: typeof import('./components/EventCard.vue')['default']
+    MobieNavigation: typeof import('./components/MobieNavigation.vue')['default']
+    PWAInstallDialog: typeof import('./components/PWAInstallDialog.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SchedulePage: typeof import('./components/SchedulePage.vue')['default']

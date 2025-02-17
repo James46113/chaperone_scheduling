@@ -70,7 +70,6 @@
       </v-tabs-window-item>
 
       <v-tabs-window-item value="schedule">
-        <v-card-text v-if="isPWA">test</v-card-text>
         <schedule-page :chaperone_id="store.userID" />
       </v-tabs-window-item>
 
