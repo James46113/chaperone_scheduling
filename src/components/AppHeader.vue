@@ -20,7 +20,7 @@
       <v-icon size="25">mdi-account</v-icon>
     </v-btn>
 
-    <v-btn v-if="!isMobile" class="mt-4 mr-3" @click="proxy.$router.push('/chaperones')">
+    <v-btn v-if="!isMobile && store.isAdmin" class="mt-4 mr-3" @click="proxy.$router.push('/chaperones')">
       <v-icon size="25">mdi-account-multiple</v-icon>
     </v-btn>
 

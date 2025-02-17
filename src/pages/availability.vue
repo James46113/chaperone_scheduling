@@ -8,6 +8,11 @@
   <div class="pa-4 d-flex justify-center">
     <v-card elevation="0" :width="isMobile ? '100vw' : '80vw'">
       <v-card-title class="text-h5 mb-3">Chaperone Availability</v-card-title>
+      <v-alert type="error" title="Framework Bug" text="Please be aware that there is a bug in the framework used to create this
+      website. Until this is
+      fixed, DO
+      NOT type dates into
+      the date picker. You MUST use the calendar." />
       <v-row class="mt-6" v-if="!isMobile">
         <v-date-input variant="outlined" label="Start" class="px-3" max-width="300" v-model="start" :max="end" />
         <v-date-input variant="outlined" label="End" class="px-3" max-width="300" v-model="end" :min="start" />

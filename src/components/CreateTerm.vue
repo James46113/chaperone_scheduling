@@ -1,6 +1,11 @@
 <template>
   <v-card class="pa-6" elevation="0">
     <v-card-title class="text-h5 mb-3">Create Term</v-card-title>
+    <v-alert type="error" title="Framework Bug" text="Please be aware that there is a bug in the framework used to create this
+      website. Until this is
+      fixed, DO
+      NOT type dates into
+      the date picker. You MUST use the calendar." class="mb-6" />
     <v-date-input v-model="start" :max="end" label="Term Start" />
     <v-date-input v-model="end" :min="start" label="Term End" />
     <div class="d-flex justify-center">

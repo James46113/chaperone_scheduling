@@ -20,7 +20,10 @@
           </v-card-text>
         </template>
         <template #item.events="{ item }">
-          {{ numEvents.find((num) => num.chaperone_id === item.id)?.events ?? 'Loading...' }}
+          <span v-if="numEvents.find((num) => num.chaperone_id === item.id)?.events !== undefined">
+            {{ numEvents.find((num) => num.chaperone_id === item.id)?.events }}
+          </span>
+          <v-progress-circular v-else color="primary" indeterminate size="20" />
         </template>
       </v-data-table>
 

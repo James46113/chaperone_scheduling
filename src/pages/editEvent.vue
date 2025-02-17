@@ -1,6 +1,11 @@
 <template>
   <app-header />
   <div class="pa-6" v-if="!loadingData">
+    <v-alert type="error" title="Framework Bug" text="Please be aware that there is a bug in the framework used to create this
+      website. Until this is
+      fixed, DO
+      NOT type dates into
+      the date picker. You MUST use the calendar." />
     <v-card class="pa-3" elevation="0">
       <v-card-title class="text-h5 ml-n6 mb-4" v-if="newEvent">New {{ isTemplate ? 'Template' : 'Event'
         }}</v-card-title>
@@ -45,7 +50,7 @@
       <v-row class="mb-1" v-if="!isMobile">
         <v-col v-if="!isTemplate">
           <v-date-input v-if="!isTemplate" :rules="[required]" v-model="event.date" label="Date" variant="outlined"
-            class="mt-3" :first-day-of-week="1" placeholder="dd/mm/yyyy" @input="formatDate" />
+            class="mt-3" :first-day-of-week="1" />
         </v-col>
         <v-col>
           <v-row class="my-2">
@@ -104,7 +109,7 @@
       <v-data-table :height="chaperoneSlots.length > 0 ? (chaperoneSlots.length + 1) * 76 : undefined"
         :items="chaperoneSlots" :headers="tableHeaders" items-per-page="-1" hide-default-footer v-if="!isMobile">
         <template v-slot:item.chaperone="{ item }">
-          <v-select :items="availability" item-title="name" label="Chaperone" v-model="item.chaperone"
+          <v-select clearable :items="availability" item-title="name" label="Chaperone" v-model="item.chaperone"
             variant="outlined" density="compact" class="mt-3 mb-1" auto-select-first>
             <template v-slot:item="{ props, item }">
               <v-list-item v-bind="props" :disabled="item.raw.available === false">
@@ -225,7 +230,7 @@
             :rules="[required]" />
           <v-textarea v-model="slot.details" label="Details" variant="outlined" density="compact" auto-grow rows="2"
             class="mt-n2" />
-          <v-select :items="availability" item-title="name" label="Chaperone" v-model="slot.chaperone"
+          <v-select clearable :items="availability" item-title="name" label="Chaperone" v-model="slot.chaperone"
             variant="outlined" density="compact" auto-select-first class="mt-n2">
             <template v-slot:item="{ props, item }">
               <v-list-item v-bind="props" :disabled="item.raw.available === false">
@@ -672,7 +677,7 @@ const newSlot = () => {
 
 const saveEvent = async () => {
   saving.value = true;
-  if (isPastEvent.value && !isTemplate.value) {
+  if (isPastEvent.value && !isTemplate.value && newEvent.value) {
     store.showAlert('Past Event', 'Cannot edit past events.');
     saving.value = false;
     return;

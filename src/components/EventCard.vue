@@ -3,7 +3,7 @@
     <v-card class="pa-1">
       <div @click="goToEvent" style="cursor: pointer;">
         <div v-if="isMobile">
-          <v-icon v-if="isMobile" color="primary" size="25" class="mt-2 mr-3"
+          <v-icon color="primary" size="25" class="mt-2 mr-3"
             style="position: absolute; right: 0px">mdi-open-in-new</v-icon>
           <v-card-title>
             {{
@@ -18,6 +18,7 @@
             {{ event.title }}
           </v-card-title>
         </div>
+        <!-- <v-alert type="warning" width="60px" /> -->
 
         <v-card-title v-if="small && !isMobile">
           {{ event.title }}
@@ -50,6 +51,8 @@
               {{ chaperone.name }}<br>
             </v-card-text>
           </span>
+          <v-alert v-if="missingChaperones" density="compact" type="warning" class="mt-1" max-width="400px">Empty
+            Slot(s)</v-alert>
           <div v-if="loadingData" class="d-flex justify-center align-center">
             <v-progress-circular color="primary" indeterminate />
           </div>
@@ -70,6 +73,8 @@ const props = defineProps({
 })
 
 const sortedChaperones = computed(() => props.event.chaperones?.map(chaperone => props.chaperones.find(c => c.id === chaperone)).sort((a, b) => a.name.localeCompare(b.name)))
+const missingChaperones = computed(() => props.event.chaperones?.includes(null) && !props.event.chaperones?.every(chaperone => chaperone === null))
+
 
 const goToEvent = (value) => {
   if (!value.target.closest('.v-btn')) {
