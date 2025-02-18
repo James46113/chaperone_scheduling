@@ -28,6 +28,7 @@ app.use('/api', async (req, res) => {
     if (!payload) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
+
   } catch (error) {
     console.error('Error:', error);
     return res.status(401).json({ error: 'Unauthorized' });

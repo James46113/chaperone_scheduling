@@ -16,9 +16,10 @@ export const fetchAPI = async (url, params) => {
     headers
   }).then((response) => {
     if (response.status === 401) {
+      Cookies.remove('credential');
       console.error('Unauthorized');
-      return;
     }
+    return response;
   })
     .catch((e) => {
       console.error(e);
