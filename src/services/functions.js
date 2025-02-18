@@ -5,7 +5,7 @@ export const fetchAPI = async (url, params) => {
   };
 
   const APIURL = window.location.href.startsWith('https://chaperonescheduling-dev.up.railway.app')
-    ? 'chaperone_scheduling_api.railway.internal/' : import.meta.env.VITE_API_URL;
+    ? 'https://chaperone_scheduling_api.railway.internal/' : import.meta.env.VITE_API_URL;
 
   return fetch(APIURL + url, {
     ...params,
