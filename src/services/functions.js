@@ -1,9 +1,8 @@
 export const fetchAPI = async (url, params) => {
   const headers = {
     ...(params.headers || {}),
-    'Authorization': `${import.meta.env.VITE_DEV == 1 ? import.meta.env.VITE_API_KEY_DEV : import.meta.env.VITE_API_KEY}`
+    'Authorization': `${!window.location.href.startsWith('chaperones.steelcitychoristers.org.uk') ? import.meta.env.VITE_API_KEY_DEV : import.meta.env.VITE_API_KEY}`
   };
-  console.log(import.meta.env.VITE_DEV == 1, import.meta.env.VITE_API_KEY_DEV, import.meta.env.VITE_API_KEY)
 
   return fetch(import.meta.env.VITE_API_URL + url, {
     ...params,
