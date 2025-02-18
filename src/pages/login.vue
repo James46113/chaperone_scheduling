@@ -68,7 +68,11 @@ function onSignIn(response) {
     })
     .catch((error) => {
       if (error.status === 401) {
-        googleLogout();
+        store.userEmail = '';
+        store.isAdmin = false;
+        store.userID = null
+      }
+      if (error.status === 403) {
         store.userEmail = '';
         store.isAdmin = false;
         store.userID = null
