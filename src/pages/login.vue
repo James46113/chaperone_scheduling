@@ -41,6 +41,7 @@ if (credential) {
 
 function onSignIn(response) {
   console.log('Logged in:', response);
+  console.log('Logged in:', JSON.stringify(response));
   loadingData.value = true;
   Cookies.set('credential', response.credential);
   store.userEmail = decodeCredential(response.credential).email;
