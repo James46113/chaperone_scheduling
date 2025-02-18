@@ -7,7 +7,7 @@ const port = 3000;
 app.use(express.json());
 
 app.use('/api', async (req, res) => {
-  const url = `https://chaperone_scheduling_api.railway.internal:5000/${req.url}`;
+  const url = `http://chaperone_scheduling_api.railway.internal:5000${req.url}`;
   const headers = {
     ...req.headers,
     'Authorization': `Bearer ${process.env.API_KEY}`
