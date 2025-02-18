@@ -48,7 +48,7 @@ function onSignIn(response) {
   Cookies.set('credential', response.credential);
   oauthCredential.value = response.credential;
   store.userEmail = decodeCredential(response.credential).email;
-  fetchAPI(`login`, {
+  fetchAPI(`login/${store.userEmail}`, {
     method: 'GET',
   })
     .then((response) => {
