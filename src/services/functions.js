@@ -1,7 +1,7 @@
 export const fetchAPI = async (url, params) => {
   const headers = {
     ...(params.headers || {}),
-    'Authorization': `${!window.location.href.startsWith('https://chaperones.steelcitychoristers.org.uk') ? import.meta.env.VITE_API_KEY_DEV : import.meta.env.VITE_API_KEY}`
+    'Authorization': `${!window.location.href.startsWith('https://chaperones.steelcitychoristers.org.uk') ? 'https://chaperoneschedulingapi-dev.up.railway.app/' : import.meta.env.VITE_API_KEY}`
   };
 
   return fetch(import.meta.env.VITE_API_URL + url, {
