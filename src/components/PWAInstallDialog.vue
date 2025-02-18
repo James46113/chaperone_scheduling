@@ -47,12 +47,10 @@ const isIOS = computed(() => navigator.userAgent.match(/iPhone|iPad|iPod/i))
 const showPWAinstall = ref(!isPWA.value && !(Cookies.get('dontShowPWA') == 'true'))
 const dontShowAgain = ref(false)
 let installPrompt = null;
-console.log(showPWAinstall.value)
 
 window.addEventListener("beforeinstallprompt", async (event) => {
   event.preventDefault();
   installPrompt = event;
-  console.log("sldkfj")
 });
 
 const install = async () => {

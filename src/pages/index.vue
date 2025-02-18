@@ -99,7 +99,6 @@ const showCreateTerm = ref(false);
 document.title = "Chaperones' Calendar - Steel City Choristers"
 
 onMounted(async () => {
-  console.log((window.matchMedia('(display-mode: standalone)').matches))
   if (proxy.$route.query.view) {
     store.tabView = proxy.$route.query.view;
   }
