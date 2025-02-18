@@ -1,8 +1,6 @@
 <template>
   <app-header :update-availability="getAvailability" />
   <div class="pa-3">
-    <GoogleLogin v-if="isMobile && !store.userEmail" :callback="onSignIn" />
-
     <v-tabs v-model="store.tabView" grow color="primary" v-if="!isMobile">
       <v-tab value="calendar">Calendar</v-tab>
       <v-tab value="list">List</v-tab>
@@ -105,10 +103,7 @@ onMounted(async () => {
   if (proxy.$route.query.view) {
     store.tabView = proxy.$route.query.view;
   }
-  const credential = Cookies.get('credential');
-  if (credential) {
-    await onSignIn({ credential });
-  }
+
   try {
     await loadData();
   } catch (error) {
@@ -181,34 +176,6 @@ const loadData = async () => {
   });
 }
 
-const onSignIn = async (response) => {
-  Cookies.set('credential', response.credential);
-  store.userEmail = decodeCredential(response.credential).email;
-  await fetchAPI(`login/${store.userEmail}`, {
-    method: 'GET',
-  })
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
-      }
-      return Promise.reject(response);
-    })
-    .then((data) => {
-      store.isAdmin = data.is_admin;
-      store.userID = data.id
-      getAvailability();
-    })
-    .catch((error) => {
-      if (error.status === 401) {
-        googleLogout();
-        store.userEmail = '';
-        store.isAdmin = false;
-        store.userID = null
-        store.showAlert('Unauthorised', "You are not authorised to access the chaperones' rota. If you believe this is in error, please contact the chaperoning team.");
-      }
-      console.error('Error:', error)
-    });
-}
 
 const getAvailability = () => {
   loadingAvailability.value = true;
