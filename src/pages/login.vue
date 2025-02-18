@@ -39,10 +39,9 @@ if (credential) {
 }
 // })
 
-const onSignIn = (response) => {
+function onSignIn(response) {
   loadingData.value = true;
   Cookies.set('credential', response.credential);
-  oauthCredential.value = response.credential;
   store.userEmail = decodeCredential(response.credential).email;
   fetchAPI(`login/${store.userEmail}`, {
     method: 'GET',
@@ -50,11 +49,8 @@ const onSignIn = (response) => {
     .then((response) => {
       if (response.ok) {
         return response.json();
-      } else if (response.status === 401) {
-        refreshToken().then(() => onSignIn({ credential: Cookies.get('credential') }));
-      } else {
-        return Promise.reject(response);
       }
+      return Promise.reject(response);
     })
     .then((data) => {
       store.isAdmin = data.is_admin;
@@ -66,7 +62,7 @@ const onSignIn = (response) => {
       }
     })
     .catch((error) => {
-      if (error.status === 403) {
+      if (error.status === 401) {
         googleLogout();
         store.userEmail = '';
         store.isAdmin = false;
@@ -77,37 +73,5 @@ const onSignIn = (response) => {
     });
 }
 
-async function refreshToken() {
-  const refreshToken = Cookies.get('refreshToken');
-  if (!refreshToken) {
-    return;
-  }
 
-  try {
-    const response = await fetch('/refresh-token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ refreshToken })
-    });
-
-    if (response.ok) {
-      const tokens = await response.json();
-      Cookies.set('credential', tokens.id_token);
-      Cookies.set('refreshToken', tokens.refresh_token);
-    } else {
-      throw new Error('Failed to refresh token');
-    }
-  } catch (error) {
-    console.error('Error refreshing token:', error);
-    googleLogout();
-    store.userEmail = '';
-    store.isAdmin = false;
-    store.userID = null;
-  }
-}
-
-// Call refreshToken periodically to keep the session alive
-setInterval(refreshToken, 30 * 60 * 1000); // Refresh every 30 minutes
 </script>

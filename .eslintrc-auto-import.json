@@ -82,7 +82,6 @@
     "tabView": true,
     "isDev": true,
     "loadingFailed": true,
-    "isPWA": true,
-    "oauthCredential": true
+    "isPWA": true
   }
 }

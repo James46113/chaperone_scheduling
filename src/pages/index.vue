@@ -105,6 +105,10 @@ onMounted(async () => {
   if (proxy.$route.query.view) {
     store.tabView = proxy.$route.query.view;
   }
+  const credential = Cookies.get('credential');
+  if (credential) {
+    await onSignIn({ credential });
+  }
   try {
     await loadData();
   } catch (error) {

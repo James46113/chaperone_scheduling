@@ -9,6 +9,9 @@
       Report Error
     </v-btn>
 
+    <GoogleLogin v-if="!store.userEmail && !isMobile" :callback="onSignIn" class="mt-4 mx-3" />
+
+
     <v-btn v-if="store.isAdmin && !isMobile" class="mt-4 mr-3" @click="proxy.$router.push('/templateEvents')">
       <v-icon size="25">mdi-note-text</v-icon>
     </v-btn>
@@ -34,7 +37,7 @@
 <script setup>
 import { useAppStore } from '@/stores/app'
 import { getCurrentInstance } from 'vue'
-import { decodeCredential, googleLogout } from 'vue3-google-login';
+import { GoogleLogin, decodeCredential, googleLogout } from 'vue3-google-login';
 
 const props = defineProps({
   updateAvailability: Function
@@ -44,8 +47,42 @@ const { proxy } = getCurrentInstance()
 const store = useAppStore();
 
 // onMounted(() => {
-
+const credential = Cookies.get('credential');
+if (credential) {
+  onSignIn({ credential });
+}
 // })
+
+function onSignIn(response) {
+  Cookies.set('credential', response.credential);
+  store.userEmail = decodeCredential(response.credential).email;
+  fetchAPI(`login/${store.userEmail}`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+      return Promise.reject(response);
+    })
+    .then((data) => {
+      store.isAdmin = data.is_admin;
+      store.userID = data.id;
+      if (proxy.$router.currentRoute.value.path === '/' && props.updateAvailability) {
+        props.updateAvailability();
+      }
+    })
+    .catch((error) => {
+      if (error.status === 401) {
+        googleLogout();
+        store.userEmail = '';
+        store.isAdmin = false;
+        store.userID = null
+        store.showAlert('Unauthorised', "You are not authorised to view this content. If you believe this is in error, please contact the chaperoning team.");
+      }
+      console.error('Error:', error)
+    });
+}
 
 const logout = () => {
   googleLogout();

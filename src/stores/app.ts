@@ -9,7 +9,6 @@ export const useAppStore = defineStore('app', () => {
   const isAdmin = ref(false);
   const userID = ref(null);
   const tabView = ref(isMobile.value ? 'schedule' : 'calendar');
-  const oauthCredential = ref(null);
 
   const showAlert = (title: string, message: string) => {
     alertTitle.value = title;
@@ -26,6 +25,5 @@ export const useAppStore = defineStore('app', () => {
     isAdmin,
     userID,
     tabView,
-    oauthCredential,
   }
 })
