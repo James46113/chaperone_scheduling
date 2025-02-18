@@ -30,7 +30,7 @@ app.use('/api', async (req, res) => {
     }
   } catch (error) {
     console.error('Error:', error);
-    res.status(401).json({ error: 'Unauthorized' });
+    return res.status(401).json({ error: 'Unauthorized' });
   }
 
   try {
