@@ -115,11 +115,6 @@ onMounted(async () => {
     proxy.$router.push('/')
   }
 
-  const credential = Cookies.get('credential');
-  if (credential) {
-    onSignIn({ credential });
-  }
-
   loadingData.value = true
   await getChaperones();
   let availability = null;
@@ -176,35 +171,6 @@ const getAvailability = () => {
       console.error('Error:', error)
     });
 
-}
-
-const onSignIn = async (response) => {
-  Cookies.set('credential', response.credential);
-  store.userEmail = decodeCredential(response.credential).email;
-  await fetchAPI(`login/${store.userEmail}`, {
-    method: 'GET',
-  })
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
-      }
-      return Promise.reject(response);
-    })
-    .then((data) => {
-      store.isAdmin = data.is_admin;
-      store.userID = data.id
-      getAvailability();
-    })
-    .catch((error) => {
-      if (error.status === 401) {
-        googleLogout();
-        store.userEmail = '';
-        store.isAdmin = false;
-        store.userID = null
-        store.showAlert('Unauthorised', "You are not authorised to access the chaperones' rota. If you believe this is in error, please contact the chaperoning team.");
-      }
-      console.error('Error:', error)
-    });
 }
 
 const getChaperones = async () => {

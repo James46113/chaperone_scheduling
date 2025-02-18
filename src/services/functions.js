@@ -1,7 +1,7 @@
 export const fetchAPI = async (url, params) => {
   const headers = {
     ...(params.headers || {}),
-    'Authorization': `${import.meta.env.VITE_API_KEY}`
+    'Authorization': `Bearer ${oauthCredential.value}`
   };
 
   return fetch(import.meta.env.VITE_API_URL + url, {
@@ -12,8 +12,6 @@ export const fetchAPI = async (url, params) => {
       console.error(e);
     })
 };
-
-
 
 const windowWidth = ref(window.innerWidth);
 
@@ -28,3 +26,4 @@ export const loadingData = ref(false);
 export const loadingAvailability = ref(false);
 export const isDev = computed(() => import.meta.env.VITE_DEV == 1);
 export const isPWA = computed(() => window.matchMedia('(display-mode: standalone)').matches)
+export const oauthCredential = ref();
