@@ -8,15 +8,12 @@ app.use(express.json());
 
 app.use('/api', async (req, res) => {
   const url = `http://chaperone_scheduling_api.railway.internal:5000${req.url}`;
-  const headers = {
-    ...req.headers,
-    'Authorization': `Bearer dZtMYO-zQyCeh-a48QkX-Pztgx9-LyDAXG-GMgj7a`
-  };
+
 
   try {
     const response = await fetch(url, {
       method: req.method,
-      headers,
+      headers: req.headers,
       body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
     });
     const data = await response.json();
