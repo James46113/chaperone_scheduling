@@ -21,7 +21,10 @@ CMD ["node", "server.js"]
 # Stage 3: Serve the application with Apache
 FROM httpd:alpine
 
+# Enable necessary Apache modules
 RUN sed -i '/LoadModule rewrite_module/s/^#//g' /usr/local/apache2/conf/httpd.conf && \
+    sed -i '/LoadModule proxy_module/s/^#//g' /usr/local/apache2/conf/httpd.conf && \
+    sed -i '/LoadModule proxy_http_module/s/^#//g' /usr/local/apache2/conf/httpd.conf && \
     sed -i 's#AllowOverride [Nn]one#AllowOverride All#' /usr/local/apache2/conf/httpd.conf
 
 RUN echo 'ServerName chaperones.steelcitychoristers.org.uk' >> /usr/local/apache2/conf/httpd.conf
