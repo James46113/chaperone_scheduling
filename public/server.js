@@ -10,7 +10,7 @@ app.use('/api', async (req, res) => {
   const url = `http://chaperone_scheduling_api.railway.internal:5000${req.url}`;
   const headers = {
     ...req.headers,
-    'Authorization': `Bearer ${process.env.API_KEY}`
+    'Authorization': `Bearer dZtMYO-zQyCeh-a48QkX-Pztgx9-LyDAXG-GMgj7a`
   };
 
   try {
