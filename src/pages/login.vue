@@ -5,6 +5,9 @@
         <v-img src="/Steel-City-Choristers.png" max-width="200" />
         <v-card-title>Login</v-card-title>
         <v-card-text>Please sign in with Google to access the chaperone rota.</v-card-text>
+        <v-card-text class="text-caption mt-n3">
+          <i>You may have to sign in again after a period of inactivity for security reasons </i>
+        </v-card-text>
         <div style="display: flex; justify-content: center;">
           <GoogleLogin :callback="onSignIn" />
         </div>
@@ -14,9 +17,12 @@
       <v-card :width="'100vw'" class="pa-4" elevation="0">
         <v-img src="/Steel-City-Choristers.png" max-width="200" />
         <v-card-title class="text-h5">Welcome!</v-card-title>
-        <v-card-text class="my-4">Please sign in with Google to get started.</v-card-text>
+        <v-card-text class="mt-4">Please sign in with Google to get started.</v-card-text>
         <GoogleLogin :callback="onSignIn" :access-type="'offline'" />
       </v-card>
+      <v-card-text class="text-caption mx-4" style="position: absolute; bottom: 0; text-align: center;">
+        <i>You may have to sign in again after a period of inactivity for security reasons.</i>
+      </v-card-text>
     </div>
   </div>
   <div v-else class=" d-flex justify-center align-center" style="height: 100vh;">
@@ -44,9 +50,6 @@ function onSignIn(response) {
   loadingData.value = true;
   Cookies.set('credential', response.credential);
   store.userEmail = decodeCredential(response.credential).email;
-
-  console.debug(response);
-  console.debug(response.refresh_token);
 
   fetchAPI(`login/${store.userEmail}`, {
     method: 'GET',
