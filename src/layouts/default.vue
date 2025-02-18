@@ -43,24 +43,19 @@ if (Cookies.get('credential')) {
   onSignIn({ credential: Cookies.get('credential') });
 }
 
-function onSignIn(response) {
+async function onSignIn(response) {
   loadingData.value = true;
+  console.log('onsignin')
   Cookies.set('credential', response.credential);
   oauthCredential.value = response.credential;
   store.userEmail = decodeCredential(response.credential).email;
-  fetchAPI(`login/${store.userEmail}`, {
-    method: 'GET',
-  })
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
-      } else if (response.status === 401) {
-        refreshToken().then(() => onSignIn({ credential: Cookies.get('credential') }));
-      } else {
-        return Promise.reject(response);
-      }
-    })
-    .then((data) => {
+  try {
+    const response = await fetchAPI(`login/${store.userEmail}`, {
+      method: 'GET',
+    });
+
+    if (response.ok) {
+      const data = await response.json();
       store.isAdmin = data.is_admin;
       store.userID = data.id;
       if (proxy.$route.query.redirect) {
@@ -68,17 +63,22 @@ function onSignIn(response) {
       } else {
         proxy.$router.push('/');
       }
-    })
-    .catch((error) => {
-      if (error.status === 403) {
-        googleLogout();
-        store.userEmail = '';
-        store.isAdmin = false;
-        store.userID = null
-        store.showAlert('Unauthorised', "You are not authorised to access the chaperones' rota. If you believe this is in error, please contact the chaperoning team.");
-      }
-      console.error('Error:', error)
-    });
+    } else if (response.status === 401) {
+      await refreshToken();
+      await onSignIn({ credential: Cookies.get('credential') });
+    } else {
+      throw response;
+    }
+  } catch (error) {
+    if (error.status === 403) {
+      googleLogout();
+      store.userEmail = '';
+      store.isAdmin = false;
+      store.userID = null;
+      store.showAlert('Unauthorised', "You are not authorised to access the chaperones' rota. If you believe this is in error, please contact the chaperoning team.");
+    }
+    console.error('Error:', error);
+  }
 }
 
 async function refreshToken() {
