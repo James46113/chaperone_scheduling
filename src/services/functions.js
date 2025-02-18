@@ -12,6 +12,11 @@ export const fetchAPI = async (url, params) => {
   return fetch(APIURL + url, {
     ...params,
     headers
+  }).then((response) => {
+    if (response.status === 401) {
+      console.error('Unauthorized');
+      return;
+    }
   })
     .catch((e) => {
       console.error(e);
