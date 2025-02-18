@@ -23,8 +23,8 @@ RUN apt-get update && apt-get install -y apache2 && apt-get clean
 RUN a2enmod rewrite proxy proxy_http
 
 # Rewrite condition
-RUN sed -i '/LoadModule rewrite_module/s/^#//g' /usr/local/apache2/conf/httpd.conf && \
-sed -i 's#AllowOverride [Nn]one#AllowOverride All#' /usr/local/apache2/conf/httpd.conf
+RUN sed -i '/LoadModule rewrite_module/s/^#//g' /etc/apache2/apache2.conf && \
+sed -i 's#AllowOverride [Nn]one#AllowOverride All#' /etc/apache2/apache2.conf
 
 
 RUN echo 'ServerName chaperones.steelcitychoristers.org.uk' >> /etc/apache2/apache2.conf
