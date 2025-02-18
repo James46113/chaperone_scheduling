@@ -1,12 +1,25 @@
+import Cookies from "js-cookie";
+
 export const fetchAPI = async (url, params) => {
   const headers = {
     ...(params.headers || {}),
-    'Authorization': `${import.meta.env.VITE_API_KEY}`
+    'Authorization': `Bearer ${Cookies.get('credential')}`
   };
 
-  return fetch(import.meta.env.VITE_API_URL + url, {
+  // const APIURL = window.location.href.startsWith('https://chaperonescheduling-dev.up.railway.app')
+  //   ? 'https://chaperone_scheduling_api.railway.internal:5000/' : import.meta.env.VITE_API_URL;
+
+  const APIURL = '/api/'
+
+  return fetch(APIURL + url, {
     ...params,
     headers
+  }).then((response) => {
+    if (response.status === 401) {
+      Cookies.remove('credential');
+      console.error('Unauthorized');
+    }
+    return response;
   })
     .catch((e) => {
       console.error(e);

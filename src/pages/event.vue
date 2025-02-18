@@ -39,7 +39,7 @@
         {{ new Date(item.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
       </template>
       <template #item.chaperone="{ item }">
-        <span v-if="item.chaperone">{{ chaperones.find(chaperone => chaperone.id === item.chaperone)?.name }}</span>
+        <span v-if="item.chaperone">{{chaperones.find(chaperone => chaperone.id === item.chaperone)?.name}}</span>
         <v-alert v-else type="warning" class="pa-2">
           <span>No chaperone</span>
         </v-alert>
@@ -59,8 +59,8 @@
     </v-data-table>
 
     <v-card v-else v-for="slot in chaperoneSlots" class="mb-4">
-      <v-card-title v-if="slot.chaperone">{{ chaperones.find(chaperone => chaperone.id === slot.chaperone)?.name
-        }}</v-card-title>
+      <v-card-title v-if="slot.chaperone">{{chaperones.find(chaperone => chaperone.id === slot.chaperone)?.name
+      }}</v-card-title>
       <v-alert v-else type="warning" class="mb-6">No Chaperone</v-alert>
       <v-card-subtitle class="mt-n2">{{ slot.title }}</v-card-subtitle>
       <v-card-subtitle>{{ new Date(slot.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }} -
@@ -88,8 +88,6 @@
 
 <script setup>
 import { useAppStore } from '@/stores/app';
-import { decodeCredential, googleLogout } from 'vue3-google-login';
-
 
 
 const { proxy } = getCurrentInstance()
@@ -113,11 +111,6 @@ const tableHeaders = [
 onMounted(async () => {
   if (!proxy.$route.query.id) {
     proxy.$router.push('/')
-  }
-
-  const credential = Cookies.get('credential');
-  if (credential) {
-    onSignIn({ credential });
   }
 
   loadingData.value = true
@@ -176,35 +169,6 @@ const getAvailability = () => {
       console.error('Error:', error)
     });
 
-}
-
-const onSignIn = async (response) => {
-  Cookies.set('credential', response.credential);
-  store.userEmail = decodeCredential(response.credential).email;
-  await fetchAPI(`login/${store.userEmail}`, {
-    method: 'GET',
-  })
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
-      }
-      return Promise.reject(response);
-    })
-    .then((data) => {
-      store.isAdmin = data.is_admin;
-      store.userID = data.id
-      getAvailability();
-    })
-    .catch((error) => {
-      if (error.status === 401) {
-        googleLogout();
-        store.userEmail = '';
-        store.isAdmin = false;
-        store.userID = null
-        store.showAlert('Unauthorised', "You are not authorised to access the chaperones' rota. If you believe this is in error, please contact the chaperoning team.");
-      }
-      console.error('Error:', error)
-    });
 }
 
 const getChaperones = async () => {
