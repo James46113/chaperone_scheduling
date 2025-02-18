@@ -22,6 +22,11 @@ RUN apt-get update && apt-get install -y apache2 && apt-get clean
 # Enable necessary Apache modules
 RUN a2enmod rewrite proxy proxy_http
 
+# Rewrite condition
+RUN sed -i '/LoadModule rewrite_module/s/^#//g' /usr/local/apache2/conf/httpd.conf && \
+sed -i 's#AllowOverride [Nn]one#AllowOverride All#' /usr/local/apache2/conf/httpd.conf
+
+
 RUN echo 'ServerName chaperones.steelcitychoristers.org.uk' >> /etc/apache2/apache2.conf
 
 RUN echo 'Listen 8080' >> /etc/apache2/apache2.conf
