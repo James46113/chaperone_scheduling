@@ -1,7 +1,9 @@
+import Cookies from "js-cookie";
+
 export const fetchAPI = async (url, params) => {
   const headers = {
     ...(params.headers || {}),
-    'Authorization': `${import.meta.env.VITE_API_KEY}`
+    'Authorization': `Bearer ${Cookies.get('credential')}`
   };
 
   // const APIURL = window.location.href.startsWith('https://chaperonescheduling-dev.up.railway.app')
