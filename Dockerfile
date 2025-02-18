@@ -20,10 +20,7 @@ COPY --from=build-stage /app/dist /app/dist
 RUN apt-get update && apt-get install -y apache2 && apt-get clean
 
 # Enable necessary Apache modules
-RUN sed -i '/LoadModule rewrite_module/s/^#//g' /etc/apache2/apache2.conf && \
-    sed -i '/LoadModule proxy_module/s/^#//g' /etc/apache2/apache2.conf && \
-    sed -i '/LoadModule proxy_http_module/s/^#//g' /etc/apache2/apache2.conf && \
-    sed -i 's#AllowOverride [Nn]one#AllowOverride All#' /etc/apache2/apache2.conf
+RUN a2enmod rewrite proxy proxy_http
 
 RUN echo 'ServerName chaperones.steelcitychoristers.org.uk' >> /etc/apache2/apache2.conf
 
