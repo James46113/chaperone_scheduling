@@ -53,6 +53,8 @@ function onSignIn(response) {
       if (response.ok) {
         return response.json();
       }
+      loadingData.value = false;
+      console.log("not okay")
       return Promise.reject(response);
     })
     .then((data) => {
@@ -73,6 +75,7 @@ function onSignIn(response) {
         store.showAlert('Unauthorised', "You are not authorised to access the chaperones' rota. If you believe this is in error, please contact the chaperoning team.");
       }
       console.error('Error:', error)
+      loadingData.value = false;
     });
 }
 
