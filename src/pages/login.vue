@@ -54,7 +54,6 @@ function onSignIn(response) {
         return response.json();
       }
       loadingData.value = false;
-      console.log("not okay")
       return Promise.reject(response);
     })
     .then((data) => {

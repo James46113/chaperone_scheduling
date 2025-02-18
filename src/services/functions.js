@@ -4,8 +4,10 @@ export const fetchAPI = async (url, params) => {
     'Authorization': `${import.meta.env.VITE_API_KEY}`
   };
 
-  const APIURL = window.location.href.startsWith('https://chaperonescheduling-dev.up.railway.app')
-    ? 'https://chaperone_scheduling_api.railway.internal:5000/' : import.meta.env.VITE_API_URL;
+  // const APIURL = window.location.href.startsWith('https://chaperonescheduling-dev.up.railway.app')
+  //   ? 'https://chaperone_scheduling_api.railway.internal:5000/' : import.meta.env.VITE_API_URL;
+
+  const APIURL = '/api'
 
   return fetch(APIURL + url, {
     ...params,
