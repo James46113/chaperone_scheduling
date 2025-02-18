@@ -15,11 +15,11 @@
         <v-img src="/Steel-City-Choristers.png" max-width="200" />
         <v-card-title class="text-h5">Welcome!</v-card-title>
         <v-card-text class="my-4">Please sign in with Google to get started.</v-card-text>
-        <GoogleLogin :callback="onSignIn" />
+        <GoogleLogin :callback="onSignIn" :access-type="'offline'" />
       </v-card>
     </div>
   </div>
-  <div v-else class="d-flex justify-center align-center" style="height: 100vh;">
+  <div v-else class=" d-flex justify-center align-center" style="height: 100vh;">
     <v-progress-circular color="primary" indeterminate size="40" />
   </div>
 </template>
@@ -40,12 +40,13 @@ if (credential) {
 // })
 
 function onSignIn(response) {
-  console.log('Logged in:', response);
-  console.log('Logged in:', JSON.stringify(response));
+
   loadingData.value = true;
   Cookies.set('credential', response.credential);
   store.userEmail = decodeCredential(response.credential).email;
 
+  console.debug(response);
+  console.debug(response.refresh_token);
 
   fetchAPI(`login/${store.userEmail}`, {
     method: 'GET',
