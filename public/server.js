@@ -9,7 +9,8 @@ const client = new OAuth2Client('898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.a
 app.use(express.json());
 
 app.use('/api', async (req, res) => {
-  const url = `http://chaperone_scheduling_api.railway.internal:5000${req.url}`;
+  const url = `http://chaperone_scheduling_api.railway.internal:5000`;
+  let payload = null;
   try {
 
     const idToken = req.headers.authorization?.split(' ')[1];
@@ -23,11 +24,22 @@ app.use('/api', async (req, res) => {
       audience: '898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com',
     });
 
-    const payload = ticket.getPayload();
+    payload = ticket.getPayload();
 
     if (!payload) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
+
+    await fetch(`${url}/email/verify/${payload.email}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }).then((response) => {
+      if (!response.ok) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+    });
 
   } catch (error) {
     console.error('Error:', error);
@@ -35,9 +47,9 @@ app.use('/api', async (req, res) => {
   }
 
   try {
-    const response = await fetch(url, {
+    const response = await fetch(`${url}${req.url}`, {
       method: req.method,
-      headers: req.headers,
+      headers: { ...req.headers, email: payload.email },
       body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
     });
     const data = await response.json();
