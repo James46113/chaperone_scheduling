@@ -43,12 +43,7 @@ function onSignIn(response) {
   loadingData.value = true;
   Cookies.set('credential', response.credential);
   store.userEmail = decodeCredential(response.credential).email;
-  const decodedCredential = decodeCredential(response.credential);
-  const currentTime = Math.floor(Date.now() / 1000);
-  console.log(decodedCredential.exp, currentTime)
-  if (decodedCredential.exp < currentTime) {
-    console.log("expired")
-  }
+
   fetchAPI(`login/${store.userEmail}`, {
     method: 'GET',
   })
