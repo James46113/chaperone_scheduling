@@ -40,18 +40,19 @@ router.afterEach((to, from) => window.scrollTo(0, 0))
 
 router.beforeEach((to, from, next) => {
   const store = useAppStore();
-  if (!store.userEmail && to.path !== '/login' && !isDev.value) {
+  if (!store.userEmail && to.path !== '/login') {
     if (Cookies.get('credential')) {
       next()
     } else {
       next(`/login?redirect=${to.fullPath}`);
     }
   }
+
   if ((to.path.startsWith('/editEvent') ||
     to.path.startsWith('/templateEvents') ||
     to.path.startsWith('/users') ||
     to.path.startsWith('/availability')
-  ) && !store.isAdmin && !isDev.value) {
+  ) && !store.isAdmin) {
     next('/');
   }
   else {
