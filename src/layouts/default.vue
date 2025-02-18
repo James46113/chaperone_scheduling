@@ -43,7 +43,7 @@ if (Cookies.get('credential')) {
   onSignIn({ credential: Cookies.get('credential') });
 }
 
-const onSignIn = (response) => {
+function onSignIn(response) {
   loadingData.value = true;
   Cookies.set('credential', response.credential);
   oauthCredential.value = response.credential;
