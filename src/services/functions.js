@@ -1,12 +1,11 @@
 export const fetchAPI = async (url, params) => {
   const headers = {
     ...(params.headers || {}),
-    'Authorization': `${window.location.href.startsWith('https://chaperonescheduling-dev.up.railway.app') ? 'https://chaperoneschedulingapi-dev.up.railway.app/' : import.meta.env.VITE_API_KEY}`
+    'Authorization': `${import.meta.env.VITE_API_KEY}`
   };
 
-  console.log(window.location.href.startsWith('https://chaperonescheduling-dev.up.railway.app'), 'https://chaperoneschedulingapi-dev.up.railway.app/', import.meta.env.VITE_API_KEY)
 
-  return fetch(import.meta.env.VITE_API_URL + url, {
+  return fetch(window.location.href.startsWith('https://chaperonescheduling-dev.up.railway.app') ? 'https://chaperoneschedulingapi-dev.up.railway.app/' : import.meta.env.VITE_API_URL + url, {
     ...params,
     headers
   })
