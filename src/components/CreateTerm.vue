@@ -25,7 +25,6 @@
 </template>
 
 <script setup>
-import { VDateInput } from 'vuetify/labs/VDateInput'
 
 const start = ref(new Date())
 const end = ref(new Date(new Date().setMonth(new Date().getMonth() + 1)))
@@ -120,13 +119,13 @@ const createRehearsal = (template_id, date) => {
   //   start: new Date(date.setHours(new Date(template.start).getHours(), new Date(template.start).getMinutes())).toISOString(),
   //   end: new Date(date.setHours(new Date(template.end).getHours(), new Date(template.end).getMinutes())).toISOString()
   // };
-  const start = new Date(date);
-  start.setHours(new Date(rehearsal.start).getHours(), new Date(rehearsal.start).getMinutes(), 0, 0);
-  rehearsal.start = start.toISOString();
+  const startDate = new Date(date);
+  startDate.setHours(new Date(rehearsal.start).getHours(), new Date(rehearsal.start).getMinutes(), 0, 0);
+  rehearsal.start = startDate.toISOString();
 
-  const end = new Date(date);
-  end.setHours(new Date(rehearsal.end).getHours(), new Date(rehearsal.end).getMinutes(), 0, 0);
-  rehearsal.end = end.toISOString();
+  const endDate = new Date(date);
+  endDate.setHours(new Date(rehearsal.end).getHours(), new Date(rehearsal.end).getMinutes(), 0, 0);
+  rehearsal.end = endDate.toISOString();
 
   let chaperoneSlots = templateChaperoneSlots.value.filter(slot => slot.template_id === template_id);
   console.log(JSON.stringify(rehearsal));
