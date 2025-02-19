@@ -60,8 +60,13 @@ const customLogin = () => {
       scope: 'openid email profile',
       redirect_uri: window.location.href,
       accessType: 'offline',
+      prompt: 'consent',
       callback: (e) => console.log(JSON.stringify(e))
     }).requestAccessToken();
+    // google.accounts.id.initialize({
+    //   client_id: "898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com",
+    //   callback: (e) => console.log(JSON.stringify(e))
+    // });
   })
 }
 
