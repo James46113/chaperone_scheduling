@@ -31,6 +31,17 @@
           class="mt-2" @keyup.enter="resetPassword" autocomplete="new-password" width="100%"
           :rules="[passwordsMatch]" />
 
+        <v-card-text class="mt-n4" style="font-size: small;">New password must have:</v-card-text>
+        <v-card-text class="pt-0 mt-n2 ml-7" style="font-size: small;">
+          <ul>
+            <li :style="hasLowercase ? '' : 'color: #bf151e;'">Lowercase Character (a-z)</li>
+            <li :style="hasUppercase ? '' : 'color: #bf151e;'">Uppercase Character (A-Z)</li>
+            <li :style="hasNumber ? '' : 'color: #bf151e;'">Number (0-9)</li>
+            <li :style="hasSpecial ? '' : 'color: #bf151e;'">Special Character (!@&...)</li>
+            <li :style="isLongEnough ? '' : 'color: #bf151e;'">At least 8 characters</li>
+          </ul>
+        </v-card-text>
+
         <v-btn color="primary" variant="flat" class="mt-4" @click="resetPassword" width="100vw">Reset Password</v-btn>
       </v-form>
     </v-card>
@@ -48,17 +59,55 @@
 </template>
 
 <script setup>
+import { useAppStore } from '@/stores/app';
+
 
 const { proxy } = getCurrentInstance();
+const store = useAppStore();
 const passwordVisible = ref(false);
 const password = ref('')
 const confirmPassword = ref('')
-const validToken = ref(proxy.$route.query.token ? null : false)
+const validToken = ref(proxy.$route.query.token ? null : true)
 
 const passwordsMatch = computed(() => password.value === confirmPassword.value || 'Passwords do not match')
 
+const hasUppercase = computed(() => password.value.match(/[A-Z]/));
+const hasLowercase = computed(() => password.value.match(/[a-z]/));
+const hasNumber = computed(() => password.value.match(/[0-9]/));
+const hasSpecial = computed(() => password.value.match(/[^A-Za-z0-9]/));
+const isLongEnough = computed(() => password.value.length >= 8);
+
 const resetPassword = () => {
-  alert('Password reset')
+  if (passwordsMatch.value === true) {
+    store.showAlert('Invalid Password', 'Passwords do not match')
+  }
+  if (!hasUppercase.value || !hasLowercase.value || !hasNumber.value || !hasSpecial.value || !isLongEnough.value) {
+    store.showAlert('Invalid Password', 'Password does not meet requirements')
+    return
+  }
+
+  fetchAPI(`reset/reset_password`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      password: password.value,
+      token: proxy.$route.query.token,
+    }),
+  })
+    .then((response) => {
+      if (response.ok) {
+        store.showAlert('Password Reset', 'Your password has been reset')
+        proxy.$router.push('/login')
+      } else {
+        store.showAlert('Error', 'An error occurred while resetting your password')
+        console.error('Error:', response)
+      }
+    })
+    .catch((error) => {
+      console.error('Error:', error)
+    })
 }
 
 fetchAPI(`reset/check_token/${proxy.$route.query.token}`, {
