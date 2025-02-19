@@ -126,7 +126,6 @@ function onSignIn(response) {
 }
 
 async function refreshToken() {
-  console.log(`Token: ${Cookies.get('refreshToken')}`);
   try {
     const response = await fetch('/api/refresh-token', {
       method: 'POST',
@@ -144,8 +143,7 @@ async function refreshToken() {
     }
     Cookies.set('accessToken', data.access_token);
     Cookies.set('credential', data.id_token);
-    console.log(JSON.stringify(data));
-    // onSignIn({ credential: data.id_token });
+    onSignIn({ credential: data.id_token });
   } catch (error) {
     console.error('Error refreshing token:', error);
     loadingData.value = false;
