@@ -92,7 +92,7 @@ const resetPassword = () => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      password: password.value,
+      new_password: password.value,
       token: proxy.$route.query.token,
     }),
   })
