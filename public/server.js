@@ -56,9 +56,11 @@ app.post('/api/refresh-token', async (req, res) => {
     })
   });
 
-  const data = await response.json();
-  if (data.error) {
-    return res.status(400).json({ error: data.error });
+  try {
+    const data = await response.json();
+  }
+  catch (e) {
+    return res.status(400).json({ error: e });
   }
 
   res.json({
