@@ -118,9 +118,8 @@ app.use('/api', async (req, res) => {
       headers: { ...req.headers, email: tokenInfo.email },
       body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
     });
-    const data = await response.json();
+    const data = await response.text();
     res.status(response.status).json(data);
-    console.log(await response.text())
   } catch (error) {
     console.error('Error:', error);
     console.log(`${url}${req.url}`)
