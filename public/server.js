@@ -94,26 +94,22 @@ function revokeToken(token) {
 
 app.use('/api/reset/', async (req, res) => {
   const url = `http://chaperone_scheduling_api.railway.internal:5000`;
-  fetch(`${url}/reset${req.url}`, {
+  const response = await fetch(`${url}/reset${req.url}`, {
     method: req.method,
     headers: req.headers,
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
-  }).then((response) => {
-    res.status(response.status).json(response.body);
   });
+  res.status(response.status).json(await response.json());
 });
 
 app.use('/api/p/', async (req, res) => {
   const url = `http://chaperone_scheduling_api.railway.internal:5000`;
-  // res.send(`${url}${req.url}`);
-  // return;
-  fetch(`${url}${req.url}`, {
+  const response = await fetch(`${url}${req.url}`, {
     method: req.method,
     headers: req.headers,
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
-  }).then((response) => {
-    res.status(response.status).json(response.body);
-  });
+  })
+  res.status(response.status).json(await response.json());
 });
 
 app.use('/api', async (req, res) => {
