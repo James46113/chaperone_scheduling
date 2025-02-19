@@ -100,6 +100,7 @@ function onSignIn(response) {
     .then((data) => {
       store.isAdmin = data.is_admin;
       store.userID = data.id;
+      isSignedIn.value = true;
       if (proxy.$route.query.redirect) {
         proxy.$router.push(proxy.$route.query.redirect);
       } else {

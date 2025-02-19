@@ -44,7 +44,7 @@ const { proxy } = getCurrentInstance()
 const store = useAppStore();
 
 const logout = () => {
-  googleLogout();
+  isSignedIn.value = false;
   store.userEmail = null;
   store.isAdmin = false;
   store.userID = null;

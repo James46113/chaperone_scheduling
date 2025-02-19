@@ -82,6 +82,8 @@
     "tabView": true,
     "isDev": true,
     "loadingFailed": true,
-    "isPWA": true
+    "isPWA": true,
+    "isSignedIn": true,
+    "isSignedI": true
   }
 }

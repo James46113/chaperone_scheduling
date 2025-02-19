@@ -41,3 +41,4 @@ export const loadingData = ref(false);
 export const loadingAvailability = ref(false);
 export const isDev = computed(() => import.meta.env.VITE_DEV == 1);
 export const isPWA = computed(() => window.matchMedia('(display-mode: standalone)').matches)
+export const isSignedIn = ref(false);
