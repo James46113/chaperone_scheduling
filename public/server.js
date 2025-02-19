@@ -58,6 +58,7 @@ app.post('/api/refresh-token', async (req, res) => {
 
   try {
     const data = await response.json();
+    console.log(`REFRESH RESPONSE: ${JSON.stringify(data)}`);
     res.json({
       access_token: data.access_token,
       expires_in: data.expires_in
