@@ -40,10 +40,10 @@ const store = useAppStore();
 const { proxy } = getCurrentInstance();
 
 // onMounted(() => {
-const credential = Cookies.get('credential');
-if (credential) {
-  onSignIn({ credential });
-}
+// const credential = Cookies.get('credential');
+// if (credential) {
+//   onSignIn({ credential });
+// }
 // })
 
 const customLogin = () => {
