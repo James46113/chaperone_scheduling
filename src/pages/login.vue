@@ -9,7 +9,7 @@
           <i>You may have to sign in again after a period of inactivity for security reasons </i>
         </v-card-text>
         <div style="display: flex; justify-content: center;">
-          <GoogleLogin :callback="onSignIn" />
+          <GoogleLogin :callback="onSignIn" prompt auto-login />
         </div>
       </v-card>
     </div>
