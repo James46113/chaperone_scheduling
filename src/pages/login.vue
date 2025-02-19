@@ -53,7 +53,7 @@ const customLogin = () => {
       scope: 'openid email profile',
       redirect_uri: window.location.href,
       accessType: 'offline',
-      callback: onCodeReceived
+      callback: (e) => console.log(JSON.stringify(e))
     }).requestCode();
     // google.accounts.oauth2.initTokenClient({
     //   client_id: "898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com",
@@ -84,7 +84,6 @@ function onCodeReceived(response) {
       Cookies.set('credential', data.id_token);
       Cookies.set('accessToken', data.access_token);
       Cookies.set('refreshToken', data.refresh_token);
-      console.log(data)
       onSignIn({ credential: data.id_token });
     })
     .catch(error => {
