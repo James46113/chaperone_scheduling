@@ -130,6 +130,9 @@ async function refreshToken() {
   try {
     const response = await fetch('/api/refresh-token', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({ refreshToken: Cookies.get('refreshToken') }),
     });
     if (!response.ok) {
