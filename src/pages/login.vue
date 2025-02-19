@@ -20,18 +20,20 @@
           <v-text-field density="compact" prepend-inner-icon="mdi-email-outline" variant="outlined" color="primary"
             placeholder="Your Email" v-model="email" type="email" />
 
-          <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between mb-n1">
-            Password
-            <span tabindex="-1" style="cursor: pointer;" class="text-caption text-decoration-none text-primary"
-              @click="resetPassword">
-              Forgot login password?</span>
-          </div>
+          <div v-if="!resettingPassword">
+            <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between mb-n1">
+              Password
+              <span tabindex="-1" style="cursor: pointer;" class="text-caption text-decoration-none text-primary"
+                @click="resetPassword">
+                Forgot login password?</span>
+            </div>
 
-          <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
-            @click:append-inner="passwordVisible = !passwordVisible"
-            :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'" variant="outlined" color="primary"
-            placeholder="Your Password" v-model="password" :type="passwordVisible ? 'text' : 'password'" class="mt-2"
-            @keyup.enter="passwordLogin" />
+            <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
+              @click:append-inner="passwordVisible = !passwordVisible"
+              :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'" variant="outlined" color="primary"
+              placeholder="Your Password" v-model="password" :type="passwordVisible ? 'text' : 'password'" class="mt-2"
+              @keyup.enter="passwordLogin" />
+          </div>
 
           <v-btn @click="login" :loading="signingIn" color="primary" class="mt-4" width="100%">Sign In</v-btn>
 
@@ -68,18 +70,20 @@
           <v-text-field density="compact" prepend-inner-icon="mdi-email-outline" variant="outlined" color="primary"
             placeholder="Your Email" v-model="email" type="email" />
 
-          <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between mb-n1">
-            Password
-            <span tabindex="-1" style="cursor: pointer;" class="text-caption text-decoration-none text-primary"
-              @click="resetPassword">
-              Forgot login password?</span>
-          </div>
+          <div v-if="!resettingPassword">
+            <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between mb-n1">
+              Password
+              <span tabindex="-1" style="cursor: pointer;" class="text-caption text-decoration-none text-primary"
+                @click="resetPassword">
+                Forgot login password?</span>
+            </div>
 
-          <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
-            @click:append-inner="passwordVisible = !passwordVisible"
-            :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'" variant="outlined" color="primary"
-            placeholder="Your Password" v-model="password" :type="passwordVisible ? 'text' : 'password'" class="mt-2"
-            @keyup.enter="passwordLogin" />
+            <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
+              @click:append-inner="passwordVisible = !passwordVisible"
+              :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'" variant="outlined" color="primary"
+              placeholder="Your Password" v-model="password" :type="passwordVisible ? 'text' : 'password'" class="mt-2"
+              @keyup.enter="passwordLogin" />
+          </div>
 
           <v-btn @click="login" :loading="signingIn" color="primary" class="mt-4" width="100%">Sign In</v-btn>
 
@@ -107,6 +111,7 @@ const signingIn = ref(false);
 
 const email = ref('');
 const password = ref('');
+const resettingPassword = ref(false);
 
 onMounted(async () => {
   if (Cookies.get('refreshToken') && Cookies.get('credential') && Cookies.get('accessToken')) {
@@ -121,6 +126,11 @@ const passwordLogin = () => {
 
 const resetPassword = () => {
   const token = window.location.hostname + "/resetPassword/" + uuidv4();
+
+  if (email.value === '') {
+    store.showAlert('Error', 'Please enter your email address to reset your password.');
+    return;
+  }
 
   fetch('/api/p/chaperones/forgot_password', {
     method: 'POST',
