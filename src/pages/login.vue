@@ -48,26 +48,48 @@ if (credential) {
 
 const customLogin = () => {
   googleSdkLoaded(google => {
-    // google.accounts.oauth2.initCodeClient({
-    //   client_id: "898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com",
-    //   scope: 'openid email profile',
-    //   redirect_uri: window.location.href,
-    //   accessType: 'offline',
-    //   callback: (e) => console.log(JSON.stringify(e))
-    // }).requestCode();
-    google.accounts.oauth2.initTokenClient({
+    google.accounts.oauth2.initCodeClient({
       client_id: "898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com",
       scope: 'openid email profile',
       redirect_uri: window.location.href,
       accessType: 'offline',
-      prompt: 'consent',
-      callback: (e) => console.log(JSON.stringify(e))
-    }).requestAccessToken();
+      callback: onCodeReceived
+    }).requestCode();
+    // google.accounts.oauth2.initTokenClient({
+    //   client_id: "898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com",
+    //   scope: 'openid email profile',
+    //   redirect_uri: window.location.href,
+    //   accessType: 'offline',
+    //   prompt: 'consent',
+    //   callback: (e) => console.log(JSON.stringify(e))
+    // }).requestAccessToken();
     // google.accounts.id.initialize({
     //   client_id: "898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com",
     //   callback: (e) => console.log(JSON.stringify(e))
     // });
   })
+}
+
+function onCodeReceived(response) {
+  // Exchange the authorization code for tokens
+  fetch('/api/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ code: response.code })
+  })
+    .then(response => response.json())
+    .then(data => {
+      Cookies.set('credential', data.id_token);
+      Cookies.set('accessToken', data.access_token);
+      Cookies.set('refreshToken', data.refresh_token);
+      console.log(data)
+      onSignIn({ credential: data.id_token });
+    })
+    .catch(error => {
+      console.error('Error exchanging code for tokens:', error);
+    });
 }
 
 function onSignIn(response) {
@@ -113,5 +135,30 @@ function onSignIn(response) {
     });
 }
 
+async function refreshToken() {
+  try {
+    const response = await fetch('/api/refresh-token', {
+      method: 'POST',
+      body: JSON.stringify({ refreshToken: Cookies.get('refreshToken') }),
+    });
+    const data = await response.json();
+    Cookies.set('accessToken', data.access_token);
+    onSignIn({ credential: data.id_token });
+  } catch (error) {
+    console.error('Error refreshing token:', error);
+    googleLogout();
+    proxy.$router.push('/login');
+  }
+}
 
+// setInterval(() => {
+//   const credential = Cookies.get('credential');
+//   if (credential) {
+//     const decoded = decodeCredential(credential);
+//     const now = Math.floor(Date.now() / 1000);
+//     if (decoded.exp < now) {
+//       refreshToken();
+//     }
+//   }
+// }, 60000); // Check every minute
 </script>
