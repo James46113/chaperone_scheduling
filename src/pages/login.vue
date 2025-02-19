@@ -129,6 +129,9 @@ async function refreshToken() {
       method: 'POST',
       body: JSON.stringify({ refreshToken: Cookies.get('refreshToken') }),
     });
+    if (!response.ok) {
+      throw new Error('Error refreshing token');
+    }
     const data = await response.json();
     if (undefined in [data.id_token, data.access_token]) {
       throw new Error('Invalid response from server');
