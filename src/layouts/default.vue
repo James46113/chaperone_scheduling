@@ -8,8 +8,7 @@
 
     <AlertDialog />
 
-    <v-bottom-navigation v-if="isMobile && proxy.$route.path != '/login' && proxy.$route.path != '/offline'" grow
-      color="primary">
+    <v-bottom-navigation v-if="isMobile && showNavigationBar" grow color="primary">
       <v-btn @click="goHome('calendar')"><v-icon>mdi-calendar</v-icon></v-btn>
       <v-btn @click="goHome('list')"><v-icon>mdi-format-list-bulleted</v-icon></v-btn>
       <v-btn v-if="store.isAdmin" @click="goHome('chaperones')"><v-icon>mdi-account-multiple</v-icon></v-btn>
@@ -28,6 +27,7 @@ import { useAppStore } from '@/stores/app';
 
 const { proxy } = getCurrentInstance();
 const store = useAppStore();
+const showNavigationBar = computed(() => !['/login', '/offline', '/login/password'].includes(proxy.$route.path))
 
 // onMounted(() => {
 // if (isDev.value) {

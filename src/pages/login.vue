@@ -1,27 +1,89 @@
 <template>
   <div v-if="isMobile">
-    <div style="display: flex; justify-content: center; align-items: center; height: 80vh;" class="pa-6">
-      <v-card width="100vw" class="pa-4" elevation="0" height="38vh">
+    <div style="display: flex; justify-content: center;" class="pa-6">
+      <v-card width="100vw" class="pa-4" elevation="0" style="position: absolute; top: 14vh">
         <v-img src="/Steel-City-Choristers.png" max-width="200" />
         <v-card-title class="text-h5">Welcome!</v-card-title>
-        <v-card-text v-if="!loadingData" class="mt-4">Please sign in with Google to get started.</v-card-text>
-        <v-card-text v-else class="mt-4">Signing you in...</v-card-text>
-        <v-btn v-if="!loadingData" variant="outlined" @click="customLogin" class="text-body-2 ml-4">
-          <img src="/Google__G__logo.svg" class="mr-2" />
-          Sign in with Google
-        </v-btn>
+        <v-card-text v-if="loadingData" class="mt-4">Signing you in...</v-card-text>
+        <div v-else-if="googleLogin">
+          <v-card-text>Please sign in with Google to access the chaperone
+            rota.</v-card-text>
+          <v-btn variant="outlined" @click="customLogin" class="text-body-2 ml-4">
+            <img src="/Google__G__logo.svg" class="mr-2" />
+            Sign in with Google
+          </v-btn>
+          <v-card-text class="text-caption text-disabled" @click="googleLogin = false">Sign in with
+            password</v-card-text>
+        </div>
+        <div v-else>
+          <div class="text-subtitle-1 text-medium-emphasis mt-2 mb-1">Email</div>
+          <v-text-field density="compact" prepend-inner-icon="mdi-email-outline" variant="outlined" color="primary"
+            placeholder="Your Email" v-model="email" type="email" />
+
+          <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between mb-n1">
+            Password
+            <span tabindex="-1" style="cursor: pointer;" class="text-caption text-decoration-none text-primary"
+              @click="resetPassword">
+              Forgot login password?</span>
+          </div>
+
+          <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
+            @click:append-inner="passwordVisible = !passwordVisible"
+            :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'" variant="outlined" color="primary"
+            placeholder="Your Password" v-model="password" :type="passwordVisible ? 'text' : 'password'" class="mt-2"
+            @keyup.enter="passwordLogin" />
+
+          <v-btn @click="login" :loading="signingIn" color="primary" class="mt-4" width="100%">Sign In</v-btn>
+
+          <v-btn variant="outlined" :disabled="signingIn" width="100%" @click="customLogin" class="text-body-2 mt-4">
+            <img src="/Google__G__logo.svg" class="mr-2" />
+            Sign in with Google
+          </v-btn>
+        </div>
       </v-card>
     </div>
   </div>
   <div v-else>
-    <div style="display: flex; justify-content: center; align-items: center; height: 60vh;">
-      <v-card width="30vw" class="pa-4">
+    <div style="display: flex; justify-content: center;" class="pa-6">
+      <v-card width="30vw" class="pa-4" style="position: absolute; top: 14vh">
         <v-img src="/Steel-City-Choristers.png" max-width="200" />
-        <v-card-title>Sign In</v-card-title>
-        <v-card-text v-if="!loadingData">Please sign in with Google to access the chaperone rota.</v-card-text>
-        <v-card-text v-else>Signing you in...</v-card-text>
-        <div v-if="!loadingData" style="display: flex; justify-content: center;">
-          <v-btn variant="outlined" @click="customLogin" class="text-body-2">
+        <v-card-title>Welcome!</v-card-title>
+        <v-card-text v-if="loadingData">Signing you in...</v-card-text>
+        <div v-else-if="googleLogin">
+          <v-card-text>Please sign in with Google to access the chaperone rota.</v-card-text>
+          <div style="display: flex; justify-content: center;">
+            <div>
+              <v-btn variant="outlined" @click="customLogin" class="text-body-2 mt-4">
+                <img src="/Google__G__logo.svg" class="mr-2" />
+                Sign in with Google
+              </v-btn>
+              <v-card-text @click="googleLogin = false" class="text-caption text-disabled"
+                style="text-align: center; cursor: pointer;">Sign in with
+                password</v-card-text>
+            </div>
+          </div>
+        </div>
+        <div v-else>
+          <div class="text-subtitle-1 text-medium-emphasis mt-2 mb-1">Email</div>
+          <v-text-field density="compact" prepend-inner-icon="mdi-email-outline" variant="outlined" color="primary"
+            placeholder="Your Email" v-model="email" type="email" />
+
+          <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between mb-n1">
+            Password
+            <span tabindex="-1" style="cursor: pointer;" class="text-caption text-decoration-none text-primary"
+              @click="resetPassword">
+              Forgot login password?</span>
+          </div>
+
+          <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
+            @click:append-inner="passwordVisible = !passwordVisible"
+            :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'" variant="outlined" color="primary"
+            placeholder="Your Password" v-model="password" :type="passwordVisible ? 'text' : 'password'" class="mt-2"
+            @keyup.enter="passwordLogin" />
+
+          <v-btn @click="login" :loading="signingIn" color="primary" class="mt-4" width="100%">Sign In</v-btn>
+
+          <v-btn variant="outlined" :disabled="signingIn" width="100%" @click="customLogin" class="text-body-2 mt-4">
             <img src="/Google__G__logo.svg" class="mr-2" />
             Sign in with Google
           </v-btn>
@@ -35,9 +97,16 @@
 import { useAppStore } from '@/stores/app';
 import { GoogleLogin, decodeCredential, googleSdkLoaded } from 'vue3-google-login';
 import { getCurrentInstance } from 'vue';
+import { v4 as uuidv4 } from 'uuid';
 
 const store = useAppStore();
 const { proxy } = getCurrentInstance();
+const googleLogin = ref(true);
+const passwordVisible = ref(false);
+const signingIn = ref(false);
+
+const email = ref('');
+const password = ref('');
 
 onMounted(async () => {
   if (Cookies.get('refreshToken') && Cookies.get('credential') && Cookies.get('accessToken')) {
@@ -46,7 +115,36 @@ onMounted(async () => {
   }
 })
 
+const passwordLogin = () => {
+  alert('Password login not implemented yet');
+}
+
+const resetPassword = () => {
+  const token = window.location.hostname + "/resetPassword/" + uuidv4();
+
+  fetch('/api/p/chaperones/forgot_password', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email: email.value, token: token }),
+  })
+    .then(response => {
+      if (response.ok) {
+        store.showAlert('Password Reset', 'An email has been sent to reset your password.');
+      } else {
+        store.showAlert('Error', 'An error occurred while resetting your password.');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      store.showAlert('Error', 'An error occurred while resetting your password.');
+    });
+}
+
+
 const customLogin = () => {
+  signingIn.value = true;
   googleSdkLoaded(google => {
     google.accounts.oauth2.initCodeClient({
       client_id: "898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com",
@@ -95,12 +193,15 @@ function onSignIn(response) {
         return response.json();
       }
       loadingData.value = false;
+      signingIn.value = false;
       return Promise.reject(response);
     })
     .then((data) => {
       store.isAdmin = data.is_admin;
       store.userID = data.id;
       isSignedIn.value = true;
+      loadingData.value = false;
+      signingIn.value = false;
       if (proxy.$route.query.redirect) {
         proxy.$router.push(proxy.$route.query.redirect);
       } else {
@@ -121,6 +222,7 @@ function onSignIn(response) {
       }
       console.error('Error:', error)
       loadingData.value = false;
+      signingIn.value = false;
     });
 }
 
@@ -146,6 +248,7 @@ async function refreshToken() {
   } catch (error) {
     console.error('Error refreshing token:', error);
     loadingData.value = false;
+    signingIn.value = false;
   }
 }
 
@@ -163,4 +266,5 @@ const checkCredential = async () => {
 }
 
 setInterval(checkCredential, 60000); // Check every minute
+
 </script>
