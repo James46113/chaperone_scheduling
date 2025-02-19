@@ -148,7 +148,7 @@ const resetPassword = () => {
     return;
   }
 
-  fetch('/api/p/chaperones/forgot_password', {
+  fetch('/api/p/reset/forgot_password', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
