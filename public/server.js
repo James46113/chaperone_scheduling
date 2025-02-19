@@ -42,6 +42,7 @@ app.post('/api/token', async (req, res) => {
 
 app.post('/api/refresh-token', async (req, res) => {
   const { refreshToken } = req.body;
+  console.log(`REFRESH TOKEN: ${refreshToken}`);
 
   const response = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
