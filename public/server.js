@@ -78,7 +78,7 @@ async function verifyAccessToken(accessToken) {
 
 app.use('/api', async (req, res) => {
   const url = `http://chaperone_scheduling_api.railway.internal:5000`;
-  let payload = null;
+  let tokenInfo;
   try {
     const accessToken = req.headers.authorization?.split(' ')[1];
 
@@ -86,7 +86,7 @@ app.use('/api', async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const tokenInfo = await verifyAccessToken(accessToken);
+    tokenInfo = await verifyAccessToken(accessToken);
 
     if (!tokenInfo) {
       return res.status(401).json({ error: 'Unauthorized' });
@@ -115,7 +115,7 @@ app.use('/api', async (req, res) => {
   try {
     const response = await fetch(`${url}${req.url}`, {
       method: req.method,
-      headers: { ...req.headers, email: payload.email },
+      headers: { ...req.headers, email: tokenInfo.email },
       body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
     });
     const data = await response.json();
