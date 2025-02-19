@@ -39,12 +39,12 @@ import { getCurrentInstance } from 'vue';
 const store = useAppStore();
 const { proxy } = getCurrentInstance();
 
-// onMounted(async () => {
-//   if (Cookies.get('refreshToken')) {
-//     await checkCredential();
-//     onCodeReceived({ code: Cookies.get('accessToken') });
-//   }
-// })
+onMounted(async () => {
+  if (Cookies.get('refreshToken') && Cookies.get('credential') && Cookies.get('accessToken')) {
+    await checkCredential();
+    onSignIn({ credential: Cookies.get('credential') });
+  }
+})
 
 const customLogin = () => {
   googleSdkLoaded(google => {
@@ -55,18 +55,6 @@ const customLogin = () => {
       accessType: 'offline',
       callback: onCodeReceived
     }).requestCode();
-    // google.accounts.oauth2.initTokenClient({
-    //   client_id: "898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com",
-    //   scope: 'openid email profile',
-    //   redirect_uri: window.location.href,
-    //   accessType: 'offline',
-    //   prompt: 'consent',
-    //   callback: (e) => console.log(JSON.stringify(e))
-    // }).requestAccessToken();
-    // google.accounts.id.initialize({
-    //   client_id: "898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com",
-    //   callback: (e) => console.log(JSON.stringify(e))
-    // });
   })
 }
 
@@ -95,7 +83,6 @@ function onSignIn(response) {
 
   loadingData.value = true;
   store.userEmail = decodeCredential(response.credential).email;
-  console.log(response)
 
   fetchAPI(`login/${store.userEmail}`, {
     method: 'GET',
