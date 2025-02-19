@@ -118,14 +118,7 @@ app.use('/api', async (req, res) => {
       headers: { ...req.headers, email: tokenInfo.email },
       body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
     });
-    if (req.url.startsWith('/login')) {
-      const data = await response.json();
-      res.status(response.status).json(data);
-    }
-    else {
-      if (response.status === 404) console.log(`${url}${req.url}`)
-      res.status(response.status).send(await response.text());
-    }
+    res.status(response.status).json(await response.json());
   } catch (error) {
     console.error('Error:', error);
     console.log(`${url}${req.url}`)
