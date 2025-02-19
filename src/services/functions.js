@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 export const fetchAPI = async (url, params) => {
   const headers = {
     ...(params.headers || {}),
-    'Authorization': `Bearer ${Cookies.get('credential')}`
+    'Authorization': `Bearer ${Cookies.get('accessToken')}`
   };
 
   // const APIURL = window.location.href.startsWith('https://chaperonescheduling-dev.up.railway.app')

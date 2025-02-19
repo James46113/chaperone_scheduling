@@ -9,7 +9,10 @@
           <i>You may have to sign in again after a period of inactivity for security reasons </i>
         </v-card-text>
         <div style="display: flex; justify-content: center;">
-          <GoogleLogin :callback="onSignIn" />
+          <v-btn variant="outlined" @click="customLogin" class="text-body-2">
+            <img src="/Google__G__logo.svg" class="mr-2" />
+            Sign in with Google
+          </v-btn>
         </div>
       </v-card>
     </div>
@@ -18,7 +21,10 @@
         <v-img src="/Steel-City-Choristers.png" max-width="200" />
         <v-card-title class="text-h5">Welcome!</v-card-title>
         <v-card-text class="mt-4">Please sign in with Google to get started.</v-card-text>
-        <GoogleLogin :callback="onSignIn" :access-type="'offline'" />
+        <v-btn variant="outlined" @click="customLogin" class="text-body-2 ml-4">
+          <img src="/Google__G__logo.svg" class="mr-2" />
+          Sign in with Google
+        </v-btn>
       </v-card>
       <v-card-text class="text-caption mx-4" style="position: absolute; bottom: 0; text-align: center;">
         <i>You may have to sign in again after a period of inactivity for security reasons.</i>
@@ -32,23 +38,55 @@
 
 <script setup>
 import { useAppStore } from '@/stores/app';
-import { GoogleLogin, decodeCredential, googleLogout } from 'vue3-google-login';
+import { GoogleLogin, decodeCredential, googleSdkLoaded } from 'vue3-google-login';
 import { getCurrentInstance } from 'vue';
 
 const store = useAppStore();
 const { proxy } = getCurrentInstance();
 
-// onMounted(() => {
-const credential = Cookies.get('credential');
-if (credential) {
-  onSignIn({ credential });
+onMounted(async () => {
+  if (Cookies.get('refreshToken') && Cookies.get('credential') && Cookies.get('accessToken')) {
+    await checkCredential();
+    onSignIn({ credential: Cookies.get('credential') });
+  }
+})
+
+const customLogin = () => {
+  googleSdkLoaded(google => {
+    google.accounts.oauth2.initCodeClient({
+      client_id: "898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com",
+      scope: 'openid email profile',
+      redirect_uri: window.location.href,
+      accessType: 'offline',
+      callback: onCodeReceived
+    }).requestCode();
+  })
 }
-// })
+
+function onCodeReceived(response) {
+  // Exchange the authorization code for tokens
+  fetch('/api/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ code: response.code })
+  })
+    .then(response => response.json())
+    .then(data => {
+      Cookies.set('credential', data.id_token);
+      Cookies.set('accessToken', data.access_token);
+      Cookies.set('refreshToken', data.refresh_token);
+      onSignIn({ credential: data.id_token });
+    })
+    .catch(error => {
+      console.error('Error exchanging code for tokens:', error);
+    });
+}
 
 function onSignIn(response) {
 
   loadingData.value = true;
-  Cookies.set('credential', response.credential);
   store.userEmail = decodeCredential(response.credential).email;
 
   fetchAPI(`login/${store.userEmail}`, {
@@ -87,5 +125,32 @@ function onSignIn(response) {
     });
 }
 
+async function refreshToken() {
+  try {
+    const response = await fetch('/api/refresh-token', {
+      method: 'POST',
+      body: JSON.stringify({ refreshToken: Cookies.get('refreshToken') }),
+    });
+    const data = await response.json();
+    Cookies.set('accessToken', data.access_token);
+    onSignIn({ credential: data.id_token });
+  } catch (error) {
+    console.error('Error refreshing token:', error);
+    googleLogout();
+    proxy.$router.push('/login');
+  }
+}
 
+const checkCredential = async () => {
+  const credential = Cookies.get('credential');
+  if (credential) {
+    const decoded = decodeCredential(credential);
+    const now = Math.floor(Date.now() / 1000);
+    if (decoded.exp < now) {
+      await refreshToken();
+    }
+  }
+}
+
+setInterval(checkCredential, 60000); // Check every minute
 </script>
