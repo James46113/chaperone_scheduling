@@ -25,6 +25,8 @@ declare global {
   const isReactive: typeof import('vue')['isReactive']
   const isReadonly: typeof import('vue')['isReadonly']
   const isRef: typeof import('vue')['isRef']
+  const isSignedI: typeof import('@/services/functions')['isSignedI']
+  const isSignedIn: typeof import('@/services/functions')['isSignedIn']
   const loadingAvailability: typeof import('@/services/functions')['loadingAvailability']
   const loadingData: typeof import('@/services/functions')['loadingData']
   const markRaw: typeof import('vue')['markRaw']
@@ -107,6 +109,7 @@ declare module 'vue' {
     readonly isReactive: UnwrapRef<typeof import('vue')['isReactive']>
     readonly isReadonly: UnwrapRef<typeof import('vue')['isReadonly']>
     readonly isRef: UnwrapRef<typeof import('vue')['isRef']>
+    readonly isSignedIn: UnwrapRef<typeof import('@/services/functions')['isSignedIn']>
     readonly loadingAvailability: UnwrapRef<typeof import('@/services/functions')['loadingAvailability']>
     readonly loadingData: UnwrapRef<typeof import('@/services/functions')['loadingData']>
     readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>

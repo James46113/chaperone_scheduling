@@ -69,6 +69,9 @@ function onCodeReceived(response) {
   })
     .then(response => response.json())
     .then(data => {
+      if (undefined in [data.id_token, data.access_token, data.refresh_token]) {
+        throw new Error('Invalid response from server');
+      }
       Cookies.set('credential', data.id_token);
       Cookies.set('accessToken', data.access_token);
       Cookies.set('refreshToken', data.refresh_token);
@@ -97,6 +100,7 @@ function onSignIn(response) {
     .then((data) => {
       store.isAdmin = data.is_admin;
       store.userID = data.id;
+      isSignedIn.value = true;
       if (proxy.$route.query.redirect) {
         proxy.$router.push(proxy.$route.query.redirect);
       } else {
@@ -121,18 +125,25 @@ function onSignIn(response) {
 }
 
 async function refreshToken() {
+  console.log(`Token: ${Cookies.get('refreshToken')}`);
   try {
     const response = await fetch('/api/refresh-token', {
       method: 'POST',
       body: JSON.stringify({ refreshToken: Cookies.get('refreshToken') }),
     });
+    if (!response.ok) {
+      throw new Error('Error refreshing token');
+    }
     const data = await response.json();
+    if (undefined in [data.id_token, data.access_token]) {
+      throw new Error('Invalid response from server');
+    }
     Cookies.set('accessToken', data.access_token);
+    Cookies.set('credential', data.id_token);
     onSignIn({ credential: data.id_token });
   } catch (error) {
     console.error('Error refreshing token:', error);
-    googleLogout();
-    proxy.$router.push('/login');
+    loadingData.value = false;
   }
 }
 
