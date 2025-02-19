@@ -123,7 +123,7 @@ app.use('/api', async (req, res) => {
       res.status(response.status).json(data);
     }
     else {
-      res.status(response.status).send(response.body);
+      res.status(response.status).send(await response.text());
     }
   } catch (error) {
     console.error('Error:', error);
