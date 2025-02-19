@@ -125,10 +125,12 @@ function onSignIn(response) {
 }
 
 async function refreshToken() {
-  console.log(`Token: ${Cookies.get('refreshToken')}`);
   try {
     const response = await fetch('/api/refresh-token', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({ refreshToken: Cookies.get('refreshToken') }),
     });
     if (!response.ok) {
