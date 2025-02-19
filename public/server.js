@@ -58,15 +58,14 @@ app.post('/api/refresh-token', async (req, res) => {
 
   try {
     const data = await response.json();
+    res.json({
+      access_token: data.access_token,
+      expires_in: data.expires_in
+    });
   }
   catch (e) {
     return res.status(400).json({ error: e });
   }
-
-  res.json({
-    access_token: data.access_token,
-    expires_in: data.expires_in
-  });
 });
 
 async function verifyAccessToken(accessToken) {
