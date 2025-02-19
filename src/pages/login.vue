@@ -40,10 +40,11 @@ const store = useAppStore();
 const { proxy } = getCurrentInstance();
 
 // onMounted(() => {
-// const credential = Cookies.get('credential');
-// if (credential) {
-//   onSignIn({ credential });
-// }
+const storedAccessToken = Cookies.get('accessToken');
+if (Cookies.get('refreshToken')) {
+  await checkCredential();
+  onCodeReceived({ code: Cookies.get('accessToken') });
+}
 // })
 
 const customLogin = () => {
@@ -149,14 +150,16 @@ async function refreshToken() {
   }
 }
 
-// setInterval(() => {
-//   const credential = Cookies.get('credential');
-//   if (credential) {
-//     const decoded = decodeCredential(credential);
-//     const now = Math.floor(Date.now() / 1000);
-//     if (decoded.exp < now) {
-//       refreshToken();
-//     }
-//   }
-// }, 60000); // Check every minute
+const checkCredential = async () => {
+  const credential = Cookies.get('credential');
+  if (credential) {
+    const decoded = decodeCredential(credential);
+    const now = Math.floor(Date.now() / 1000);
+    if (decoded.exp < now) {
+      await refreshToken();
+    }
+  }
+}
+
+setInterval(checkCredential, 60000); // Check every minute
 </script>
