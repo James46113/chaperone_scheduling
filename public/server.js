@@ -94,8 +94,7 @@ function revokeToken(token) {
 
 app.use('/api/reset/', async (req, res) => {
   const url = `http://chaperone_scheduling_api.railway.internal:5000`;
-  console.log(`${url}/reset/${req.url}`);
-  fetch(`${url}/reset/${req.url}`, {
+  fetch(`${url}/reset${req.url}`, {
     method: req.method,
     headers: req.headers,
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
