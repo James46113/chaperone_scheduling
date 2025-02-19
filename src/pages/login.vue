@@ -24,7 +24,7 @@
             <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between mb-n1">
               Password
               <span tabindex="-1" style="cursor: pointer;" class="text-caption text-decoration-none text-primary"
-                @click="resetPassword">
+                @click="resettingPassword = true">
                 Forgot login password?</span>
             </div>
 
@@ -33,14 +33,15 @@
               :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'" variant="outlined" color="primary"
               placeholder="Your Password" v-model="password" :type="passwordVisible ? 'text' : 'password'" class="mt-2"
               @keyup.enter="passwordLogin" />
+
+            <v-btn @click="passwordLogin" :loading="signingIn" color="primary" class="mt-4" width="100%">Sign In</v-btn>
+
+            <v-btn variant="outlined" :disabled="signingIn" width="100%" @click="customLogin" class="text-body-2 mt-4">
+              <img src="/Google__G__logo.svg" class="mr-2" />
+              Sign in with Google
+            </v-btn>
           </div>
-
-          <v-btn @click="login" :loading="signingIn" color="primary" class="mt-4" width="100%">Sign In</v-btn>
-
-          <v-btn variant="outlined" :disabled="signingIn" width="100%" @click="customLogin" class="text-body-2 mt-4">
-            <img src="/Google__G__logo.svg" class="mr-2" />
-            Sign in with Google
-          </v-btn>
+          <v-btn color="primary" width="100%" @click="resetPassword" class="mt-4" v-else>Reset Password</v-btn>
         </div>
       </v-card>
     </div>
@@ -74,7 +75,7 @@
             <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between mb-n1">
               Password
               <span tabindex="-1" style="cursor: pointer;" class="text-caption text-decoration-none text-primary"
-                @click="resetPassword">
+                @click="resettingPassword = true">
                 Forgot login password?</span>
             </div>
 
@@ -83,14 +84,15 @@
               :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'" variant="outlined" color="primary"
               placeholder="Your Password" v-model="password" :type="passwordVisible ? 'text' : 'password'" class="mt-2"
               @keyup.enter="passwordLogin" />
+
+            <v-btn @click="passwordLogin" :loading="signingIn" color="primary" class="mt-4" width="100%">Sign In</v-btn>
+
+            <v-btn variant="outlined" :disabled="signingIn" width="100%" @click="customLogin" class="text-body-2 mt-4">
+              <img src="/Google__G__logo.svg" class="mr-2" />
+              Sign in with Google
+            </v-btn>
           </div>
-
-          <v-btn @click="login" :loading="signingIn" color="primary" class="mt-4" width="100%">Sign In</v-btn>
-
-          <v-btn variant="outlined" :disabled="signingIn" width="100%" @click="customLogin" class="text-body-2 mt-4">
-            <img src="/Google__G__logo.svg" class="mr-2" />
-            Sign in with Google
-          </v-btn>
+          <v-btn color="primary" width="100%" @click="resetPassword" class="mt-4" v-else>Reset Password</v-btn>
         </div>
       </v-card>
     </div>
