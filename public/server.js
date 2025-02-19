@@ -123,6 +123,7 @@ app.use('/api', async (req, res) => {
   } catch (error) {
     console.error('Error:', error);
     console.log(`${url}${req.url}`)
+    console.log(response.text())
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });

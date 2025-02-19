@@ -3,7 +3,7 @@
   <div class="pa-6" v-if="!loadingData">
     <v-card class="pa-3" elevation="0">
       <v-card-title class="text-h5 ml-n6 mb-4" v-if="newEvent">New {{ isTemplate ? 'Template' : 'Event'
-        }}</v-card-title>
+      }}</v-card-title>
       <v-card-title class="text-h5 ml-n6 mb-4" v-else>Edit {{ isTemplate ? 'Template' : 'Event' }}</v-card-title>
       <v-row v-if="!isMobile">
         <v-col>
@@ -422,7 +422,7 @@ onMounted(async () => {
     return;
   }
 
-  if (!isTemplate.value) {
+  if (!isTemplate.value && !newEvent.value) {
     await Promise.all([fetchAPI(`events/${proxy.$route.query.id}`, {
       method: 'GET',
       headers: {
