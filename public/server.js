@@ -123,6 +123,7 @@ app.use('/api', async (req, res) => {
       res.status(response.status).json(data);
     }
     else {
+      if (response.status === 404) console.log(`${url}${req.url}`)
       res.status(response.status).send(await response.text());
     }
   } catch (error) {
