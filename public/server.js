@@ -118,12 +118,12 @@ app.use('/api', async (req, res) => {
       headers: { ...req.headers, email: tokenInfo.email },
       body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
     });
-    const data = await response.text();
+    const data = await response.json();
     res.status(response.status).json(data);
   } catch (error) {
     console.error('Error:', error);
     console.log(`${url}${req.url}`)
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: `Internal Server Error: ${error}` });
   }
 });
 
