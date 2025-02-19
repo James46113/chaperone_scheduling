@@ -1,14 +1,26 @@
 <template>
-  <div v-if="!loadingData">
-    <div style="display: flex; justify-content: center; align-items: center; height: 60vh;" v-if="!isMobile">
-      <v-card :width="isMobile ? '100vw' : '30vw'" class="pa-4">
+  <div v-if="isMobile">
+    <div style="display: flex; justify-content: center; align-items: center; height: 80vh;" class="pa-6">
+      <v-card width="100vw" class="pa-4" elevation="0" height="38vh">
         <v-img src="/Steel-City-Choristers.png" max-width="200" />
-        <v-card-title>Login</v-card-title>
-        <v-card-text>Please sign in with Google to access the chaperone rota.</v-card-text>
-        <v-card-text class="text-caption mt-n3">
-          <i>You may have to sign in again after a period of inactivity for security reasons </i>
-        </v-card-text>
-        <div style="display: flex; justify-content: center;">
+        <v-card-title class="text-h5">Welcome!</v-card-title>
+        <v-card-text v-if="!loadingData" class="mt-4">Please sign in with Google to get started.</v-card-text>
+        <v-card-text v-else class="mt-4">Signing you in...</v-card-text>
+        <v-btn v-if="!loadingData" variant="outlined" @click="customLogin" class="text-body-2 ml-4">
+          <img src="/Google__G__logo.svg" class="mr-2" />
+          Sign in with Google
+        </v-btn>
+      </v-card>
+    </div>
+  </div>
+  <div v-else>
+    <div style="display: flex; justify-content: center; align-items: center; height: 60vh;">
+      <v-card width="30vw" class="pa-4">
+        <v-img src="/Steel-City-Choristers.png" max-width="200" />
+        <v-card-title>Sign In</v-card-title>
+        <v-card-text v-if="!loadingData">Please sign in with Google to access the chaperone rota.</v-card-text>
+        <v-card-text v-else>Signing you in...</v-card-text>
+        <div v-if="!loadingData" style="display: flex; justify-content: center;">
           <v-btn variant="outlined" @click="customLogin" class="text-body-2">
             <img src="/Google__G__logo.svg" class="mr-2" />
             Sign in with Google
@@ -16,23 +28,6 @@
         </div>
       </v-card>
     </div>
-    <div v-else style="display: flex; justify-content: center; align-items: center; height: 80vh;" class="pa-6">
-      <v-card :width="'100vw'" class="pa-4" elevation="0">
-        <v-img src="/Steel-City-Choristers.png" max-width="200" />
-        <v-card-title class="text-h5">Welcome!</v-card-title>
-        <v-card-text class="mt-4">Please sign in with Google to get started.</v-card-text>
-        <v-btn variant="outlined" @click="customLogin" class="text-body-2 ml-4">
-          <img src="/Google__G__logo.svg" class="mr-2" />
-          Sign in with Google
-        </v-btn>
-      </v-card>
-      <v-card-text class="text-caption mx-4" style="position: absolute; bottom: 0; text-align: center;">
-        <i>You may have to sign in again after a period of inactivity for security reasons.</i>
-      </v-card-text>
-    </div>
-  </div>
-  <div v-else class=" d-flex justify-center align-center" style="height: 100vh;">
-    <v-progress-circular color="primary" indeterminate size="40" />
   </div>
 </template>
 
@@ -147,7 +142,9 @@ const checkCredential = async () => {
     const decoded = decodeCredential(credential);
     const now = Math.floor(Date.now() / 1000);
     if (decoded.exp < now) {
+      console.log('Token expired, refreshing...');
       await refreshToken();
+      console.log('Token refreshed');
     }
   }
 }
