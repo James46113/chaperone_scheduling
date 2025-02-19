@@ -128,10 +128,14 @@ async function refreshToken() {
     });
     const data = await response.json();
     Cookies.set('accessToken', data.access_token);
+    Cookies.set('credential', data.id_token);
     onSignIn({ credential: data.id_token });
   } catch (error) {
     console.error('Error refreshing token:', error);
-    googleLogout();
+    Cookies.remove('credential');
+    Cookies.remove('accessToken');
+    Cookies.remove('refreshToken');
+    loadingData.value = false;
     proxy.$router.push('/login');
   }
 }
