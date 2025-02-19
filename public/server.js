@@ -120,10 +120,10 @@ app.use('/api', async (req, res) => {
     });
     const data = await response.json();
     res.status(response.status).json(data);
+    console.log(await response.text())
   } catch (error) {
     console.error('Error:', error);
     console.log(`${url}${req.url}`)
-    console.log(response.text())
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
