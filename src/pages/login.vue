@@ -39,13 +39,12 @@ import { getCurrentInstance } from 'vue';
 const store = useAppStore();
 const { proxy } = getCurrentInstance();
 
-// onMounted(() => {
-const storedAccessToken = Cookies.get('accessToken');
-if (Cookies.get('refreshToken')) {
-  await checkCredential();
-  onCodeReceived({ code: Cookies.get('accessToken') });
-}
-// })
+onMounted(async () => {
+  if (Cookies.get('refreshToken')) {
+    await checkCredential();
+    onCodeReceived({ code: Cookies.get('accessToken') });
+  }
+})
 
 const customLogin = () => {
   googleSdkLoaded(google => {
