@@ -41,6 +41,7 @@ const { proxy } = getCurrentInstance();
 
 onMounted(async () => {
   if (Cookies.get('refreshToken') && Cookies.get('credential') && Cookies.get('accessToken')) {
+    console.log(`refresh token: ${Cookies.get('refreshToken')}`);
     await checkCredential();
     onSignIn({ credential: Cookies.get('credential') });
   }
