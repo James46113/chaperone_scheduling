@@ -21,7 +21,7 @@ app.post('/api/token', async (req, res) => {
       code,
       client_id: '898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com',
       client_secret: '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',
-      redirect_uri: 'https://dev-chaperones-steelcitychoristers.up.railway.app',
+      redirect_uri: 'https://chaperones.steelcitychoristers.org.uk',
       grant_type: 'authorization_code'
     })
   });
