@@ -11,6 +11,7 @@
         <div style="display: flex; justify-content: center;">
           <GoogleLogin :callback="onSignIn" prompt auto-login />
         </div>
+        <v-btn variant="flat" color="primary" @click="customLogin">Login</v-btn>
       </v-card>
     </div>
     <div v-else style="display: flex; justify-content: center; align-items: center; height: 80vh;" class="pa-6">
@@ -32,7 +33,7 @@
 
 <script setup>
 import { useAppStore } from '@/stores/app';
-import { GoogleLogin, decodeCredential, googleLogout } from 'vue3-google-login';
+import { GoogleLogin, decodeCredential, googleSdkLoaded } from 'vue3-google-login';
 import { getCurrentInstance } from 'vue';
 
 const store = useAppStore();
@@ -45,11 +46,23 @@ if (credential) {
 }
 // })
 
+const customLogin = () => {
+  googleSdkLoaded(google => {
+    google.accounts.oauth2.initCodeClient({
+      client_id: "898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com",
+      scope: 'openid email profile',
+      accessType: 'offline',
+      callback: onSignIn
+    }).requestCode();
+  })
+}
+
 function onSignIn(response) {
 
   loadingData.value = true;
   Cookies.set('credential', response.credential);
   store.userEmail = decodeCredential(response.credential).email;
+  console.log(response)
 
   fetchAPI(`login/${store.userEmail}`, {
     method: 'GET',
