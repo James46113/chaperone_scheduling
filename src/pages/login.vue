@@ -41,7 +41,6 @@ const { proxy } = getCurrentInstance();
 
 onMounted(async () => {
   if (Cookies.get('refreshToken') && Cookies.get('credential') && Cookies.get('accessToken')) {
-    console.log(`refresh token: ${Cookies.get('refreshToken')}`);
     await checkCredential();
     onSignIn({ credential: Cookies.get('credential') });
   }
@@ -61,7 +60,6 @@ const customLogin = () => {
 
 function onCodeReceived(response) {
   // Exchange the authorization code for tokens
-  console.log("onCodeReceived")
   fetch('/api/token', {
     method: 'POST',
     headers: {
@@ -142,7 +140,6 @@ async function refreshToken() {
     if (undefined in [data.id_token, data.access_token]) {
       throw new Error('Invalid response from server');
     }
-    console.log(`data: ${JSON.stringify(data)}`);
     Cookies.set('accessToken', data.access_token);
     Cookies.set('credential', data.id_token);
     onSignIn({ credential: data.id_token });
