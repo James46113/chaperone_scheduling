@@ -42,6 +42,7 @@ app.post('/api/token', async (req, res) => {
 
 app.post('/api/refresh-token', async (req, res) => {
   const { refreshToken } = req.body;
+  console.log(`REFRESH TOKEN: ${refreshToken}`);
 
   const response = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
@@ -56,15 +57,18 @@ app.post('/api/refresh-token', async (req, res) => {
     })
   });
 
-  const data = await response.json();
-  if (data.error) {
-    return res.status(400).json({ error: data.error });
+  try {
+    const data = await response.json();
+    console.log(`REFRESH RESPONSE: ${JSON.stringify(data)}`);
+    res.json({
+      access_token: data.access_token,
+      id_token: data.id_token,
+      expires_in: data.expires_in
+    });
   }
-
-  res.json({
-    access_token: data.access_token,
-    expires_in: data.expires_in
-  });
+  catch (e) {
+    return res.status(400).json({ error: e });
+  }
 });
 
 async function verifyAccessToken(accessToken) {
