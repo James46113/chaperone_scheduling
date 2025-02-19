@@ -92,6 +92,17 @@ function revokeToken(token) {
   });
 }
 
+app.use('/api/reset/', async (req, res) => {
+  const url = `http://chaperone_scheduling_api.railway.internal:5000`;
+  fetch(`${url}/reset/${req.url}`, {
+    method: req.method,
+    headers: req.headers,
+    body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
+  }).then((response) => {
+    res.status(response.status).json(response.body);
+  });
+});
+
 app.use('/api/p/', async (req, res) => {
   const url = `http://chaperone_scheduling_api.railway.internal:5000`;
   // res.send(`${url}${req.url}`);

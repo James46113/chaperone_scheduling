@@ -25,7 +25,7 @@
               Password
               <span tabindex="-1" style="cursor: pointer;" class="text-caption text-decoration-none text-primary"
                 @click="resettingPassword = true">
-                Forgot login password?</span>
+                Forgot password?</span>
             </div>
 
             <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
@@ -41,7 +41,13 @@
               Sign in with Google
             </v-btn>
           </div>
-          <v-btn color="primary" width="100%" @click="resetPassword" class="mt-4" v-else>Reset Password</v-btn>
+          <div v-else>
+            <v-btn color="primary" width="100%" :loading="awaitingPasswordReset" @click="resetPassword"
+              class="mt-4">Reset Password</v-btn>
+            <v-card-text @click="resettingPassword = false" class="text-primary mt-2"
+              style="text-align: center; cursor: pointer;">Back to Sign
+              in</v-card-text>
+          </div>
         </div>
       </v-card>
     </div>
@@ -76,7 +82,7 @@
               Password
               <span tabindex="-1" style="cursor: pointer;" class="text-caption text-decoration-none text-primary"
                 @click="resettingPassword = true">
-                Forgot login password?</span>
+                Forgot password?</span>
             </div>
 
             <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
@@ -92,7 +98,13 @@
               Sign in with Google
             </v-btn>
           </div>
-          <v-btn color="primary" width="100%" @click="resetPassword" class="mt-4" v-else>Reset Password</v-btn>
+          <div v-else>
+            <v-btn color="primary" width="100%" :loading="awaitingPasswordReset" @click="resetPassword"
+              class="mt-4">Reset Password</v-btn>
+            <v-card-text @click="resettingPassword = false" class="text-primary mt-2"
+              style="text-align: center; cursor: pointer;">Back to Sign
+              in</v-card-text>
+          </div>
         </div>
       </v-card>
     </div>
@@ -114,6 +126,7 @@ const signingIn = ref(false);
 const email = ref('');
 const password = ref('');
 const resettingPassword = ref(false);
+const awaitingPasswordReset = ref(false)
 
 onMounted(async () => {
   if (Cookies.get('refreshToken') && Cookies.get('credential') && Cookies.get('accessToken')) {
@@ -127,6 +140,7 @@ const passwordLogin = () => {
 }
 
 const resetPassword = () => {
+  awaitingPasswordReset.value = true;
   const token = window.location.hostname + "/resetPassword/" + uuidv4();
 
   if (email.value === '') {
@@ -151,6 +165,9 @@ const resetPassword = () => {
     .catch(error => {
       console.error('Error:', error);
       store.showAlert('Error', 'An error occurred while resetting your password.');
+    }).finally(() => {
+      awaitingPasswordReset.value = false;
+      resettingPassword.value = false;
     });
 }
 
