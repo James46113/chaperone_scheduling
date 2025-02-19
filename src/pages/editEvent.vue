@@ -3,7 +3,7 @@
   <div class="pa-6" v-if="!loadingData">
     <v-card class="pa-3" elevation="0">
       <v-card-title class="text-h5 ml-n6 mb-4" v-if="newEvent">New {{ isTemplate ? 'Template' : 'Event'
-        }}</v-card-title>
+      }}</v-card-title>
       <v-card-title class="text-h5 ml-n6 mb-4" v-else>Edit {{ isTemplate ? 'Template' : 'Event' }}</v-card-title>
       <v-row v-if="!isMobile">
         <v-col>
@@ -107,8 +107,8 @@
       <v-row class="my-3">
         <v-card-title class="mt-4">Chaperones</v-card-title>
         <!-- <v-select v-if="!isTemplate && !isMobile" :items="assignedChaperones" v-model="event.lead_chaperone"
-          label="Lead Chaperone" variant="outlined" class="mt-3 ml-7" hide-no-data max-width="300" />
-        <v-spacer /> -->
+          label="Lead Chaperone" variant="outlined" class="mt-3 ml-7" hide-no-data max-width="300" /> -->
+        <v-spacer />
         <v-btn v-if="!isMobile" color="primary" variant="outlined" class="mt-6 mr-6" @click="newSlot">Add
           Chaperone</v-btn>
       </v-row>
