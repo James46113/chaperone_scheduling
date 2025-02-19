@@ -141,7 +141,7 @@ const passwordLogin = () => {
 
 const resetPassword = () => {
   awaitingPasswordReset.value = true;
-  const token = window.location.hostname + "/resetPassword/" + uuidv4();
+  const token = window.location.hostname + "/resetPassword?token=" + uuidv4();
 
   if (email.value === '') {
     store.showAlert('Error', 'Please enter your email address to reset your password.');
