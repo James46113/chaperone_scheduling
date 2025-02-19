@@ -78,8 +78,9 @@ const hasSpecial = computed(() => password.value.match(/[^A-Za-z0-9]/));
 const isLongEnough = computed(() => password.value.length >= 8);
 
 const resetPassword = () => {
-  if (passwordsMatch.value === true) {
+  if (passwordsMatch.value !== true) {
     store.showAlert('Invalid Password', 'Passwords do not match')
+    return;
   }
   if (!hasUppercase.value || !hasLowercase.value || !hasNumber.value || !hasSpecial.value || !isLongEnough.value) {
     store.showAlert('Invalid Password', 'Password does not meet requirements')
