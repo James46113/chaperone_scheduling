@@ -9,9 +9,11 @@
           <i>You may have to sign in again after a period of inactivity for security reasons </i>
         </v-card-text>
         <div style="display: flex; justify-content: center;">
-          <GoogleLogin :callback="onSignIn" prompt auto-login />
+          <v-btn variant="outlined" @click="customLogin" class="text-body-2">
+            <img src="/Google__G__logo.svg" class="mr-2" />
+            Sign in with Google
+          </v-btn>
         </div>
-        <v-btn variant="flat" color="primary" @click="customLogin">Login</v-btn>
       </v-card>
     </div>
     <div v-else style="display: flex; justify-content: center; align-items: center; height: 80vh;" class="pa-6">
@@ -19,7 +21,10 @@
         <v-img src="/Steel-City-Choristers.png" max-width="200" />
         <v-card-title class="text-h5">Welcome!</v-card-title>
         <v-card-text class="mt-4">Please sign in with Google to get started.</v-card-text>
-        <GoogleLogin :callback="onSignIn" :access-type="'offline'" />
+        <v-btn variant="outlined" @click="customLogin" class="text-body-2 ml-4">
+          <img src="/Google__G__logo.svg" class="mr-2" />
+          Sign in with Google
+        </v-btn>
       </v-card>
       <v-card-text class="text-caption mx-4" style="position: absolute; bottom: 0; text-align: center;">
         <i>You may have to sign in again after a period of inactivity for security reasons.</i>
