@@ -27,7 +27,7 @@ import { useAppStore } from '@/stores/app';
 
 const { proxy } = getCurrentInstance();
 const store = useAppStore();
-const showNavigationBar = computed(() => !['/login', '/offline', '/login/password'].includes(proxy.$route.path))
+const showNavigationBar = computed(() => !['/login', '/offline', '/resetPassword'].includes(proxy.$route.path))
 
 // onMounted(() => {
 // if (isDev.value) {

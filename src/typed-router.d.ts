@@ -26,7 +26,7 @@ declare module 'vue-router/auto-routes' {
     '/event': RouteRecordInfo<'/event', '/event', Record<never, never>, Record<never, never>>,
     '/login': RouteRecordInfo<'/login', '/login', Record<never, never>, Record<never, never>>,
     '/offline': RouteRecordInfo<'/offline', '/offline', Record<never, never>, Record<never, never>>,
-    '/passwordLogin': RouteRecordInfo<'/passwordLogin', '/passwordLogin', Record<never, never>, Record<never, never>>,
+    '/resetPassword': RouteRecordInfo<'/resetPassword', '/resetPassword', Record<never, never>, Record<never, never>>,
     '/schedule': RouteRecordInfo<'/schedule', '/schedule', Record<never, never>, Record<never, never>>,
     '/templateEvents': RouteRecordInfo<'/templateEvents', '/templateEvents', Record<never, never>, Record<never, never>>,
     '/users': RouteRecordInfo<'/users', '/users', Record<never, never>, Record<never, never>>,

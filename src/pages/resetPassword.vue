@@ -1,0 +1,81 @@
+<template>
+  <v-app-bar height="100" class="d-flex justify-space-between align-center">
+    <img class="ml-4 mb-4" src="/Steel-City-Choristers.png" width="130px" contain @click="proxy.$router.push('/')" />
+    <v-card-title class="text-h5 mt-4 ml-4" v-if="!isMobile">Chaperones</v-card-title>
+    <v-spacer />
+
+    <v-btn href="mailto:jamescaroe@gmail.com?subject=SCC%20Chaperone%20System%20Bug%20Report" color="primary"
+      class="mt-4">
+      Report Error
+    </v-btn>
+  </v-app-bar>
+
+  <div v-if="validToken" style="display: flex; justify-content: center;">
+    <v-card class="mx-auto mt-8 pa-4" :width="isMobile ? '100vw' : '40vw'" elevation="0">
+      <v-card-title class="text-h5">Reset Password</v-card-title>
+      <v-form width="100vw">
+        <v-text-field v-show="false" label="Username" autocomplete="username"></v-text-field>
+        <!-- Hidden field to prevent autofill -->
+
+        <div class="text-subtitle-1 text-medium-emphasis mt-2 mb-1">New Password</div>
+        <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
+          @click:append-inner="passwordVisible = !passwordVisible"
+          :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'" variant="outlined" color="primary"
+          placeholder="New Password" v-model="password" :type="passwordVisible ? 'text' : 'password'" class="mt-2"
+          @keyup.enter="resetPassword" autocomplete="new-password" width="100%" />
+
+        <div class="text-subtitle-1 text-medium-emphasis mb-1">Confirm Password</div>
+        <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
+          @click:append-inner="passwordVisible = !passwordVisible" variant="outlined" color="primary"
+          placeholder="Confirm Password" v-model="confirmPassword" :type="passwordVisible ? 'text' : 'password'"
+          class="mt-2" @keyup.enter="resetPassword" autocomplete="new-password" width="100%"
+          :rules="[passwordsMatch]" />
+
+        <v-btn color="primary" variant="flat" class="mt-4" @click="resetPassword" width="100vw">Reset Password</v-btn>
+      </v-form>
+    </v-card>
+  </div>
+  <div v-else-if="validToken === false" style="display: flex; justify-content: center;">
+    <v-card class="mx-auto mt-8 pa-4" :width="isMobile ? '100vw' : '40vw'" elevation="0">
+      <v-card-title class="text-h5">Invalid Token</v-card-title>
+      <v-card-text>
+        The token you are using to reset your password is invalid. Please request a new token from the password reset
+        page.
+      </v-card-text>
+    </v-card>
+  </div>
+
+</template>
+
+<script setup>
+
+const { proxy } = getCurrentInstance();
+const passwordVisible = ref(false);
+const password = ref('')
+const confirmPassword = ref('')
+const validToken = ref(proxy.$route.query.token ? null : false)
+
+const passwordsMatch = computed(() => password.value === confirmPassword.value || 'Passwords do not match')
+
+const resetPassword = () => {
+  alert('Password reset')
+}
+
+fetchAPI(`reset/check_token/${proxy.$route.query.token}`, {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+  .then((response) => {
+    if (response.ok) {
+      validToken.value = true
+    } else {
+      validToken.value = false
+    }
+  }
+  ).catch((error) => {
+    console.error('Error:', error)
+  })
+
+</script>
