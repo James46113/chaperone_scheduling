@@ -140,7 +140,8 @@ async function refreshToken() {
     }
     Cookies.set('accessToken', data.access_token);
     Cookies.set('credential', data.id_token);
-    onSignIn({ credential: data.id_token });
+    console.log(JSON.stringify(data));
+    // onSignIn({ credential: data.id_token });
   } catch (error) {
     console.error('Error refreshing token:', error);
     loadingData.value = false;
