@@ -143,7 +143,6 @@ async function refreshToken() {
   } catch (error) {
     console.error('Error refreshing token:', error);
     loadingData.value = false;
-    proxy.$router.push('/login');
   }
 }
 
