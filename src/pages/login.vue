@@ -48,13 +48,20 @@ if (credential) {
 
 const customLogin = () => {
   googleSdkLoaded(google => {
-    google.accounts.oauth2.initCodeClient({
+    // google.accounts.oauth2.initCodeClient({
+    //   client_id: "898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com",
+    //   scope: 'openid email profile',
+    //   redirect_uri: window.location.href,
+    //   accessType: 'offline',
+    //   callback: (e) => console.log(JSON.stringify(e))
+    // }).requestCode();
+    google.accounts.oauth2.initTokenClient({
       client_id: "898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com",
       scope: 'openid email profile',
       redirect_uri: window.location.href,
       accessType: 'offline',
       callback: (e) => console.log(JSON.stringify(e))
-    }).requestCode();
+    }).requestToken();
   })
 }
 
