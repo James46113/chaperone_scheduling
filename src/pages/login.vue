@@ -61,7 +61,7 @@ const customLogin = () => {
       redirect_uri: window.location.href,
       accessType: 'offline',
       callback: (e) => console.log(JSON.stringify(e))
-    }).requestToken();
+    }).requestAccessToken();
   })
 }
 
