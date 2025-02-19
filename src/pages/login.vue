@@ -69,6 +69,9 @@ function onCodeReceived(response) {
   })
     .then(response => response.json())
     .then(data => {
+      if (undefined in [data.id_token, data.access_token, data.refresh_token]) {
+        throw new Error('Invalid response from server');
+      }
       Cookies.set('credential', data.id_token);
       Cookies.set('accessToken', data.access_token);
       Cookies.set('refreshToken', data.refresh_token);
@@ -127,6 +130,9 @@ async function refreshToken() {
       body: JSON.stringify({ refreshToken: Cookies.get('refreshToken') }),
     });
     const data = await response.json();
+    if (undefined in [data.id_token, data.access_token]) {
+      throw new Error('Invalid response from server');
+    }
     Cookies.set('accessToken', data.access_token);
     Cookies.set('credential', data.id_token);
     onSignIn({ credential: data.id_token });
