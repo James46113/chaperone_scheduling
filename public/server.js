@@ -122,6 +122,7 @@ app.use('/api', async (req, res) => {
     res.status(response.status).json(data);
   } catch (error) {
     console.error('Error:', error);
+    console.log(`${url}${req.url}`)
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
