@@ -18,10 +18,12 @@
           items-per-page="-1" :headers="headers" density="compact"
           :height="loadingData ? 120 : (users.length + 1) * 64">
           <template #item.is_admin="{ item }">
-            <v-switch @click="updateAdmin(item)" class="mb-n6" v-model="item.is_admin" color="primary" />
+            <v-switch :disabled="item.name !== 'Admin'" @click="updateAdmin(item)" class="mb-n6" v-model="item.is_admin"
+              color="primary" />
           </template>
           <template #item.delete="{ item }">
-            <v-btn @click="deleteUser(item.id)" variant="flat"><v-icon>mdi-delete</v-icon></v-btn>
+            <v-btn :disabled="item.name !== 'Admin'" @click="deleteUser(item.id)"
+              variant="flat"><v-icon>mdi-delete</v-icon></v-btn>
           </template>
           <template #item.email="{ item }">
             <v-row>
