@@ -49,6 +49,7 @@ const logout = () => {
   store.isAdmin = false;
   store.userID = null;
   Cookies.remove('credential');
+  Cookies.remove('passwdAccessToken')
   proxy.$router.push('/login')
 }
 
