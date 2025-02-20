@@ -123,11 +123,12 @@ app.use('/api/p/', async (req, res) => {
   if (!tokenResponse.ok) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
+  const { email } = await tokenResponse.json();
 
   const response = await fetch(`${url}${req.url}`, {
     method: req.method,
     headers: req.headers,
-    body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
+    body: req.method !== 'GET' ? JSON.stringify({ ...req.body, email }) : undefined
   })
   res.status(response.status).json(await response.json());
 });
