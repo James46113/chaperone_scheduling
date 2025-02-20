@@ -86,10 +86,7 @@ app.use('/api/login/', async (req, res) => {
       'Content-Type': 'application/json',
     }
   });
-  if (response.ok) {
-    return res.json(await response.json());
-  }
-  return res.status(400).json({ error: 'Error' });
+  return res.status(response.status).json(await response.json());
 });
 
 async function verifyAccessToken(accessToken) {

@@ -18,10 +18,12 @@
           items-per-page="-1" :headers="headers" density="compact"
           :height="loadingData ? 120 : (users.length + 1) * 64">
           <template #item.is_admin="{ item }">
-            <v-switch @click="updateAdmin(item)" class="mb-n6" v-model="item.is_admin" color="primary" />
+            <v-switch :readonly="item.name === 'Admin'" @click="updateAdmin(item)" class="mb-n6" v-model="item.is_admin"
+              color="primary" />
           </template>
           <template #item.delete="{ item }">
-            <v-btn @click="deleteUser(item.id)" variant="flat"><v-icon>mdi-delete</v-icon></v-btn>
+            <v-btn v-if="item.name !== 'Admin'" @click="deleteUser(item.id)"
+              variant="flat"><v-icon>mdi-delete</v-icon></v-btn>
           </template>
           <template #item.email="{ item }">
             <v-row>
@@ -32,7 +34,7 @@
                 <v-text-field v-else v-model="item.email" class="mb-n3 mt-2" :rules="[required]" label="Email" required
                   @keyup.enter="saveEmail(item)" variant="outlined" density="compact"></v-text-field>
               </v-col>
-              <v-col>
+              <v-col v-if="item.name !== 'Admin'">
                 <v-btn v-if="!item.editEmail" variant="flat" class="mt-2"
                   @click="item.editEmail = true"><v-icon>mdi-pencil</v-icon></v-btn>
                 <v-btn v-else variant="flat" class="mt-2" @click="saveEmail(item)"><v-icon>mdi-check</v-icon></v-btn>
@@ -179,6 +181,9 @@ const deleteUser = (user_id) => {
 }
 
 const updateAdmin = (user) => {
+  if (user.name === 'Admin') {
+    return;
+  }
   fetchAPI(`chaperones/${user.id}`, {
     method: 'PATCH',
     headers: {
