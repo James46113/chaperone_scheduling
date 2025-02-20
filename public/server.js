@@ -99,6 +99,7 @@ app.use('/api/public/', async (req, res) => {
     headers: req.headers,
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
   });
+
   res.status(response.status).json(await response.json());
 });
 
