@@ -33,7 +33,7 @@ app.post('/api/token', async (req, res) => {
     return res.status(400).json({ error: data.error });
   }
 
-  res.json({
+  return res.status(200).json({
     access_token: data.access_token,
     refresh_token: data.refresh_token,
     id_token: data.id_token,
@@ -61,7 +61,7 @@ app.post('/api/refresh-token', async (req, res) => {
   try {
     const data = await response.json();
     console.log(`REFRESH RESPONSE: ${JSON.stringify(data)}`);
-    res.json({
+    return res.status(200).json({
       access_token: data.access_token,
       id_token: data.id_token,
       expires_in: data.expires_in
@@ -100,7 +100,7 @@ app.use('/api/public/', async (req, res) => {
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
   });
 
-  res.status(response.status).json(await response.json());
+  return res.status(response.status).json(await response.json());
 });
 
 
@@ -123,7 +123,7 @@ app.use('/api/p/', async (req, res) => {
     headers: { ...req.headers, email: email },
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
   })
-  res.status(response.status).json(await response.json());
+  return res.status(response.status).json(await response.json());
 });
 
 app.use('/api', async (req, res) => {
@@ -170,11 +170,11 @@ app.use('/api', async (req, res) => {
       headers: { ...req.headers, email: tokenInfo.email },
       body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
     });
-    res.status(response.status).json(await response.json());
+    return res.status(response.status).json(await response.json());
   } catch (error) {
     console.error('Error:', error);
     console.log(`${url}${req.url}`)
-    res.status(500).json({ error: `Internal Server Error: ${error}` });
+    return res.status(500).json({ error: `Internal Server Error: ${error}` });
   }
 });
 
