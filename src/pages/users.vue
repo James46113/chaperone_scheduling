@@ -181,6 +181,9 @@ const deleteUser = (user_id) => {
 }
 
 const updateAdmin = (user) => {
+  if (user.name === 'Admin') {
+    return;
+  }
   fetchAPI(`chaperones/${user.id}`, {
     method: 'PATCH',
     headers: {
