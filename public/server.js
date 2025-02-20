@@ -39,7 +39,7 @@ app.post('/api/token', async (req, res) => {
 
   console.log(`DATA: ${JSON.stringify(data)}`);
 
-  return res.status(200).json({
+  return res.json({
     access_token: data.access_token,
     refresh_token: data.refresh_token,
     id_token: data.id_token,
@@ -67,7 +67,7 @@ app.post('/api/refresh-token', async (req, res) => {
   try {
     const data = await response.json();
     console.log(`REFRESH RESPONSE: ${JSON.stringify(data)}`);
-    return res.status(200).json({
+    return res.json({
       access_token: data.access_token,
       id_token: data.id_token,
       expires_in: data.expires_in
@@ -80,7 +80,6 @@ app.post('/api/refresh-token', async (req, res) => {
 
 app.use('/api/login/', async (req, res) => {
   const email = req.url.replaceAll('/', '');
-  res.json({ test: `${url}/login/${email}` });
   const response = await fetch(`${url}/login/${email}`, {
     method: 'GET',
     headers: {
@@ -88,7 +87,7 @@ app.use('/api/login/', async (req, res) => {
     }
   });
   if (response.ok) {
-    return res.status(200).json(await response.json());
+    return res.json(await response.json());
   }
   return res.status(400).json({ error: 'Error' });
 });
