@@ -93,8 +93,8 @@ function revokeToken(token) {
   });
 }
 
-app.use('/api/reset/', async (req, res) => {
-  const response = await fetch(`${url}${req.url}`, {
+app.use('/api/public/', async (req, res) => {
+  const response = await fetch(`${url}/public${req.url}`, {
     method: req.method,
     headers: req.headers,
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
@@ -102,14 +102,6 @@ app.use('/api/reset/', async (req, res) => {
   res.status(response.status).json(await response.json());
 });
 
-app.use('/api/login/', async (req, res) => {
-  const response = await fetch(`${url}/login/password`, {
-    method: req.method,
-    headers: req.headers,
-    body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
-  });
-  res.status(response.status).json(await response.json());
-});
 
 app.use('/api/p/', async (req, res) => {
   const { token, fingerprint } = req.headers;
@@ -124,7 +116,6 @@ app.use('/api/p/', async (req, res) => {
     return res.status(401).json({ error: 'Unauthorized' });
   }
   const { email } = await tokenResponse.json();
-  console.log(`EMAIL: ${email}`);
 
   const response = await fetch(`${url}${req.url}`, {
     method: req.method,
