@@ -16,6 +16,10 @@
         <v-btn v-if="store.isAdmin && !isMobile" @click="() => showCreateTerm = true"
           style="position: absolute; right: 160px;" class="mt-4" color="primary">Create Term</v-btn>
 
+        <v-btn v-if="store.isAdmin && !isMobile" @click="sendAssignedEventsEmail"
+          style="position: absolute; right: 300px;" class="mt-4" color="primary"
+          :loading="sendingUpcomingEventsEmail">Send Assigned Events Email</v-btn>
+
         <v-calendar class="pa-0" :events="events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" hide-week-number>
           <template #event="{ event }" v-if="!isMobile" :interval-height="20">
             <event-card :event="event" :chaperones="chaperones" small />
@@ -32,6 +36,10 @@
           @click="proxy.$router.push('/editEvent?id=new')">New Event</v-btn>
         <v-btn v-if="store.isAdmin && isMobile" @click="() => showCreateTerm = true" width="100vw" class="mt-2 mb-3"
           color="primary">Create Term</v-btn>
+        <v-btn v-if="store.isAdmin && !isMobile" @click="sendAssignedEventsEmail"
+          style="position: absolute; right: 300px;" class="mt-4" color="primary" width="100vw"
+          :loading="sendingUpcomingEventsEmail">Send Assigned Events
+          Email</v-btn>
       </v-tabs-window-item>
 
       <v-tabs-window-item value="list">
@@ -84,6 +92,7 @@ import { VCalendar } from 'vuetify/labs/VCalendar'
 import { ref, onMounted, getCurrentInstance } from 'vue'
 import { useAppStore } from '@/stores/app'
 import { GoogleLogin, decodeCredential, googleLogout } from 'vue3-google-login';
+import { send } from 'process';
 
 const events = ref([])
 const upcomingEvents = computed(() => events.value.filter(event => event.start > new Date()))
@@ -95,6 +104,7 @@ const chaperones = ref([]);
 const availability = ref([]);
 
 const showCreateTerm = ref(false);
+const sendingUpcomingEventsEmail = ref(false);
 
 document.title = "Chaperones' Calendar - Steel City Choristers"
 
@@ -111,6 +121,30 @@ onMounted(async () => {
     loadingData.value = false;
   }
 })
+
+const sendAssignedEventsEmail = () => {
+  sendingUpcomingEventsEmail.value = true;
+  fetchAPI('chaperones/events/email', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => {
+      if (response.ok) {
+        store.showAlert('Email Sent', 'Chaperones have been emailed their assigned events')
+      } else {
+        store.showAlert('Error', 'An error occurred while sending the email')
+        console.error('Error:', response)
+      }
+    })
+    .catch((error) => {
+      store.showAlert('Error', 'An error occurred while sending the email')
+      console.error('Error:', error)
+    }).finally(() => {
+      sendingUpcomingEventsEmail.value = false;
+    });
+}
 
 const createdTerm = () => {
   showCreateTerm.value = false;
