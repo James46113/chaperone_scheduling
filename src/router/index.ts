@@ -9,7 +9,6 @@ import { createRouter, createWebHistory } from 'vue-router/auto'
 import { setupLayouts } from 'virtual:generated-layouts'
 import { routes } from 'vue-router/auto-routes'
 import { useAppStore } from '@/stores/app'
-import { decodeCredential, googleLogout } from 'vue3-google-login'
 
 
 const router = createRouter({
@@ -40,7 +39,7 @@ router.afterEach((to, from) => window.scrollTo(0, 0))
 
 router.beforeEach((to, from, next) => {
   const store = useAppStore();
-  if (!isSignedIn.value && to.path !== '/login') {
+  if (!isSignedIn.value && to.path !== '/login' && to.path !== '/resetPassword') {
     next(`/login?redirect=${to.fullPath}`);
     // if (Cookies.get('credential')) {
     //   next()

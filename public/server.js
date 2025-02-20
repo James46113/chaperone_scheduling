@@ -5,6 +5,7 @@ import { OAuth2Client } from 'google-auth-library';
 const app = express();
 const port = 3000;
 const client = new OAuth2Client('898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com');
+const url = `http://chaperone_scheduling_api.railway.internal:5000`;
 
 app.use(express.json());
 
@@ -80,11 +81,55 @@ async function verifyAccessToken(accessToken) {
   return data;
 }
 
+function revokeToken(token) {
+  fetch(`https://oauth2.googleapis.com/revoke`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams({
+      token
+    })
+  });
+}
+
+app.use('/api/public/', async (req, res) => {
+  const response = await fetch(`${url}/public${req.url}`, {
+    method: req.method,
+    headers: req.headers,
+    body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
+  });
+
+  res.status(response.status).json(await response.json());
+});
+
+
+app.use('/api/p/', async (req, res) => {
+  const { token, fingerprint } = req.headers;
+  const tokenResponse = await fetch(`${url}/token/validate`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ token, fingerprint })
+  })
+  if (!tokenResponse.ok) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  const { email } = await tokenResponse.json();
+
+  const response = await fetch(`${url}${req.url}`, {
+    method: req.method,
+    headers: { ...req.headers, email: email },
+    body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
+  })
+  res.status(response.status).json(await response.json());
+});
+
 app.use('/api', async (req, res) => {
-  const url = `http://chaperone_scheduling_api.railway.internal:5000`;
   let tokenInfo;
+  const accessToken = req.headers.authorization?.split(' ')[1];
   try {
-    const accessToken = req.headers.authorization?.split(' ')[1];
 
     if (!accessToken) {
       return res.status(401).json({ error: 'Unauthorized' });
@@ -97,6 +142,7 @@ app.use('/api', async (req, res) => {
     }
 
     if (tokenInfo.audience !== '898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com') {
+      revokeToken(accessToken);
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
@@ -107,12 +153,14 @@ app.use('/api', async (req, res) => {
       }
     }).then((response) => {
       if (!response.ok) {
+        revokeToken(accessToken);
         return res.status(401).json({ error: 'Unauthorized' });
       }
     });
 
   } catch (error) {
     console.error('Error:', error);
+    revokeToken(accessToken)
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
