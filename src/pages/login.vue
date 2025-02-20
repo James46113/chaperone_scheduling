@@ -145,7 +145,7 @@ const password = ref('');
 const resettingPassword = ref(false);
 const awaitingPasswordReset = ref(false)
 const incorrectPassword = ref(false)
-const resetTimeout = ref(30);
+const resetTimeout = ref(0);
 
 setInterval(() => { if (resetTimeout.value > 0) resetTimeout.value -= 1 }, 1000)
 
