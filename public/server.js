@@ -13,6 +13,8 @@ app.use(express.json());
 app.post('/api/token', async (req, res) => {
   const { code } = req.body;
 
+  console.log(`CODE: ${code}`);
+
   const response = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
     headers: {
@@ -22,16 +24,20 @@ app.post('/api/token', async (req, res) => {
       code,
       client_id: '898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com',
       client_secret: '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',
-      redirect_uri: 'https://dev-chaperones-steelcitychoristers.up.railway.app/',
+      redirect_uri: 'https://dev-chaperones-steelcitychoristers.up.railway.app',
       grant_type: 'authorization_code'
     })
   });
+
+  console.log(`STATUS: ${response.status}`);
 
   const data = await response.json();
   if (data.error) {
     console.log(`Error: ${data.error}`);
     return res.status(400).json({ error: data.error });
   }
+
+  console.log(`DATA: ${JSON.stringify(data)}`);
 
   return res.status(200).json({
     access_token: data.access_token,
