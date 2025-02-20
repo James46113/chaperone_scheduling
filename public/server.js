@@ -100,7 +100,7 @@ app.use('/api/public/', async (req, res) => {
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
   });
 
-  res.status(response.status).json(await response.json());
+  return res.status(response.status).json(await response.json());
 });
 
 
@@ -123,7 +123,7 @@ app.use('/api/p/', async (req, res) => {
     headers: { ...req.headers, email: email },
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
   })
-  res.status(response.status).json(await response.json());
+  return res.status(response.status).json(await response.json());
 });
 
 app.use('/api', async (req, res) => {
@@ -170,11 +170,11 @@ app.use('/api', async (req, res) => {
       headers: { ...req.headers, email: tokenInfo.email },
       body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
     });
-    res.status(response.status).json(await response.json());
+    return res.status(response.status).json(await response.json());
   } catch (error) {
     console.error('Error:', error);
     console.log(`${url}${req.url}`)
-    res.status(500).json({ error: `Internal Server Error: ${error}` });
+    return res.status(500).json({ error: `Internal Server Error: ${error}` });
   }
 });
 
