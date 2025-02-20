@@ -3,18 +3,44 @@
     <v-card-title class="text-h5 mb-3">Create Term</v-card-title>
 
     <v-card-subtitle class="ml-n4">Term Start</v-card-subtitle>
-    <v-text-field type="text" readonly variant="outlined" class="mt-3" prepend-icon="mdi-calendar">
+
+    <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
+      @click="showStartMenu = true">
       {{ start.toLocaleDateString() }}
-      <v-menu activator="parent" :close-on-content-click="false">
-        <v-date-picker v-model="start" :max="end" />
+
+      <v-menu activator="parent" :close-on-content-click="false" v-model="showStartMenu">
+        <v-confirm-edit v-model="start">
+          <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
+            <v-date-picker v-model="proxyModel.value" :max="end">
+              <template v-slot:actions>
+                <!-- <component :is="actions"></component> -->
+                <v-btn text @click="() => { cancel(); showStartMenu = false; }">Cancel</v-btn>
+                <v-btn text color="primary" @click="() => { save(); showStartMenu = false; }">Ok</v-btn>
+              </template>
+            </v-date-picker>
+          </template>
+        </v-confirm-edit>
       </v-menu>
+
     </v-text-field>
 
+
     <v-card-subtitle class="ml-n4">Term End</v-card-subtitle>
-    <v-text-field type="text" readonly variant="outlined" class="mt-3" prepend-icon="mdi-calendar">
+    <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
+      @click="showEndMenu = true">
       {{ end.toLocaleDateString() }}
-      <v-menu activator="parent" :close-on-content-click="false">
-        <v-date-picker v-model="end" :min="start" />
+      <v-menu activator="parent" :close-on-content-click="false" v-model="showEndMenu">
+        <v-confirm-edit v-model="end">
+          <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
+            <v-date-picker v-model="proxyModel.value" :min="start">
+              <template v-slot:actions>
+                <!-- <component :is="actions"></component> -->
+                <v-btn text @click="() => { cancel(); showEndMenu = false; }">Cancel</v-btn>
+                <v-btn text color="primary" @click="() => { save(); showEndMenu = false; }">Ok</v-btn>
+              </template>
+            </v-date-picker>
+          </template>
+        </v-confirm-edit>
       </v-menu>
     </v-text-field>
 
@@ -30,6 +56,9 @@ const start = ref(new Date())
 const end = ref(new Date(new Date().setMonth(new Date().getMonth() + 1)))
 const templates = ref()
 const templateChaperoneSlots = ref()
+
+const showStartMenu = ref(false)
+const showEndMenu = ref(false)
 
 const props = defineProps({
   close: Function,
