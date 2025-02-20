@@ -1,9 +1,13 @@
+import { getFingerprint } from "@thumbmarkjs/thumbmarkjs";
 import Cookies from "js-cookie";
+import { getCurrentInstance } from "vue";
 
 export const fetchAPI = async (url, params) => {
   const headers = {
     ...(params.headers || {}),
-    'Authorization': `Bearer ${Cookies.get('accessToken')}`
+    'Authorization': `Bearer ${Cookies.get('accessToken')}`,
+    'token': Cookies.get('passwdAccessToken'),
+    'fingerprint': fingerprint,
   };
 
   // const APIURL = window.location.href.startsWith('https://chaperonescheduling-dev.up.railway.app')
@@ -21,7 +25,12 @@ export const fetchAPI = async (url, params) => {
   }).then((response) => {
     if (response.status === 401) {
       Cookies.remove('credential');
+      Cookies.remove('accessToken');
+      Cookies.remove('refreshToken');
+      Cookies.remove('passwdAccessToken');
+
       console.error('Unauthorized');
+      proxy.$router.push('/login');
     }
     return response;
   })
@@ -33,6 +42,7 @@ export const fetchAPI = async (url, params) => {
 
 
 const windowWidth = ref(window.innerWidth);
+const { proxy } = getCurrentInstance();
 
 const handleResize = () => {
   windowWidth.value = window.innerWidth;
@@ -40,6 +50,7 @@ const handleResize = () => {
 
 window.addEventListener('resize', handleResize);
 
+const fingerprint = await getFingerprint();
 export const isMobile = computed(() => windowWidth.value < 768);
 export const loadingData = ref(false);
 export const loadingAvailability = ref(false);

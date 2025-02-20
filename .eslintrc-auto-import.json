@@ -84,6 +84,7 @@
     "loadingFailed": true,
     "isPWA": true,
     "isSignedIn": true,
-    "isSignedI": true
+    "isSignedI": true,
+    "usingPasswordLogin": true
   }
 }

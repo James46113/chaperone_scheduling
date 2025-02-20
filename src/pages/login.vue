@@ -116,6 +116,7 @@ import { useAppStore } from '@/stores/app';
 import { GoogleLogin, decodeCredential, googleSdkLoaded } from 'vue3-google-login';
 import { getCurrentInstance } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
+import { getFingerprint } from '@thumbmarkjs/thumbmarkjs';
 
 const store = useAppStore();
 const { proxy } = getCurrentInstance();
@@ -127,6 +128,7 @@ const email = ref('');
 const password = ref('');
 const resettingPassword = ref(false);
 const awaitingPasswordReset = ref(false)
+const incorrectPassword = ref(false)
 
 onMounted(async () => {
   if (Cookies.get('refreshToken') && Cookies.get('credential') && Cookies.get('accessToken')) {
@@ -135,7 +137,36 @@ onMounted(async () => {
   }
 })
 
-const passwordLogin = () => {
+const passwordLogin = async () => {
+  const fingerprint = await getFingerprint();
+  try {
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email: email.value, password: password.value, fingerprint }),
+    });
+
+    if (!response.ok) {
+      const responseJson = await response.json();
+      Cookies.set('passwdAccessToken', responseJson.accessToken);
+      store.userID = responseJson.id;
+      store.isAdmin = responseJson.is_admin;
+      store.userEmail = responseJson.email;
+      usingPasswordLogin.value = true;
+      isSignedIn.value = true;
+      proxy.$router.push('/');
+    } else {
+      incorrectPassword.value = true;
+
+    }
+
+  } catch (error) {
+    console.error('Error:', error);
+    store.showAlert('Error', 'An error occurred while signing in.');
+    signingIn.value = false;
+  }
   alert('Password login not implemented yet');
 }
 
