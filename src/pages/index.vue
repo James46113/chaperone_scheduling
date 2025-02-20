@@ -9,16 +9,15 @@
     <v-tabs-window v-model="store.tabView">
 
       <v-tabs-window-item value="calendar">
+        <v-row style="position: absolute; right: 16px;" class="pt-3" v-if="store.isAdmin && !isMobile">
+          <v-spacer />
+          <v-btn @click="sendAssignedEventsEmail" class="mt-4 mr-4" color="primary"
+            :loading="sendingUpcomingEventsEmail">Send Assigned Events Email</v-btn>
 
-        <v-btn v-if="store.isAdmin && !isMobile" @click="proxy.$router.push('/editEvent?id=new')"
-          style="position: absolute; right: 16px;" class="mt-4" color="primary">Add
-          Event</v-btn>
-        <v-btn v-if="store.isAdmin && !isMobile" @click="() => showCreateTerm = true"
-          style="position: absolute; right: 160px;" class="mt-4" color="primary">Create Term</v-btn>
+          <v-btn @click="() => showCreateTerm = true" class="mt-4 mr-4" color="primary">Create Term</v-btn>
 
-        <v-btn v-if="store.isAdmin && !isMobile" @click="sendAssignedEventsEmail"
-          style="position: absolute; right: 304px;" class="mt-4" color="primary"
-          :loading="sendingUpcomingEventsEmail">Send Assigned Events Email</v-btn>
+          <v-btn @click="proxy.$router.push('/editEvent?id=new')" class="mt-4 mr-4" color="primary">Create Event</v-btn>
+        </v-row>
 
         <v-calendar class="pa-0" :events="events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" hide-week-number>
           <template #event="{ event }" v-if="!isMobile" :interval-height="20">
@@ -36,20 +35,22 @@
           @click="proxy.$router.push('/editEvent?id=new')">New Event</v-btn>
         <v-btn v-if="store.isAdmin && isMobile" @click="() => showCreateTerm = true" width="100vw" class="mt-2 mb-3"
           color="primary">Create Term</v-btn>
-        <v-btn v-if="store.isAdmin && !isMobile" @click="sendAssignedEventsEmail"
-          style="position: absolute; right: 300px;" class="mt-4" color="primary" width="100vw"
-          :loading="sendingUpcomingEventsEmail">Send Assigned Events
-          Email</v-btn>
+        <v-btn @click="sendAssignedEventsEmail" class="mt-2" color="primary" :loading="sendingUpcomingEventsEmail"
+          width="100vw">Send Assigned Events Email</v-btn>
       </v-tabs-window-item>
 
       <v-tabs-window-item value="list">
 
-        <v-btn v-if="store.isAdmin && !isMobile" @click="proxy.$router.push('/editEvent?id=new')"
-          style="position: absolute; right: 16px;" class="mt-4" color="primary">Add
-          Event</v-btn>
+        <v-row style="position: absolute; right: 16px;" class="pt-3" v-if="store.isAdmin && !isMobile">
+          <v-spacer />
+          <v-btn @click="sendAssignedEventsEmail" class="mt-4 mr-4" color="primary"
+            :loading="sendingUpcomingEventsEmail">Send
+            Assigned Events Email</v-btn>
 
-        <v-btn v-if="store.isAdmin && !isMobile" @click="() => showCreateTerm = true"
-          style="position: absolute; right: 160px;" class="mt-4" color="primary">Create Term</v-btn>
+          <v-btn @click="() => showCreateTerm = true" class="mt-4 mr-4" color="primary">Create Term</v-btn>
+
+          <v-btn @click="proxy.$router.push('/editEvent?id=new')" class="mt-4 mr-4" color="primary">Create Event</v-btn>
+        </v-row>
 
         <v-card-title :class="isMobile ? 'text-h5 mt-5' : 'text-h5'">Upcoming Events</v-card-title>
 
@@ -57,10 +58,14 @@
           To give your availability, press on the tick or the cross on each event.
         </v-card-text>
 
-        <v-btn v-if="store.isAdmin && isMobile" width="100vw" variant="flat" color="primary" class="my-3"
-          @click="proxy.$router.push('/editEvent?id=new')">New Event</v-btn>
-        <v-btn v-if="store.isAdmin && isMobile" @click="() => showCreateTerm = true" width="100vw" class="mt-2 mb-3"
-          color="primary">Create Term</v-btn>
+        <div v-if="store.isAdmin && isMobile">
+          <v-btn width="100vw" variant="flat" color="primary" class="my-3"
+            @click="proxy.$router.push('/editEvent?id=new')">New Event</v-btn>
+          <v-btn @click="() => showCreateTerm = true" width="100vw" class="mt-2 mb-3" color="primary">Create
+            Term</v-btn>
+          <v-btn @click="sendAssignedEventsEmail" class="mt-2" color="primary" :loading="sendingUpcomingEventsEmail"
+            width="100vw">Send Assigned Events Email</v-btn>
+        </div>
 
         <v-divider v-if="store.isAdmin" class="mt-3" />
 
@@ -91,8 +96,6 @@
 import { VCalendar } from 'vuetify/labs/VCalendar'
 import { ref, onMounted, getCurrentInstance } from 'vue'
 import { useAppStore } from '@/stores/app'
-import { GoogleLogin, decodeCredential, googleLogout } from 'vue3-google-login';
-import { send } from 'process';
 
 const events = ref([])
 const upcomingEvents = computed(() => events.value.filter(event => event.start > new Date()))
