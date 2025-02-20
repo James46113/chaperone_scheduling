@@ -34,6 +34,8 @@
               placeholder="Your Password" v-model="password" :type="passwordVisible ? 'text' : 'password'" class="mt-2"
               @keyup.enter="passwordLogin" />
 
+            <v-card-text class="text-primary" v-if="incorrectPassword">Incorrect email or password</v-card-text>
+
             <v-btn @click="passwordLogin" :loading="signingIn" color="primary" class="mt-4" width="100%">Sign In</v-btn>
 
             <v-btn variant="outlined" :disabled="signingIn" width="100%" @click="customLogin" class="text-body-2 mt-4">
@@ -91,6 +93,8 @@
               placeholder="Your Password" v-model="password" :type="passwordVisible ? 'text' : 'password'" class="mt-2"
               @keyup.enter="passwordLogin" />
 
+            <v-card-text class="text-primary" v-if="incorrectPassword">Incorrect email or password</v-card-text>
+
             <v-btn @click="passwordLogin" :loading="signingIn" color="primary" class="mt-4" width="100%">Sign In</v-btn>
 
             <v-btn variant="outlined" :disabled="signingIn" width="100%" @click="customLogin" class="text-body-2 mt-4">
@@ -138,6 +142,7 @@ onMounted(async () => {
 })
 
 const passwordLogin = async () => {
+  incorrectPassword.value = false;
   const fingerprint = await getFingerprint();
   try {
     const response = await fetch('/api/login', {

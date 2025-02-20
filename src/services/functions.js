@@ -1,6 +1,5 @@
 import { getFingerprint } from "@thumbmarkjs/thumbmarkjs";
 import Cookies from "js-cookie";
-import { getCurrentInstance } from "vue";
 
 export const fetchAPI = async (url, params) => {
   const headers = {
@@ -29,8 +28,7 @@ export const fetchAPI = async (url, params) => {
       Cookies.remove('refreshToken');
       Cookies.remove('passwdAccessToken');
 
-      console.error('Unauthorized');
-      proxy.$router.push('/login');
+      window.location.href = '/login';
     }
     return response;
   })
@@ -42,7 +40,6 @@ export const fetchAPI = async (url, params) => {
 
 
 const windowWidth = ref(window.innerWidth);
-const { proxy } = getCurrentInstance();
 
 const handleResize = () => {
   windowWidth.value = window.innerWidth;
