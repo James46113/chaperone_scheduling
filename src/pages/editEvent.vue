@@ -44,14 +44,22 @@
 
       <v-row class="mb-1" v-if="!isMobile">
         <v-col v-if="!isTemplate">
-          <!-- <v-date-input v-if="!isTemplate" :rules="[required]" v-model="event.date" label="Date" variant="outlined"
-            class="mt-3" :first-day-of-week="1" /> -->
 
-          <v-text-field v-if="!isTemplate" type="text" readonly variant="outlined" class="mt-3"
-            prepend-icon="mdi-calendar">
-            {{ new Date(event.date).toLocaleDateString() }}
-            <v-menu activator="parent" :close-on-content-click="false">
-              <v-date-picker v-model="event.date" />
+          <v-text-field type="text" readonly variant="outlined" class="mt-3" max-width="300" prepend-icon="mdi-calendar"
+            @click="showDateMenu = true">
+            {{ event.date.toLocaleDateString() }}
+            <v-menu activator="parent" :close-on-content-click="false" v-model="showDateMenu">
+              <v-confirm-edit v-model="event.date">
+                <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
+                  <v-date-picker v-model="proxyModel.value">
+                    <template v-slot:actions>
+                      <!-- <component :is="actions"></component> -->
+                      <v-btn text @click="() => { cancel(); showDateMenu = false; }">Cancel</v-btn>
+                      <v-btn text color="primary" @click="() => { save(); showDateMenu = false; }">Ok</v-btn>
+                    </template>
+                  </v-date-picker>
+                </template>
+              </v-confirm-edit>
             </v-menu>
           </v-text-field>
 
@@ -76,11 +84,21 @@
       </v-row>
 
       <div v-else>
-        <v-text-field v-if="!isTemplate" type="text" readonly variant="outlined" class="mt-3"
-          prepend-icon="mdi-calendar">
-          {{ new Date(event.date).toLocaleDateString() }}
-          <v-menu activator="parent" :close-on-content-click="false">
-            <v-date-picker v-model="event.date" />
+        <v-text-field v-if="!isTemplate" type="text" readonly variant="outlined" class="mt-3" max-width="300"
+          prepend-icon="mdi-calendar" @click="showDateMenu = true">
+          {{ event.date.toLocaleDateString() }}
+          <v-menu activator="parent" :close-on-content-click="false" v-model="showDateMenu">
+            <v-confirm-edit v-model="event.date">
+              <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
+                <v-date-picker v-model="proxyModel.value">
+                  <template v-slot:actions>
+                    <!-- <component :is="actions"></component> -->
+                    <v-btn text @click="() => { cancel(); showDateMenu = false; }">Cancel</v-btn>
+                    <v-btn text color="primary" @click="() => { save(); showDateMenu = false; }">Ok</v-btn>
+                  </template>
+                </v-date-picker>
+              </template>
+            </v-confirm-edit>
           </v-menu>
         </v-text-field>
 
@@ -308,7 +326,6 @@
 <script lang="js" setup>
 import { useAppStore } from '@/stores/app';
 import { getCurrentInstance } from 'vue';
-import { VDateInput } from 'vuetify/labs/VDateInput'
 
 
 const { proxy } = getCurrentInstance();
@@ -322,7 +339,7 @@ const store = useAppStore();
 const newEvent = ref(false);
 const isTemplate = ref(false);
 const isPastEvent = computed(() => event.value?.start < new Date());
-const menu = ref(false)
+const showDateMenu = ref(false)
 
 const templates = ref([]);
 const templateNames = computed(() => templates.value.map(template => template.template_name).sort());
