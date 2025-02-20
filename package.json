@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@mdi/font": "7.4.47",
+    "@thumbmarkjs/thumbmarkjs": "^0.19.1",
     "core-js": "^3.37.1",
     "dom-to-image": "^2.6.0",
     "express": "^4.21.2",
@@ -20,6 +21,7 @@
     "js-cookie": "^3.0.5",
     "node-fetch": "^3.3.2",
     "roboto-fontface": "*",
+    "uuid": "^11.0.5",
     "vue": "^3.4.31",
     "vue3-google-login": "^2.0.33",
     "vuetify": "^3.6.14"
