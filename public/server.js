@@ -78,6 +78,21 @@ app.post('/api/refresh-token', async (req, res) => {
   }
 });
 
+app.use('/api/login/', async (req, res) => {
+  const email = req.url.replaceAll('/', '');
+  res.json({ test: `${url}/login/${email}` });
+  const response = await fetch(`${url}/login/${email}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  });
+  if (response.ok) {
+    return res.status(200).json(await response.json());
+  }
+  return res.status(400).json({ error: 'Error' });
+});
+
 async function verifyAccessToken(accessToken) {
   const response = await fetch(`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`);
   const data = await response.json();
