@@ -147,14 +147,47 @@ const awaitingPasswordReset = ref(false)
 const incorrectPassword = ref(false)
 const resetTimeout = ref(30);
 
-setInterval(() => { if (resetTimeout.value > 0) resetTimeout.value -= 1, 1000 })
+setInterval(() => { if (resetTimeout.value > 0) resetTimeout.value -= 1 }, 1000)
 
 onMounted(async () => {
   if (Cookies.get('refreshToken') && Cookies.get('credential') && Cookies.get('accessToken')) {
     await checkCredential();
     onSignIn({ credential: Cookies.get('credential') });
+  } else if (Cookies.get('passwdAccessToken')) {
+    usingPasswordLogin.value = true;
+    tokenLogin();
   }
 })
+
+
+const tokenLogin = () => {
+  signingIn.value = true;
+  const fingerprint = getFingerprint();
+  const token = Cookies.get('passwdAccessToken');
+  fetch('/api/public/login/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ accessToken: token, fingerprint }),
+  }).then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error('Invalid token');
+  }).then(data => {
+    store.userID = data.id;
+    store.isAdmin = data.is_admin;
+    store.userEmail = data.email;
+    isSignedIn.value = true;
+    signingIn.value = false;
+    proxy.$router.push('/');
+  }).catch(error => {
+    Cookies.remove('passwdAccessToken');
+    signingIn.value = false;
+  })
+}
+
 
 const passwordLogin = async () => {
   incorrectPassword.value = false;
@@ -192,7 +225,6 @@ const passwordLogin = async () => {
 }
 
 const resetPassword = () => {
-  resetTimeout.value = 30;
   awaitingPasswordReset.value = true;
   const token = window.location.hostname + "/resetPassword?token=" + uuidv4();
 
@@ -217,10 +249,12 @@ const resetPassword = () => {
     .then(response => {
       switch (response.status) {
         case 201:
+          resetTimeout.value = 30;
           store.showAlert('Password Reset', 'An email has been sent to reset your password.');
           break;
 
         case 404:
+          resetTimeout.value = 30;
           store.showAlert('Password Reset', 'An email has been sent to reset your password.');
           break;
 
