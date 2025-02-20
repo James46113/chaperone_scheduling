@@ -29,7 +29,7 @@ app.post('/api/token', async (req, res) => {
 
   const data = await response.json();
   if (data.error) {
-    console.log(data.error);
+    console.log(`Error: ${data.error}`);
     return res.status(400).json({ error: data.error });
   }
 
