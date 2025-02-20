@@ -13,6 +13,7 @@ declare module 'vue' {
     AvailabilitySelector: typeof import('./components/AvailabilitySelector.vue')['default']
     ChaperonesPage: typeof import('./components/ChaperonesPage.vue')['default']
     CreateTerm: typeof import('./components/CreateTerm.vue')['default']
+    DatePicker: typeof import('./components/DatePicker.vue')['default']
     EventCard: typeof import('./components/EventCard.vue')['default']
     PWAInstallDialog: typeof import('./components/PWAInstallDialog.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

@@ -11,19 +11,44 @@
 
       <v-row class="mt-6" v-if="!isMobile">
         <v-card-text class="mr-n9">From</v-card-text>
-        <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar">
+
+        <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
+          @click="showStartMenu = true">
           {{ start.toLocaleDateString() }}
-          <v-menu activator="parent" :close-on-content-click="false">
-            <v-date-picker v-model="start" :max="end" />
+
+          <v-menu activator="parent" :close-on-content-click="false" v-model="showStartMenu">
+            <v-confirm-edit v-model="start">
+              <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
+                <v-date-picker v-model="proxyModel.value" :max="end">
+                  <template v-slot:actions>
+                    <!-- <component :is="actions"></component> -->
+                    <v-btn text @click="() => { cancel(); showStartMenu = false; }">Cancel</v-btn>
+                    <v-btn text color="primary" @click="() => { save(); showStartMenu = false; }">Ok</v-btn>
+                  </template>
+                </v-date-picker>
+              </template>
+            </v-confirm-edit>
           </v-menu>
+
         </v-text-field>
 
         <v-card-text class="mr-n9">To</v-card-text>
 
-        <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar">
+        <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
+          @click="showEndMenu = true">
           {{ end.toLocaleDateString() }}
-          <v-menu activator="parent" :close-on-content-click="false">
-            <v-date-picker v-model="end" :min="start" />
+          <v-menu activator="parent" :close-on-content-click="false" v-model="showEndMenu">
+            <v-confirm-edit v-model="end">
+              <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
+                <v-date-picker v-model="proxyModel.value" :min="start">
+                  <template v-slot:actions>
+                    <!-- <component :is="actions"></component> -->
+                    <v-btn text @click="() => { cancel(); showEndMenu = false; }">Cancel</v-btn>
+                    <v-btn text color="primary" @click="() => { save(); showEndMenu = false; }">Ok</v-btn>
+                  </template>
+                </v-date-picker>
+              </template>
+            </v-confirm-edit>
           </v-menu>
         </v-text-field>
 
@@ -38,8 +63,43 @@
       </v-row>
 
       <v-div v-else>
-        <v-date-input variant="outlined" label="Start" class="px-3" max-width="300" v-model="start" :max="end" />
-        <v-date-input variant="outlined" label="End" class="px-3" max-width="300" v-model="end" :min="start" />
+        <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
+          @click="showStartMenu = true">
+          {{ start.toLocaleDateString() }}
+
+          <v-menu activator="parent" :close-on-content-click="false" v-model="showStartMenu">
+            <v-confirm-edit v-model="start">
+              <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
+                <v-date-picker v-model="proxyModel.value" :max="end">
+                  <template v-slot:actions>
+                    <!-- <component :is="actions"></component> -->
+                    <v-btn text @click="() => { cancel(); showStartMenu = false; }">Cancel</v-btn>
+                    <v-btn text color="primary" @click="() => { save(); showStartMenu = false; }">Ok</v-btn>
+                  </template>
+                </v-date-picker>
+              </template>
+            </v-confirm-edit>
+          </v-menu>
+
+        </v-text-field>
+        <v-card-text class="mt-n4" width="100%" style="text-align: center;">To</v-card-text>
+        <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
+          @click="showEndMenu = true">
+          {{ end.toLocaleDateString() }}
+          <v-menu activator="parent" :close-on-content-click="false" v-model="showEndMenu">
+            <v-confirm-edit v-model="end">
+              <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
+                <v-date-picker v-model="proxyModel.value" :min="start">
+                  <template v-slot:actions>
+                    <!-- <component :is="actions"></component> -->
+                    <v-btn text @click="() => { cancel(); showEndMenu = false; }">Cancel</v-btn>
+                    <v-btn text color="primary" @click="() => { save(); showEndMenu = false; }">Ok</v-btn>
+                  </template>
+                </v-date-picker>
+              </template>
+            </v-confirm-edit>
+          </v-menu>
+        </v-text-field>
       </v-div>
 
       <div v-if="loadingData" class="d-flex justify-center align-center" style="height: 40vh;">
@@ -106,6 +166,9 @@ const sendingEmails = ref(false)
 const start = ref(new Date())
 const end = ref(new Date())
 end.value = new Date(start.value.getFullYear(), start.value.getMonth() + 2, 0)
+
+const showStartMenu = ref(false)
+const showEndMenu = ref(false)
 
 onMounted(async () => {
   loadingData.value = true
