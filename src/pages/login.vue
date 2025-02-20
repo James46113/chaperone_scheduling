@@ -169,7 +169,7 @@ const tokenLogin = () => {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ accessToken: token, fingerprint }),
+    body: JSON.stringify({ token, fingerprint }),
   }).then(response => {
     if (response.ok) {
       return response.json();
