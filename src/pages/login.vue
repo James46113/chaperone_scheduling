@@ -207,7 +207,7 @@ const resetPassword = () => {
     return;
   }
 
-  fetch('/api/public/reset/forgot_password', {
+  fetch('/api/public/forgot_password', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
