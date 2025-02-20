@@ -33,7 +33,7 @@ app.post('/api/token', async (req, res) => {
     return res.status(400).json({ error: data.error });
   }
 
-  res.json({
+  return res.status(200).json({
     access_token: data.access_token,
     refresh_token: data.refresh_token,
     id_token: data.id_token,
@@ -61,7 +61,7 @@ app.post('/api/refresh-token', async (req, res) => {
   try {
     const data = await response.json();
     console.log(`REFRESH RESPONSE: ${JSON.stringify(data)}`);
-    res.json({
+    return res.status(200).json({
       access_token: data.access_token,
       id_token: data.id_token,
       expires_in: data.expires_in
