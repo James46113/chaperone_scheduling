@@ -25,8 +25,8 @@
         </ol>
       </v-card-text>
       <v-checkbox class="ml-7" v-model="dontShowAgain" label="Don't show this again" />
-      <v-card-actions v-if="!isIOS" class="text-disabled">
-        <v-btn text @click="close">
+      <v-card-actions v-if="!isIOS">
+        <v-btn text @click="close" class="text-disabled">
           Cancel
         </v-btn>
         <v-btn color="primary" text @click="install">
