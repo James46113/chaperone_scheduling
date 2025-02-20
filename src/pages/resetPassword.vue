@@ -13,6 +13,8 @@
   <div v-if="validToken" style="display: flex; justify-content: center;">
     <v-card class="mx-auto mt-8 pa-4" :width="isMobile ? '100vw' : '40vw'" elevation="0">
       <v-card-title class="text-h5">Reset Password</v-card-title>
+      <v-card-text>Resetting your password will sign you out on all devices. You will have to sign in again with your
+        new password.</v-card-text>
       <v-form width="100vw">
         <v-text-field v-show="false" label="Username" autocomplete="username"></v-text-field>
         <!-- Hidden field to prevent autofill -->
@@ -34,11 +36,11 @@
         <v-card-text class="mt-n4" style="font-size: small;">New password must have:</v-card-text>
         <v-card-text class="pt-0 mt-n2 ml-7" style="font-size: small;">
           <ul>
-            <li :style="hasLowercase ? '' : 'color: #bf151e;'">Lowercase Character (a-z)</li>
-            <li :style="hasUppercase ? '' : 'color: #bf151e;'">Uppercase Character (A-Z)</li>
-            <li :style="hasNumber ? '' : 'color: #bf151e;'">Number (0-9)</li>
-            <li :style="hasSpecial ? '' : 'color: #bf151e;'">Special Character (!@&...)</li>
-            <li :style="isLongEnough ? '' : 'color: #bf151e;'">At least 8 characters</li>
+            <li :class="hasLowercase ? '' : 'text-primary'">Lowercase Character (a-z)</li>
+            <li :class="hasUppercase ? '' : 'text-primary'">Uppercase Character (A-Z)</li>
+            <li :class="hasNumber ? '' : 'text-primary'">Number (0-9)</li>
+            <li :class="hasSpecial ? '' : 'text-primary'">Special Character (!@&...)</li>
+            <li :class="isLongEnough ? '' : 'text-primary'">At least 8 characters</li>
           </ul>
         </v-card-text>
 
@@ -50,7 +52,7 @@
     <v-card class="mx-auto mt-8 pa-4" :width="isMobile ? '100vw' : '40vw'" elevation="0">
       <v-card-title class="text-h5">Invalid Token</v-card-title>
       <v-card-text>
-        The token you are using to reset your password is invalid. Please request a new token from the password reset
+        The link you are using to reset your password is invalid. Please request a new link from the password reset
         page.
       </v-card-text>
     </v-card>
@@ -67,7 +69,7 @@ const store = useAppStore();
 const passwordVisible = ref(false);
 const password = ref('')
 const confirmPassword = ref('')
-const validToken = ref(proxy.$route.query.token ? null : true)
+const validToken = ref(proxy.$route.query.token ? null : false)
 
 const passwordsMatch = computed(() => password.value === confirmPassword.value || 'Passwords do not match')
 
@@ -77,7 +79,9 @@ const hasNumber = computed(() => password.value.match(/[0-9]/));
 const hasSpecial = computed(() => password.value.match(/[^A-Za-z0-9]/));
 const isLongEnough = computed(() => password.value.length >= 8);
 
+
 const resetPassword = () => {
+
   if (passwordsMatch.value !== true) {
     store.showAlert('Invalid Password', 'Passwords do not match')
     return;
@@ -87,7 +91,7 @@ const resetPassword = () => {
     return
   }
 
-  fetchAPI(`reset/reset_password`, {
+  fetch(`/api/public/reset_password`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -102,7 +106,7 @@ const resetPassword = () => {
         store.showAlert('Password Reset', 'Your password has been reset')
         proxy.$router.push('/login')
       } else {
-        store.showAlert('Error', 'An error occurred while resetting your password')
+        store.showAlert('Error', 'An error occurred while resetting your password. Your link may have expired. Please request a new link.')
         console.error('Error:', response)
       }
     })
@@ -111,7 +115,7 @@ const resetPassword = () => {
     })
 }
 
-fetchAPI(`reset/check_token/${proxy.$route.query.token}`, {
+fetch(`/api/public/check_token/${proxy.$route.query.token}`, {
   method: 'GET',
   headers: {
     'Content-Type': 'application/json',
@@ -120,6 +124,7 @@ fetchAPI(`reset/check_token/${proxy.$route.query.token}`, {
   .then((response) => {
     if (response.ok) {
       validToken.value = true
+      console.log(response.status)
     } else {
       validToken.value = false
     }

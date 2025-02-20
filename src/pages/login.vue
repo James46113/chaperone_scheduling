@@ -46,8 +46,11 @@
             </v-btn>
           </div>
           <div v-else>
-            <v-btn color="primary" width="100%" :loading="awaitingPasswordReset" @click="resetPassword"
-              class="mt-4">Reset Password</v-btn>
+            <v-btn color="primary" :disabled="resetTimeout > 0" width="100%" :loading="awaitingPasswordReset"
+              @click="resetPassword" class="mt-4">Reset Password</v-btn>
+            <v-card-text v-if="resetTimeout > 0" class="text-primary mt-0 mb-n6" style="text-align: center;">Please wait
+              {{
+                resetTimeout }} seconds before trying again.</v-card-text>
             <v-card-text @click="resettingPassword = false" class="text-primary mt-2"
               style="text-align: center; cursor: pointer;">Back to Sign
               in</v-card-text>
@@ -107,8 +110,13 @@
             </v-btn>
           </div>
           <div v-else>
-            <v-btn color="primary" width="100%" :loading="awaitingPasswordReset" @click="resetPassword"
-              class="mt-4">Reset Password</v-btn>
+            <v-btn color="primary" width="100%" :loading="awaitingPasswordReset" @click="resetPassword" class="mt-4"
+              :disabled="resetTimeout > 0">Reset Password</v-btn>
+
+            <v-card-text v-if="resetTimeout > 0" class="text-primary mt-2 mb-n6" style="text-align: center;">Please wait
+              {{
+                resetTimeout }} seconds before trying again.</v-card-text>
+
             <v-card-text @click="resettingPassword = false" class="text-primary mt-2"
               style="text-align: center; cursor: pointer;">Back to Sign
               in</v-card-text>
@@ -137,6 +145,9 @@ const password = ref('');
 const resettingPassword = ref(false);
 const awaitingPasswordReset = ref(false)
 const incorrectPassword = ref(false)
+const resetTimeout = ref(30);
+
+setInterval(() => { if (resetTimeout.value > 0) resetTimeout.value -= 1, 1000 })
 
 onMounted(async () => {
   if (Cookies.get('refreshToken') && Cookies.get('credential') && Cookies.get('accessToken')) {
@@ -147,9 +158,10 @@ onMounted(async () => {
 
 const passwordLogin = async () => {
   incorrectPassword.value = false;
+  signingIn.value = true;
   const fingerprint = await getFingerprint();
   try {
-    const response = await fetch('/api/login', {
+    const response = await fetch('/api/public/login/password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -165,9 +177,11 @@ const passwordLogin = async () => {
       store.userEmail = responseJson.email;
       usingPasswordLogin.value = true;
       isSignedIn.value = true;
+      signingIn.value = false;
       proxy.$router.push('/');
     } else {
       incorrectPassword.value = true;
+      signingIn.value = false;
     }
 
   } catch (error) {
@@ -178,8 +192,8 @@ const passwordLogin = async () => {
 }
 
 const resetPassword = () => {
+  resetTimeout.value = 30;
   awaitingPasswordReset.value = true;
-  signingIn.value = true;
   const token = window.location.hostname + "/resetPassword?token=" + uuidv4();
 
   if (email.value === '') {
@@ -187,7 +201,13 @@ const resetPassword = () => {
     return;
   }
 
-  fetch('/api/p/reset/forgot_password', {
+  if (!email.value.match(/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/)) {
+    store.showAlert('Error', 'Please enter a valid email address.');
+    awaitingPasswordReset.value = false;
+    return;
+  }
+
+  fetch('/api/public/reset/forgot_password', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -195,10 +215,18 @@ const resetPassword = () => {
     body: JSON.stringify({ email: email.value, token: token }),
   })
     .then(response => {
-      if (response.ok) {
-        store.showAlert('Password Reset', 'An email has been sent to reset your password.');
-      } else {
-        store.showAlert('Error', 'An error occurred while resetting your password.');
+      switch (response.status) {
+        case 201:
+          store.showAlert('Password Reset', 'An email has been sent to reset your password.');
+          break;
+
+        case 404:
+          store.showAlert('Password Reset', 'An email has been sent to reset your password.');
+          break;
+
+        default:
+          store.showAlert('Error', 'An error occurred while resetting your password.');
+          break;
       }
     })
     .catch(error => {
@@ -206,7 +234,6 @@ const resetPassword = () => {
       store.showAlert('Error', 'An error occurred while resetting your password.');
     }).finally(() => {
       awaitingPasswordReset.value = false;
-      resettingPassword.value = false;
     });
 }
 
