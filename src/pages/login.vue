@@ -153,7 +153,7 @@ const passwordLogin = async () => {
       body: JSON.stringify({ email: email.value, password: password.value, fingerprint }),
     });
 
-    if (!response.ok) {
+    if (response.ok) {
       const responseJson = await response.json();
       Cookies.set('passwdAccessToken', responseJson.accessToken);
       store.userID = responseJson.id;
@@ -164,7 +164,6 @@ const passwordLogin = async () => {
       proxy.$router.push('/');
     } else {
       incorrectPassword.value = true;
-
     }
 
   } catch (error) {
@@ -177,6 +176,7 @@ const passwordLogin = async () => {
 
 const resetPassword = () => {
   awaitingPasswordReset.value = true;
+  signingIn.value = true;
   const token = window.location.hostname + "/resetPassword?token=" + uuidv4();
 
   if (email.value === '') {
