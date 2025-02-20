@@ -5,6 +5,7 @@ import { OAuth2Client } from 'google-auth-library';
 const app = express();
 const port = 3000;
 const client = new OAuth2Client('898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com');
+const url = `http://chaperone_scheduling_api.railway.internal:5000`;
 
 app.use(express.json());
 
@@ -93,8 +94,16 @@ function revokeToken(token) {
 }
 
 app.use('/api/reset/', async (req, res) => {
-  const url = `http://chaperone_scheduling_api.railway.internal:5000`;
-  const response = await fetch(`${url}/reset${req.url}`, {
+  const response = await fetch(`${url}${req.url}`, {
+    method: req.method,
+    headers: req.headers,
+    body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
+  });
+  res.status(response.status).json(await response.json());
+});
+
+app.use('/api/login/', async (req, res) => {
+  const response = await fetch(`${url}/login/password`, {
     method: req.method,
     headers: req.headers,
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
@@ -103,7 +112,18 @@ app.use('/api/reset/', async (req, res) => {
 });
 
 app.use('/api/p/', async (req, res) => {
-  const url = `http://chaperone_scheduling_api.railway.internal:5000`;
+  const { token, fingerprint } = req.headers;
+  const tokenResponse = await fetch(`${url}/token/validate`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ token, fingerprint })
+  })
+  if (!tokenResponse.ok) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   const response = await fetch(`${url}${req.url}`, {
     method: req.method,
     headers: req.headers,
@@ -113,7 +133,6 @@ app.use('/api/p/', async (req, res) => {
 });
 
 app.use('/api', async (req, res) => {
-  const url = `http://chaperone_scheduling_api.railway.internal:5000`;
   let tokenInfo;
   const accessToken = req.headers.authorization?.split(' ')[1];
   try {
