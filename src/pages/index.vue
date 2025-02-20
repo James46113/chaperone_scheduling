@@ -17,7 +17,7 @@
           style="position: absolute; right: 160px;" class="mt-4" color="primary">Create Term</v-btn>
 
         <v-btn v-if="store.isAdmin && !isMobile" @click="sendAssignedEventsEmail"
-          style="position: absolute; right: 300px;" class="mt-4" color="primary"
+          style="position: absolute; right: 304x;" class="mt-4" color="primary"
           :loading="sendingUpcomingEventsEmail">Send Assigned Events Email</v-btn>
 
         <v-calendar class="pa-0" :events="events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" hide-week-number>
