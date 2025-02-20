@@ -34,7 +34,9 @@
               placeholder="Your Password" v-model="password" :type="passwordVisible ? 'text' : 'password'" class="mt-2"
               @keyup.enter="passwordLogin" />
 
-            <v-card-text class="text-primary" v-if="incorrectPassword">Incorrect email or password</v-card-text>
+            <v-card-text class="text-primary my-n3" style="text-align: center;" v-if="incorrectPassword">Incorrect email
+              or
+              password</v-card-text>
 
             <v-btn @click="passwordLogin" :loading="signingIn" color="primary" class="mt-4" width="100%">Sign In</v-btn>
 
@@ -93,7 +95,9 @@
               placeholder="Your Password" v-model="password" :type="passwordVisible ? 'text' : 'password'" class="mt-2"
               @keyup.enter="passwordLogin" />
 
-            <v-card-text class="text-primary" v-if="incorrectPassword">Incorrect email or password</v-card-text>
+            <v-card-text class="text-primary my-n3" style="text-align: center;" v-if="incorrectPassword">Incorrect email
+              or
+              password</v-card-text>
 
             <v-btn @click="passwordLogin" :loading="signingIn" color="primary" class="mt-4" width="100%">Sign In</v-btn>
 
@@ -155,7 +159,7 @@ const passwordLogin = async () => {
 
     if (response.ok) {
       const responseJson = await response.json();
-      Cookies.set('passwdAccessToken', responseJson.accessToken);
+      Cookies.set('passwdAccessToken', responseJson.access_token);
       store.userID = responseJson.id;
       store.isAdmin = responseJson.is_admin;
       store.userEmail = responseJson.email;
@@ -171,7 +175,6 @@ const passwordLogin = async () => {
     store.showAlert('Error', 'An error occurred while signing in.');
     signingIn.value = false;
   }
-  alert('Password login not implemented yet');
 }
 
 const resetPassword = () => {
