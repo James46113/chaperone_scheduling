@@ -19,8 +19,8 @@
           <v-btn @click="proxy.$router.push('/editEvent?id=new')" class="mt-4 mr-4" color="primary">Create Event</v-btn>
         </v-row> -->
 
-        <div v-if="store.isAdmin" style="position: absolute; right: 0px;" :class="isMobile ? 'mt-5' : 'mt-2'">
-          <actions-menu activatorID="calendarMenu" :label="isMobile ? '' : 'Actions'" />
+        <div v-if="store.isAdmin && !isMobile" style="position: absolute; right: 0px;" class="mt-2">
+          <actions-menu activatorID="calendarMenu" label="Actions" />
         </div>
 
         <v-calendar class="pa-0" :events="events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" hide-week-number>
