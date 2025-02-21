@@ -3,7 +3,7 @@
   <div class="pa-6" v-if="!loadingData">
     <v-card class="pa-3" elevation="0">
       <v-card-title class="text-h5 ml-n6 mb-4" v-if="newEvent">New {{ isTemplate ? 'Template' : 'Event'
-      }}</v-card-title>
+        }}</v-card-title>
       <v-card-title class="text-h5 ml-n6 mb-4" v-else>Edit {{ isTemplate ? 'Template' : 'Event' }}</v-card-title>
       <v-row v-if="!isMobile">
         <v-col>
@@ -47,7 +47,7 @@
 
           <v-text-field type="text" readonly variant="outlined" class="mt-3" max-width="300" prepend-icon="mdi-calendar"
             @click="showDateMenu = true">
-            {{ event.date.toLocaleDateString() }}
+            {{ event.date?.toLocaleDateString() }}
             <v-menu activator="parent" :close-on-content-click="false" v-model="showDateMenu">
               <v-confirm-edit v-model="event.date">
                 <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
@@ -86,7 +86,7 @@
       <div v-else>
         <v-text-field v-if="!isTemplate" type="text" readonly variant="outlined" class="mt-3" max-width="300"
           prepend-icon="mdi-calendar" @click="showDateMenu = true">
-          {{ event.date.toLocaleDateString() }}
+          {{ event.date?.toLocaleDateString() }}
           <v-menu activator="parent" :close-on-content-click="false" v-model="showDateMenu">
             <v-confirm-edit v-model="event.date">
               <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
