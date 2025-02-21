@@ -112,7 +112,7 @@ const createTerm = () => {
   if (!start.value || !end.value) {
     return;
   }
-  store.showCreateTermDialog.value = false;
+  store.showCreateTermDialog = false;
 
   let currentDate = new Date(start.value);
   let day = currentDate.getDay();
