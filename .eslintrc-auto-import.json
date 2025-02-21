@@ -85,6 +85,7 @@
     "isPWA": true,
     "isSignedIn": true,
     "isSignedI": true,
-    "usingPasswordLogin": true
+    "usingPasswordLogin": true,
+    "reloadData": true
   }
 }

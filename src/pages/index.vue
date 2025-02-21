@@ -209,6 +209,8 @@ const loadData = async () => {
   });
 }
 
+setInterval(() => { if (reloadData.value) loadData() }, 1000);
+
 
 const getAvailability = () => {
   loadingAvailability.value = true;
