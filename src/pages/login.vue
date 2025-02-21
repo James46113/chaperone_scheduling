@@ -146,6 +146,7 @@ const resettingPassword = ref(false);
 const awaitingPasswordReset = ref(false)
 const incorrectPassword = ref(false)
 const resetTimeout = ref(0);
+isSignedIn.value = false;
 
 setInterval(() => { if (resetTimeout.value > 0) resetTimeout.value -= 1 }, 1000)
 
@@ -182,6 +183,7 @@ const tokenLogin = async () => {
     store.userEmail = data.email;
     isSignedIn.value = true;
     proxy.$router.push('/');
+    console.log('Logged in with token');
   }).catch(error => {
     Cookies.remove('passwdAccessToken');
     signingIn.value = false;
@@ -211,6 +213,7 @@ const passwordLogin = async () => {
       usingPasswordLogin.value = true;
       isSignedIn.value = true;
       proxy.$router.push('/');
+      console.log('Logged in with password');
     } else {
       incorrectPassword.value = true;
       signingIn.value = false;
@@ -329,6 +332,7 @@ function onSignIn(response) {
       store.userID = data.id;
       isSignedIn.value = true;
       loadingData.value = false;
+      console.log('Logged in with google');
       if (proxy.$route.query.redirect) {
         proxy.$router.push(proxy.$route.query.redirect);
       } else {
