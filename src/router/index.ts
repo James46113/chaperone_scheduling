@@ -41,11 +41,11 @@ router.beforeEach((to, from, next) => {
   const store = useAppStore();
   if (window.location.hostname === 'localhost') next();
   if (!isSignedIn.value && to.path !== '/login' && to.path !== '/resetPassword') {
-    next(`/login?redirect=${to.fullPath}`);
-    // if (Cookies.get('credential')) {
-    //   next()
-    // } else {
-    // }
+    if ((Cookies.get('credential') && Cookies.get('accessToken') && Cookies.get('refreshToken')) || Cookies.get('passwdAccessToken')) {
+      next();
+    } else {
+      next(`/login?redirect=${to.fullPath}`);
+    }
   }
 
   if ((to.path.startsWith('/editEvent') ||
