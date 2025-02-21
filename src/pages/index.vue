@@ -9,16 +9,6 @@
     <v-tabs-window v-model="store.tabView">
 
       <v-tabs-window-item value="calendar">
-        <!-- <v-row style="position: absolute; right: 16px;" class="pt-3" v-if="store.isAdmin && !isMobile">
-          <v-spacer />
-          <v-btn @click="sendAssignedEventsEmail" class="mt-4 mr-4" color="primary"
-            :loading="sendingUpcomingEventsEmail">Send Assigned Events Email</v-btn>
-
-          <v-btn @click="() => store.showCreateTermDialog = true" class="mt-4 mr-4" color="primary">Create Term</v-btn>
-
-          <v-btn @click="proxy.$router.push('/editEvent?id=new')" class="mt-4 mr-4" color="primary">Create Event</v-btn>
-        </v-row> -->
-
         <div v-if="store.isAdmin && !isMobile" style="position: absolute; right: 0px;" class="mt-2">
           <actions-menu activatorID="calendarMenu" label="Actions" />
         </div>
@@ -38,24 +28,6 @@
       </v-tabs-window-item>
 
       <v-tabs-window-item value="list">
-
-        <!-- <v-row style="position: absolute; right: 16px;" class="pt-3" v-if="store.isAdmin && !isMobile">
-          <v-spacer />
-          <v-btn @click="sendAssignedEventsEmail" class="mt-4 mr-4" color="primary"
-            :loading="sendingUpcomingEventsEmail">Send
-            Assigned Events Email</v-btn>
-
-          <v-btn @click="() => store.showCreateTermDialog = true" class="mt-4 mr-4" color="primary">Create Term</v-btn>
-
-          <v-btn @click="proxy.$router.push('/editEvent?id=new')" class="mt-4 mr-4" color="primary">Create Event</v-btn>
-        </v-row> -->
-
-        <!-- <div v-if="store.isAdmin && !isMobile" style="position: absolute; right: 0px;"
-          :class="isMobile ? 'mt-5' : 'mt-6 mr-4'">
-          <actions-menu activatorID="listMenuDesktop" :label="isMobile ? '' : 'Actions'" />
-        </div> -->
-
-
         <v-row class="pt-5 px-3">
           <v-card-title class="text-h5">Upcoming Events</v-card-title>
           <v-spacer />
@@ -199,7 +171,11 @@ const loadData = async () => {
   events.value.forEach((event) => {
     event.chaperones = eventsChaperonesData.filter(slot => slot.event_id == event.id)[0]?.chaperones;
     if (event.chaperones) {
-      event.chaperones = [...new Set(event.chaperones)];
+      try {
+        event.chaperones = [...new Set(event.chaperones)];
+      } catch (error) {
+        console.error('Error:', error);
+      }
       const leadIndex = event.chaperones.indexOf(event.lead_chaperone);
       if (leadIndex !== -1) {
         event.chaperones.splice(leadIndex, 1);
