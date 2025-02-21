@@ -171,11 +171,7 @@ const loadData = async () => {
   events.value.forEach((event) => {
     event.chaperones = eventsChaperonesData.filter(slot => slot.event_id == event.id)[0]?.chaperones;
     if (event.chaperones) {
-      try {
-        event.chaperones = [...new Set(event.chaperones)];
-      } catch (error) {
-        console.error('Error:', error);
-      }
+      event.chaperones = [...new Set(event.chaperones)];
       const leadIndex = event.chaperones.indexOf(event.lead_chaperone);
       if (leadIndex !== -1) {
         event.chaperones.splice(leadIndex, 1);
