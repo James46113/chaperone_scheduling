@@ -68,7 +68,7 @@ const showEndMenu = ref(false)
 
 const store = useAppStore();
 
-const props = defineProps({
+defineProps({
   close: Function,
 })
 
@@ -112,7 +112,7 @@ const createTerm = () => {
   if (!start.value || !end.value) {
     return;
   }
-  props.close();
+  store.showCreateTermDialog.value = false;
 
   let currentDate = new Date(start.value);
   let day = currentDate.getDay();
