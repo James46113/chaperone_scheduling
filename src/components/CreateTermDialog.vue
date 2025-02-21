@@ -72,8 +72,10 @@ defineProps({
   close: Function,
 })
 
-onMounted(() => {
-  if (isSignedIn.value) {
+setInterval(loadData, 1000);
+
+const loadData = () => {
+  if (isSignedIn.value && !templates.value) {
 
     fetchAPI('templates', {
       method: 'GET',
@@ -104,8 +106,7 @@ onMounted(() => {
         console.error('Error:', error)
       })
   }
-})
-
+}
 
 
 const createTerm = () => {
