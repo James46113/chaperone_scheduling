@@ -9,15 +9,19 @@
     <v-tabs-window v-model="store.tabView">
 
       <v-tabs-window-item value="calendar">
-        <v-row style="position: absolute; right: 16px;" class="pt-3" v-if="store.isAdmin && !isMobile">
+        <!-- <v-row style="position: absolute; right: 16px;" class="pt-3" v-if="store.isAdmin && !isMobile">
           <v-spacer />
           <v-btn @click="sendAssignedEventsEmail" class="mt-4 mr-4" color="primary"
             :loading="sendingUpcomingEventsEmail">Send Assigned Events Email</v-btn>
 
-          <v-btn @click="() => showCreateTerm = true" class="mt-4 mr-4" color="primary">Create Term</v-btn>
+          <v-btn @click="() => store.showCreateTermDialog = true" class="mt-4 mr-4" color="primary">Create Term</v-btn>
 
           <v-btn @click="proxy.$router.push('/editEvent?id=new')" class="mt-4 mr-4" color="primary">Create Event</v-btn>
-        </v-row>
+        </v-row> -->
+
+        <div v-if="store.isAdmin" style="position: absolute; right: 0px;" :class="isMobile ? 'mt-5' : 'mt-2'">
+          <actions-menu activatorID="calendarMenu" :label="isMobile ? '' : 'Actions'" />
+        </div>
 
         <v-calendar class="pa-0" :events="events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" hide-week-number>
           <template #event="{ event }" v-if="!isMobile" :interval-height="20">
@@ -28,44 +32,41 @@
               class="py-0" @click="proxy.$router.push(`/event?id=${event.id}`)">
               {{ event.title }}
             </v-card-text>
-            <!-- <v-chip class=" py-0 px-1" style="font-size: x-small;" color="primary"></v-chip> -->
           </template>
         </v-calendar>
-        <v-btn v-if="store.isAdmin && isMobile" width="100vw" variant="flat" color="primary" class="my-3"
-          @click="proxy.$router.push('/editEvent?id=new')">New Event</v-btn>
-        <v-btn v-if="store.isAdmin && isMobile" @click="() => showCreateTerm = true" width="100vw" class="mt-2 mb-3"
-          color="primary">Create Term</v-btn>
-        <v-btn @click="sendAssignedEventsEmail" class="mt-2" color="primary" :loading="sendingUpcomingEventsEmail"
-          width="100vw">Send Assigned Events Email</v-btn>
+
       </v-tabs-window-item>
 
       <v-tabs-window-item value="list">
 
-        <v-row style="position: absolute; right: 16px;" class="pt-3" v-if="store.isAdmin && !isMobile">
+        <!-- <v-row style="position: absolute; right: 16px;" class="pt-3" v-if="store.isAdmin && !isMobile">
           <v-spacer />
           <v-btn @click="sendAssignedEventsEmail" class="mt-4 mr-4" color="primary"
             :loading="sendingUpcomingEventsEmail">Send
             Assigned Events Email</v-btn>
 
-          <v-btn @click="() => showCreateTerm = true" class="mt-4 mr-4" color="primary">Create Term</v-btn>
+          <v-btn @click="() => store.showCreateTermDialog = true" class="mt-4 mr-4" color="primary">Create Term</v-btn>
 
           <v-btn @click="proxy.$router.push('/editEvent?id=new')" class="mt-4 mr-4" color="primary">Create Event</v-btn>
-        </v-row>
+        </v-row> -->
 
-        <v-card-title :class="isMobile ? 'text-h5 mt-5' : 'text-h5'">Upcoming Events</v-card-title>
+        <!-- <div v-if="store.isAdmin && !isMobile" style="position: absolute; right: 0px;"
+          :class="isMobile ? 'mt-5' : 'mt-6 mr-4'">
+          <actions-menu activatorID="listMenuDesktop" :label="isMobile ? '' : 'Actions'" />
+        </div> -->
+
+
+        <v-row class="pt-5 px-3">
+          <v-card-title class="text-h5">Upcoming Events</v-card-title>
+          <v-spacer />
+          <div :class="isMobile ? '' : 'mt-4 mr-4'">
+            <actions-menu activatorID="listMenu" :label="isMobile ? '' : 'Actions'" />
+          </div>
+        </v-row>
 
         <v-card-text>
           To give your availability, press on the tick or the cross on each event.
         </v-card-text>
-
-        <div v-if="store.isAdmin && isMobile">
-          <v-btn width="100vw" variant="flat" color="primary" class="my-3"
-            @click="proxy.$router.push('/editEvent?id=new')">New Event</v-btn>
-          <v-btn @click="() => showCreateTerm = true" width="100vw" class="mt-2 mb-3" color="primary">Create
-            Term</v-btn>
-          <v-btn @click="sendAssignedEventsEmail" class="mt-2" color="primary" :loading="sendingUpcomingEventsEmail"
-            width="100vw">Send Assigned Events Email</v-btn>
-        </div>
 
         <v-divider v-if="store.isAdmin" class="mt-3" />
 
@@ -85,11 +86,8 @@
       </v-tabs-window-item>
 
     </v-tabs-window>
-  </div>
 
-  <v-dialog v-model="showCreateTerm" :width="isMobile ? '100vw' : '30vw'">
-    <create-term :close="createdTerm" />
-  </v-dialog>
+  </div>
 </template>
 
 <script lang="js" setup>
@@ -106,7 +104,6 @@ const chaperones = ref([]);
 
 const availability = ref([]);
 
-const showCreateTerm = ref(false);
 const sendingUpcomingEventsEmail = ref(false);
 
 document.title = "Chaperones' Calendar - Steel City Choristers"
@@ -150,7 +147,7 @@ const sendAssignedEventsEmail = () => {
 }
 
 const createdTerm = () => {
-  showCreateTerm.value = false;
+  store.showCreateTermDialog.value = false;
   setTimeout(() => loadData, 2000)
 }
 

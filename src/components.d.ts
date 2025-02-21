@@ -7,12 +7,14 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    ActionsMenu: typeof import('./components/ActionsMenu.vue')['default']
     AlertDialog: typeof import('./components/AlertDialog.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     AppHeader: typeof import('./components/AppHeader.vue')['default']
     AvailabilitySelector: typeof import('./components/AvailabilitySelector.vue')['default']
     ChaperonesPage: typeof import('./components/ChaperonesPage.vue')['default']
-    CreateTerm: typeof import('./components/CreateTerm.vue')['default']
+    CreateTerm: typeof import('./components/CreateTermDialog.vue')['default']
+    CreateTermDialog: typeof import('./components/CreateTermDialog.vue')['default']
     DatePicker: typeof import('./components/DatePicker.vue')['default']
     EventCard: typeof import('./components/EventCard.vue')['default']
     PWAInstallDialog: typeof import('./components/PWAInstallDialog.vue')['default']

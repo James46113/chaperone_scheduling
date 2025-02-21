@@ -16,7 +16,7 @@
     </v-bottom-navigation>
 
     <PWAInstallDialog />
-
+    <CreateTermDialog />
   </v-main>
 
   <AppFooter v-if="!isMobile" />
@@ -30,12 +30,12 @@ const store = useAppStore();
 const showNavigationBar = computed(() => !['/login', '/offline', '/resetPassword'].includes(proxy.$route.path))
 
 // onMounted(() => {
-// if (isDev.value) {
-//   store.userEmail = "jamescaroe@gmail.com"
-//   store.userID = 8
-//   store.isAdmin = true
-//   console.log('Dev mode')
-// }
+if (window.location.hostname === 'localhost') {
+  store.userEmail = "jamescaroe@gmail.com"
+  store.userID = 8
+  store.isAdmin = true
+  console.log('Dev mode')
+}
 // })
 
 onMounted(() => window.scrollTo(0, 0))
