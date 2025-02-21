@@ -181,7 +181,6 @@ const tokenLogin = async () => {
     store.isAdmin = data.is_admin;
     store.userEmail = data.email;
     isSignedIn.value = true;
-    signingIn.value = false;
     proxy.$router.push('/');
   }).catch(error => {
     Cookies.remove('passwdAccessToken');
@@ -211,7 +210,6 @@ const passwordLogin = async () => {
       store.userEmail = responseJson.email;
       usingPasswordLogin.value = true;
       isSignedIn.value = true;
-      signingIn.value = false;
       proxy.$router.push('/');
     } else {
       incorrectPassword.value = true;
@@ -331,7 +329,6 @@ function onSignIn(response) {
       store.userID = data.id;
       isSignedIn.value = true;
       loadingData.value = false;
-      signingIn.value = false;
       if (proxy.$route.query.redirect) {
         proxy.$router.push(proxy.$route.query.redirect);
       } else {
