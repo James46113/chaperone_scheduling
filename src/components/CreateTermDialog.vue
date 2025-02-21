@@ -73,7 +73,6 @@ defineProps({
 })
 
 
-
 const loadData = () => {
   if (isSignedIn.value && !templates.value) {
 
@@ -142,6 +141,7 @@ const createTerm = () => {
     createFridayRehearsal(currentDate);
     currentDate.setDate(currentDate.getDate() + 7);
   }
+  setTimeout(() => reloadData.value = true, 2000);
 }
 
 const createMondayRehearsal = (date) => {
@@ -158,11 +158,7 @@ const createFridayRehearsal = (date) => {
 
 const createRehearsal = (template_id, date) => {
   const rehearsal = templates.value.find(template => template.id === template_id);
-  // const rehearsal = {
-  //   ...template,
-  //   start: new Date(date.setHours(new Date(template.start).getHours(), new Date(template.start).getMinutes())).toISOString(),
-  //   end: new Date(date.setHours(new Date(template.end).getHours(), new Date(template.end).getMinutes())).toISOString()
-  // };
+
   const startDate = new Date(date);
   startDate.setHours(new Date(rehearsal.start).getHours(), new Date(rehearsal.start).getMinutes(), 0, 0);
   rehearsal.start = startDate.toISOString();

@@ -317,7 +317,7 @@
       <v-card-text class="mt-3 mb-n2">Are you sure you want to delete this event?</v-card-text>
       <v-card-actions>
         <v-btn @click="showConfirmDeleteDialog = false" color="primary" variant="text">Cancel</v-btn>
-        <v-btn @click="deleteEvent" color="primary" variant="flat">Delete</v-btn>
+        <v-btn @click="deleteEvent" :loading="deleting" color="primary" variant="flat">Delete</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -358,6 +358,7 @@ const isDefaultTemplate = computed(() => {
 })
 
 const showConfirmDeleteDialog = ref(false);
+const deleting = ref(false);
 
 const assignedChaperones = computed(() => {
   const chaperoneSlotsCopy = [...chaperoneSlots.value];
@@ -599,6 +600,7 @@ const loadTemplate = () => {
 
 const deleteEvent = () => {
   let failed = false;
+  deleting.value = true;
   if (isTemplate.value) {
     if (event.value.id == '2' || event.value.id == '3') {
       store.showAlert("Error", "Cannot delete default templates.");
