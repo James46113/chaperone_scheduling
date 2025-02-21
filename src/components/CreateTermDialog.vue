@@ -56,6 +56,7 @@
 
 <script setup>
 import { useAppStore } from '@/stores/app';
+import { onMounted } from 'vue';
 
 const start = ref(new Date())
 const end = ref(new Date(new Date().setMonth(new Date().getMonth() + 1)))
@@ -67,38 +68,43 @@ const showEndMenu = ref(false)
 
 const store = useAppStore();
 
-const props = defineProps({
+defineProps({
   close: Function,
 })
 
-fetchAPI('templates', {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-})
-  .then((response) => response.json())
-  .then((data) => {
-    templates.value = data;
-  })
-  .catch((error) => {
-    console.error('Error:', error)
-  })
+onMounted(() => {
+  if (isSignedIn.value) {
+
+    fetchAPI('templates', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        templates.value = data;
+      })
+      .catch((error) => {
+        console.error('Error:', error)
+      })
 
 
-fetchAPI(`template_chaperone_slots`, {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+    fetchAPI(`template_chaperone_slots`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        templateChaperoneSlots.value = data;
+      })
+      .catch((error) => {
+        console.error('Error:', error)
+      })
+  }
 })
-  .then((response) => response.json())
-  .then((data) => {
-    templateChaperoneSlots.value = data;
-  })
-  .catch((error) => {
-    console.error('Error:', error)
-  })
 
 
 
@@ -106,7 +112,7 @@ const createTerm = () => {
   if (!start.value || !end.value) {
     return;
   }
-  props.close();
+  store.showCreateTermDialog = false;
 
   let currentDate = new Date(start.value);
   let day = currentDate.getDay();
