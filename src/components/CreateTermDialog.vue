@@ -72,7 +72,7 @@ defineProps({
   close: Function,
 })
 
-setInterval(loadData, 1000);
+
 
 const loadData = () => {
   if (isSignedIn.value && !templates.value) {
@@ -108,6 +108,7 @@ const loadData = () => {
   }
 }
 
+onMounted(setInterval(loadData, 1000));
 
 const createTerm = () => {
   if (!start.value || !end.value) {
