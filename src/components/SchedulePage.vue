@@ -38,19 +38,23 @@
           </v-card-subtitle>
 
           <v-card-text v-if="false">Lead Chaperone: {{ event.lead_chaperone }}</v-card-text>
-          <div v-for="slot in event.slots" class="mt-2">
-            <v-divider />
-            <v-card-text><b>{{ slot.title }}</b></v-card-text>
-            <v-card-subtitle class="mt-n4">{{ slot.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            }}
-              - {{
-                slot.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</v-card-subtitle>
-            <v-card-text class="mt-n3">
-              <span v-if="slot.details?.length > 0">
-                {{ slot.details }}
-              </span>
-              <i v-else>No Details Available</i>
-            </v-card-text>
+          <div v-for="slot in event.slots">
+            <div class="mt-2" v-if="slot.chaperone == chaperone_id">
+              <v-divider />
+              <v-card-text><b>{{ slot.title }}</b></v-card-text>
+              <v-card-subtitle class="mt-n4">{{ slot.start.toLocaleTimeString([], {
+                hour: '2-digit', minute: '2-digit'
+              })
+                }}
+                - {{
+                  slot.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</v-card-subtitle>
+              <v-card-text class="mt-n3">
+                <span v-if="slot.details?.length > 0">
+                  {{ slot.details }}
+                </span>
+                <i v-else>No Details Available</i>
+              </v-card-text>
+            </div>
           </div>
         </v-card>
       </v-sheet>
