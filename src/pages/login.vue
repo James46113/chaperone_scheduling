@@ -328,11 +328,11 @@ function onSignIn(response) {
       return Promise.reject(response);
     })
     .then((data) => {
+      console.log(`Logged in with google, data: ${JSON.stringify(data)}`);
       store.isAdmin = data.is_admin;
       store.userID = data.id;
       isSignedIn.value = true;
       loadingData.value = false;
-      console.log(`Logged in with google, data: ${JSON.stringify(data)}`);
       if (proxy.$route.query.redirect) {
         proxy.$router.push(proxy.$route.query.redirect);
       } else {
