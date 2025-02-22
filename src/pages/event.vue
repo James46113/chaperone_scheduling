@@ -3,35 +3,35 @@
   <v-card :class="isMobile ? 'pa-4' : 'pa-10'" v-if="!loadingData">
     <v-row>
       <div>
-        <v-card-title class="text-h4 mb-n5" style="white-space: pre-wrap;">{{ store.getEvent(eventID).title
+        <v-card-title class="text-h4 mb-n5" style="white-space: pre-wrap;">{{ event.title
         }}</v-card-title>
 
-        <v-btn v-if="!isMobile && store.isAdmin && !store.getEvent(eventID).isPastEvent"
+        <v-btn v-if="!isMobile && store.isAdmin && !event.isPastEvent"
           @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)" color="primary"
           style="position: absolute; right: 32px;">Edit</v-btn>
 
-        <v-card-title v-if="!loadingData">{{ store.getEvent(eventID).dateString }}, {{ store.getEvent(eventID).start }}
-          - {{ store.getEvent(eventID).end }}</v-card-title>
+        <v-card-title v-if="!loadingData">{{ event.dateString }}, {{ event.start }}
+          - {{ event.end }}</v-card-title>
         <v-card-subtitle>
-          {{ store.getEvent(eventID).location }}
+          {{ event.location }}
         </v-card-subtitle>
       </div>
 
       <!-- <v-divider class="my-4"></v-divider> -->
       <div :class="isMobile ? '' : 'ml-6 mt-4'" v-if="!loadingData && !isMobile">
-        <availability-selector :event="store.getEvent(eventID).id" />
+        <availability-selector :event="event.id" />
       </div>
     </v-row>
 
-    <v-btn v-if="isMobile && store.isAdmin && !store.getEvent(eventID).isPastEvent"
+    <v-btn v-if="isMobile && store.isAdmin && !event.isPastEvent"
       @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)" color="primary" class="mt-10"
       width="100vw">Edit</v-btn>
 
-    <availability-selector :event="store.getEvent(eventID).id" v-if="isMobile" class="mt-8" />
+    <availability-selector :event="event.id" v-if="isMobile" class="mt-8" />
 
     <v-divider class="mb-4 mt-10"></v-divider>
     <v-card-title>Chaperones</v-card-title>
-    <v-card-text v-if="false">Lead Chaperone: {{ store.getEvent(eventID).lead_chaperone }}</v-card-text>
+    <v-card-text v-if="false">Lead Chaperone: {{ event.lead_chaperone }}</v-card-text>
 
     <v-data-table :headers="tableHeaders" :items="chaperoneSlots" hide-default-footer v-if="!isMobile">
       <template #item.startTime="{ item }">
@@ -79,7 +79,7 @@
     <v-card-title class="my-3">Details</v-card-title>
     <v-card-text>
       <span style="white-space: pre-wrap;">
-        {{ store.getEvent(eventID).details?.length > 0 ? store.getEvent(eventID).details : 'No details available' }}
+        {{ event.details?.length > 0 ? event.details : 'No details available' }}
       </span>
     </v-card-text>
   </v-card>
@@ -96,9 +96,7 @@ const { proxy } = getCurrentInstance()
 const store = useAppStore();
 
 const eventID = proxy.$route.query.id
-console.log(eventID)
-console.log(store.getEvent(eventID))
-console.log(store.getEvent(eventID).details)
+const event = ref()
 
 const chaperoneSlots = ref([])
 
@@ -111,9 +109,18 @@ const tableHeaders = [
 ];
 
 onMounted(async () => {
-  store.loadEvents()
-  store.loadChaperoneSlots()
-  store.loadAvailability()
+  if (!store.eventsLoaded) {
+    await Promise.all([
+      store.loadEvents(),
+      store.loadChaperoneSlots(),
+      store.loadAvailability()])
+    event.value = store.getEvent(eventID)
+  } else {
+    store.loadEvents()
+    store.loadChaperoneSlots()
+    store.loadAvailability()
+  }
+  event.value = store.getEvent(eventID)
 
   // loadingData.value = true
   // await getChaperones();
@@ -145,7 +152,7 @@ onMounted(async () => {
 
   // eventData.lead_chaperone = store.chaperones.value.find(chaperone => chaperone.id == eventData.lead_chaperone)?.name ?? null;
   // eventData.available = availability;
-  // store.getEvent(eventID) = eventData;
+  // event = eventData;
   // getAvailability();
   // document.title = `${eventData.title} - Steel City Choristers`;
 
@@ -165,7 +172,7 @@ const getAvailability = () => {
   })
     .then((response) => response.json())
     .then((data) => {
-      store.getEvent(eventID).available = data.available;
+      event.value.available = data.available;
     })
     .catch((error) => {
       console.error('Error:', error)
