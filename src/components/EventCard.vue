@@ -74,7 +74,7 @@ const props = defineProps({
   small: Boolean
 })
 
-const sortedChaperones = computed(() => props.event.chaperones.sort())
+const sortedChaperones = computed(() => [... new Set(props.event.chaperones)].sort())
 const missingChaperones = computed(() => props.event.chaperones?.includes(null) && !props.event.chaperones?.every(chaperone => chaperone === null))
 
 const goToEvent = (value) => {
