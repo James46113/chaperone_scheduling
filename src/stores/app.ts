@@ -142,6 +142,10 @@ export const useAppStore = defineStore('app', () => {
     templateSlots.value = data;
   }
 
+  const getEvent = (id: number) => {
+    return events.value.find((event: any) => event.id === id);
+  }
+
 
   return {
     // GENERAL
@@ -170,6 +174,7 @@ export const useAppStore = defineStore('app', () => {
     loadAvailability,
     loadAllAvailability,
     loadTemplates,
-    loadTemplateSlots
+    loadTemplateSlots,
+    getEvent,
   }
 });
