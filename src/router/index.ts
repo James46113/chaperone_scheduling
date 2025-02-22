@@ -42,8 +42,7 @@ router.beforeEach((to, from, next) => {
   if (!isSignedIn.value && to.path !== '/login' && to.path !== '/resetPassword') {
     next(`/login?redirect=${to.fullPath}`);
   }
-
-  if ((to.path.startsWith('/editEvent') ||
+  else if ((to.path.startsWith('/editEvent') ||
     to.path.startsWith('/templateEvents') ||
     to.path.startsWith('/users') ||
     to.path.startsWith('/availability')
