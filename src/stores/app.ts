@@ -85,7 +85,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const loadChaperoneSlots = async () => {
-    const response = await fetchAPI('chaperoneSlots', {
+    const response = await fetchAPI('chaperone_slots', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -144,7 +144,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const loadTemplateSlots = async () => {
-    const response = await fetchAPI('templateSlots', {
+    const response = await fetchAPI('template_chaperone_slots', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
