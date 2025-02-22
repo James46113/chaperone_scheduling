@@ -68,7 +68,7 @@ export const useDatabaseStore = defineStore('database', () => {
 
       event.availability = computed(() => allAvailability.value.filter((avail: any) => avail.event_id === event.id));
     });
-    console.log(JSON.stringify(events.value, null, 2)
+    console.log(JSON.stringify(events.value)
     )
   };
 
