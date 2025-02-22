@@ -163,7 +163,6 @@ onMounted(async () => {
 
 const tokenLogin = async () => {
   signingIn.value = true;
-  const fingerprint = await getFingerprint();
   const token = Cookies.get('passwdAccessToken');
   fetch('/api/public/login/token', {
     method: 'POST',
@@ -193,7 +192,6 @@ const tokenLogin = async () => {
 const passwordLogin = async () => {
   incorrectPassword.value = false;
   signingIn.value = true;
-  const fingerprint = await getFingerprint();
   try {
     const response = await fetch('/api/public/login/password', {
       method: 'POST',

@@ -13,8 +13,6 @@ app.use(express.json());
 app.post('/api/token', async (req, res) => {
   const { code } = req.body;
 
-  console.log(`CODE: ${code}`);
-
   const response = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
     headers: {
@@ -29,15 +27,11 @@ app.post('/api/token', async (req, res) => {
     })
   });
 
-  console.log(`STATUS: ${response.status}`);
-
   const data = await response.json();
   if (data.error) {
     console.log(`Error: ${data.error}`);
     return res.status(400).json({ error: data.error });
   }
-
-  console.log(`DATA: ${JSON.stringify(data)}`);
 
   return res.json({
     access_token: data.access_token,
@@ -131,6 +125,7 @@ app.use('/api/p/', async (req, res) => {
     body: JSON.stringify({ token, fingerprint })
   })
   if (!tokenResponse.ok) {
+    console.log(`/token/validate failed: ${token}, ${fingerprint}, ${JSON.stringify(tokenResponse)}`);
     return res.status(401).json({ error: 'Unauthorized' });
   }
   const { email } = await tokenResponse.json();
@@ -140,6 +135,7 @@ app.use('/api/p/', async (req, res) => {
     headers: { ...req.headers, email: email },
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
   })
+  console.log('request failed')
   return res.status(response.status).json(await response.json());
 });
 

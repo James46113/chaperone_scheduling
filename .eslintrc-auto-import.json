@@ -86,6 +86,7 @@
     "isSignedIn": true,
     "isSignedI": true,
     "usingPasswordLogin": true,
-    "reloadData": true
+    "reloadData": true,
+    "fingerprint": true
   }
 }
