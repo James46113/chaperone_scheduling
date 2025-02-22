@@ -73,42 +73,6 @@ defineProps({
 })
 
 
-const loadData = () => {
-  if (isSignedIn.value && !templates.value) {
-
-    fetchAPI('templates', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        templates.value = data;
-      })
-      .catch((error) => {
-        console.error('Error:', error)
-      })
-
-
-    fetchAPI(`template_chaperone_slots`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        templateChaperoneSlots.value = data;
-      })
-      .catch((error) => {
-        console.error('Error:', error)
-      })
-  }
-}
-
-onMounted(setInterval(loadData, 1000));
-
 const createTerm = () => {
   if (!start.value || !end.value) {
     return;
@@ -157,7 +121,7 @@ const createFridayRehearsal = (date) => {
 }
 
 const createRehearsal = (template_id, date) => {
-  const rehearsal = templates.value.find(template => template.id === template_id);
+  const rehearsal = store.templates.find(template => template.id === template_id);
 
   const startDate = new Date(date);
   startDate.setHours(new Date(rehearsal.start).getHours(), new Date(rehearsal.start).getMinutes(), 0, 0);
@@ -167,7 +131,7 @@ const createRehearsal = (template_id, date) => {
   endDate.setHours(new Date(rehearsal.end).getHours(), new Date(rehearsal.end).getMinutes(), 0, 0);
   rehearsal.end = endDate.toISOString();
 
-  let chaperoneSlots = templateChaperoneSlots.value.filter(slot => slot.template_id === template_id);
+  let chaperoneSlots = store.templateSlots.filter(slot => slot.template_id === template_id);
   console.log(JSON.stringify(rehearsal));
 
 

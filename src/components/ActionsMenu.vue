@@ -15,7 +15,7 @@
         <v-list-item prepend-icon="mdi-calendar-plus" @click="proxy.$router.push('/editEvent?id=new')">
           New Event
         </v-list-item>
-        <v-list-item prepend-icon="mdi-calendar-multiple" @click="store.showCreateTermDialog = true">
+        <v-list-item prepend-icon="mdi-calendar-multiple" @click="createTerm">
           New Term
         </v-list-item>
         <v-divider class="mt-2" />
@@ -45,6 +45,12 @@ defineProps({
   activatorID: String,
   label: String,
 })
+
+const createTerm = () => {
+  store.loadTemplateSlots();
+  store.loadTemplates();
+  store.showCreateTermDialog = true;
+}
 
 const sendAssignedEventsEmail = () => {
   fetchAPI('chaperones/events/email', {
