@@ -64,7 +64,8 @@ export const useAppStore = defineStore('app', () => {
       event.chaperones = computed(() => {
         const slots = chaperoneSlots.value.filter((slot: any) => slot.event_id === event.id)
         const chaperoneIDs = slots.map((slot: any) => slot.chaperone)
-        const chaperoneNames = chaperones.value.filter((chaperone: any) => chaperoneIDs.includes(chaperone.id)).map((chaperone: any) => chaperone.name)
+        const chaperoneNames = chaperoneIDs.map((chaperoneID: any) => chaperones.value.filter((chaperone: any) => chaperone.id === chaperoneID).map((c: any) => c.name)[0] ?? null)
+        // const chaperoneNames = chaperones.value.filter((chaperone: any) => chaperoneIDs.includes(chaperone.id)).map((chaperone: any) => chaperone.name)
         return chaperoneNames ?? []
       });
 
