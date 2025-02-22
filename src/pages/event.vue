@@ -10,8 +10,11 @@
           @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)" color="primary"
           style="position: absolute; right: 32px;">Edit</v-btn>
 
-        <v-card-title v-if="!loadingData">{{ event.dateString }}, {{ event.start }}
-          - {{ event.end }}</v-card-title>
+        <v-card-title v-if="!loadingData">{{ event.dateString }}, {{ event.start.toLocaleTimeString([], {
+          hour:
+            '2-digit', minute: '2-digit'
+        }) }}
+          - {{ event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</v-card-title>
         <v-card-subtitle>
           {{ event.location }}
         </v-card-subtitle>
@@ -33,7 +36,7 @@
     <v-card-title>Chaperones</v-card-title>
     <v-card-text v-if="false">Lead Chaperone: {{ event.lead_chaperone }}</v-card-text>
 
-    <v-data-table :headers="tableHeaders" :items="chaperoneSlots" hide-default-footer v-if="!isMobile">
+    <v-data-table :headers="tableHeaders" :items="event.slots" hide-default-footer v-if="!isMobile">
       <template #item.startTime="{ item }">
         {{ new Date(item.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
       </template>
@@ -60,7 +63,7 @@
       </template>
     </v-data-table>
 
-    <v-card v-else v-for="slot in chaperoneSlots" class="mb-4">
+    <v-card v-else v-for="slot in event.slots" class="mb-4">
       <v-card-title v-if="slot.chaperone">{{store.chaperones.find(chaperone => chaperone.id === slot.chaperone)?.name
       }}</v-card-title>
       <v-alert v-else type="warning" class="mb-6">No Chaperone</v-alert>
@@ -121,6 +124,7 @@ onMounted(async () => {
     store.loadAvailability()
   }
   event.value = store.getEvent(eventID)
+  console.log(event.value.isPastEvent)
 
   document.title = `${event.value.title} - Steel City Choristers`;
 
