@@ -147,10 +147,6 @@ export const useAppStore = defineStore('app', () => {
     return events.value.find((event: any) => event.id === id);
   }
 
-  const getEventAvailability = (id: number) => {
-    return availability.value.find((avail: any) => avail.event_id === id);
-  }
-
 
   return {
     // GENERAL
