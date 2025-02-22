@@ -96,6 +96,7 @@ const { proxy } = getCurrentInstance()
 const store = useAppStore();
 
 const eventID = proxy.$route.query.id
+console.log(eventID)
 console.log(store.getEvent(eventID))
 console.log(store.getEvent(eventID).details)
 
