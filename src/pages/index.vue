@@ -73,9 +73,6 @@ const { proxy } = getCurrentInstance()
 
 const store = useAppStore();
 
-const chaperones = ref([]);
-
-const availability = ref([]);
 
 document.title = "Chaperones' Calendar - Steel City Choristers"
 
@@ -86,7 +83,7 @@ onMounted(async () => {
 
   try {
     loadingData.value = true;
-    if (!store.eventsLoaded || store.availabilityLoaded || store.chaperonesLoaded) {
+    if (!store.eventsLoaded || !store.availabilityLoaded || !store.chaperonesLoaded || !store.chaperoneSlotsLoaded) {
       await loadData();
     } else {
       loadData();
@@ -103,6 +100,7 @@ const loadData = async () => {
     store.loadAvailability(),
     store.loadEvents(),
     store.loadChaperones(),
+    store.loadChaperoneSlots(),
   ])
 }
 </script>
