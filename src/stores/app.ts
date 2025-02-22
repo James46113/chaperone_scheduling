@@ -159,11 +159,11 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const getEvent = (id: number) => {
-    return events.value.find((event: any) => event.id === id);
+    return events.value.find((event: any) => event.id == id);
   }
 
   const getEventAvailability = (id: number) => {
-    return availability.value.find((avail: any) => avail.event_id === id);
+    return availability.value.find((avail: any) => avail.event_id == id);
   }
 
 

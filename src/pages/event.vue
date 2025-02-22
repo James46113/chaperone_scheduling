@@ -121,8 +121,7 @@ onMounted(async () => {
     store.loadAvailability()
   }
   event.value = store.getEvent(eventID)
-  console.log(event.value)
-  console.log(store.events.find(event => event.id == eventID))
+
   document.title = `${event.value.title} - Steel City Choristers`;
 
   // loadingData.value = true
