@@ -42,7 +42,7 @@
             <v-divider />
             <v-card-text><b>{{ slot.title }}</b></v-card-text>
             <v-card-subtitle class="mt-n4">{{ slot.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-              }}
+            }}
               - {{
                 slot.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</v-card-subtitle>
             <v-card-text class="mt-n3">
@@ -78,13 +78,16 @@ const props = defineProps({
 const { proxy } = getCurrentInstance()
 const events = computed(() => store.getEventsByChaperone(props.chaperone_id))
 const chaperone = computed(() => store.chaperones.find(chaperone => chaperone.id == props.chaperone_id))
-
+console.log(events.value)
 
 onMounted(async () => {
   loadingData.value = true
-  store.loadChaperoneSlots();
-  store.loadChaperones();
+  await Promise.all([
+    store.loadChaperoneSlots(),
+    store.loadChaperones(),
+  ])
 
+  console.log(events.value)
   // await getChaperones();
   // await Promise.all([
   //   fetchAPI(`events/chaperone/${props.chaperone_id}`, {
