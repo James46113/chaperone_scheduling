@@ -1,7 +1,8 @@
 <template>
   <div class="pa-4 d-flex justify-center" v-if="!loadingData">
     <v-card :width="isMobile ? '100vw' : '80vw'" elevation="0" class="mx-n1">
-      <v-card-title class="text-h5" v-if="chaperone.name">{{ chaperone.name }}{{ chaperone.name.slice(-1) === 's' ? "'"
+      <v-card-title class="text-h5" v-if="chaperone?.name">{{ chaperone?.name }}{{ chaperone?.name.slice(-1) === 's' ?
+        "'"
         : "'s" }} Schedule</v-card-title>
 
       <v-sheet v-for="event in events" elevation="2" class="my-2" variant="outlined" color="primary"
@@ -76,7 +77,7 @@ const props = defineProps({
 
 const { proxy } = getCurrentInstance()
 const events = ref([])
-const chaperones = ref(store.chaperones)
+const chaperones = store.chaperones
 const chaperone = ref(store.chaperones.find(chaperone => chaperone.id == props.chaperone_id))
 const chaperone_slots = ref(store.chaperoneSlots)
 
