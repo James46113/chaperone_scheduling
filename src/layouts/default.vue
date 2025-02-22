@@ -30,15 +30,15 @@ const store = useAppStore();
 const showNavigationBar = computed(() => !['/login', '/offline', '/resetPassword'].includes(proxy.$route.path))
 
 // onMounted(() => {
-if (window.location.hostname === 'localhost') {
-  store.userEmail = "jamescaroe@gmail.com"
-  store.userID = 8
-  store.isAdmin = true
-  console.log('Dev mode')
-}
+//   if (window.location.hostname === 'localhost') {
+//     store.userEmail = "jamescaroe@gmail.com"
+//     store.userID = 8
+//     store.isAdmin = true
+//     console.log('Dev mode')
+//   }
 // })
 
-onMounted(() => window.scrollTo(0, 0))
+// onMounted(() => window.scrollTo(0, 0))
 
 const goHome = (tab) => {
   store.tabView = tab;
