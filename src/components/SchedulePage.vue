@@ -37,7 +37,7 @@
           </v-card-subtitle>
 
           <v-card-text v-if="false">Lead Chaperone: {{ event.lead_chaperone }}</v-card-text>
-          <div v-for="slot in event.chaperone_slots" class="mt-2">
+          <div v-for="slot in event.slots" class="mt-2">
             <v-divider />
             <v-card-text><b>{{ slot.title }}</b></v-card-text>
             <v-card-subtitle class="mt-n4">{{ slot.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -77,7 +77,7 @@ const props = defineProps({
 const { proxy } = getCurrentInstance()
 const events = ref([])
 const chaperones = ref(store.chaperones)
-const chaperone = ref(store.chaperones.find(chaperone => chaperone.id === props.chaperone_id))
+const chaperone = ref(store.chaperones.find(chaperone => chaperone.id == props.chaperone_id))
 const chaperone_slots = ref(store.chaperoneSlots)
 
 
