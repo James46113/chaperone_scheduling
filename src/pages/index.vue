@@ -86,7 +86,12 @@ onMounted(async () => {
   }
 
   try {
-    await loadData();
+    loadingData.value = true;
+    if (!store.eventsLoaded) {
+      await loadData();
+    } else {
+      loadData();
+    }
   } catch (error) {
     console.error('Error:', error);
   } finally {
@@ -95,10 +100,11 @@ onMounted(async () => {
 })
 
 const loadData = async () => {
-  // loadingData.value = true
-  store.loadAvailability();
-  store.loadEvents();
-  store.loadChaperones();
+  await Promise.all([
+    store.loadAvailability(),
+    store.loadEvents(),
+    store.loadChaperones(),
+  ])
 }
 
 setInterval(() => { if (reloadData.value) loadData() }, 1000);

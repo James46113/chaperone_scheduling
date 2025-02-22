@@ -165,7 +165,6 @@ const tokenLogin = async () => {
   signingIn.value = true;
   const fingerprint = await getFingerprint();
   const token = Cookies.get('passwdAccessToken');
-  console.log(fingerprint)
   fetch('/api/public/login/token', {
     method: 'POST',
     headers: {
