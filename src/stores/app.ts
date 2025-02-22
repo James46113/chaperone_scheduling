@@ -42,6 +42,7 @@ export const useAppStore = defineStore('app', () => {
       event.end = new Date(event.end);
       event.date = new Date(event.start);
       event.slots = computed(() => chaperoneSlots.value.filter((slot: any) => slot.event_id === event.id));
+      console.log(availability.value.filter((avail: any) => avail.event_id === event.id).map((avail: any) => avail.availabile))
 
       event.available = computed(() => availability.value.filter((avail: any) => avail.event_id === event.id).map((avail: any) => avail.availabile)[0] ?? null);
 
@@ -147,6 +148,10 @@ export const useAppStore = defineStore('app', () => {
     return events.value.find((event: any) => event.id === id);
   }
 
+  const getEventAvailability = (id: number) => {
+    return availability.value.find((avail: any) => avail.event_id === id);
+  }
+
 
   return {
     // GENERAL
@@ -177,5 +182,6 @@ export const useAppStore = defineStore('app', () => {
     loadTemplates,
     loadTemplateSlots,
     getEvent,
+    getEventAvailability,
   }
 });
