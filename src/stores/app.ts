@@ -89,6 +89,8 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const loadAvailability = async () => {
+    console.log(`loading availability for ${userID.value}`)
+
     const response = await fetchAPI(`chaperones/availability/${userID.value}`, {
       method: 'GET',
       headers: {
