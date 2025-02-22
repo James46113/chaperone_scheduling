@@ -25,7 +25,7 @@ const props = defineProps({
 
 const store = useAppStore();
 const isPastEvent = computed(() => store.getEvent(props.event).date < new Date())
-
+console.log(store.getEvent(props.event).available)
 
 const updateAvailable = (availability) => {
   const originalAvailability = store.getEvent(props.event).available
