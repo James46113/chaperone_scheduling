@@ -52,6 +52,8 @@ export const useDatabaseStore = defineStore('database', () => {
 
     const data = await response.json();
 
+    console.log(JSON.stringify(data))
+
     events.value = data.map((event: any) => {
       event.start = new Date(event.start);
       event.end = new Date(event.end);
