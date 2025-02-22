@@ -5,10 +5,10 @@
     <v-card-title v-else class="mb-3">Available:</v-card-title>
     <v-row class="mx-2 mb-3">
       <v-btn variant="flat" max-width="100px" width="50%"
-        :color="store.getEvent(event).available === undefined ? '' : store.getEvent(event).available ? '#198754' : ''"
+        :color="store.getEvent(event).available === null ? '' : store.getEvent(event).available ? '#198754' : ''"
         @click="updateAvailable(true)" :ripple="false">✓</v-btn>
       <v-btn variant="flat" max-width="100px" width="50%"
-        :color="store.getEvent(event).available === undefined ? '' : store.getEvent(event).available ? '' : 'primary'"
+        :color="store.getEvent(event).available === null ? '' : store.getEvent(event).available ? '' : 'primary'"
         @click="updateAvailable(false)" :ripple="false">⨯</v-btn>
     </v-row>
   </div>
@@ -25,7 +25,6 @@ const props = defineProps({
 
 const store = useAppStore();
 const isPastEvent = computed(() => store.getEvent(props.event).date < new Date())
-console.log(store.getEvent(props.event).available)
 
 const updateAvailable = (availability) => {
   const originalAvailability = store.getEvent(props.event).available
