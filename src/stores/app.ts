@@ -57,14 +57,14 @@ export const useAppStore = defineStore('app', () => {
         month: 'short', year: 'numeric'
       });
       event.isPastEvent = computed(() => event.start < new Date());
-      event.slots = computed(() => chaperoneSlots.value.filter((slot: any) => slot.event_id === event.id).sort((a: any, b: any) => a.start - b.start));
+      event.slots = computed(() => chaperoneSlots.value.filter((slot: any) => slot.event_id === event.id).sort((a: any, b: any) => a.start - b.start) ?? []);
       event.available = computed(() => availability.value.filter((avail: any) => avail.event_id === event.id).map((avail: any) => avail.available)[0] ?? null);
 
       event.chaperones = computed(() => {
         const slots = chaperoneSlots.value.filter((slot: any) => slot.event_id === event.id)
         const chaperoneIDs = slots.map((slot: any) => slot.chaperone)
         const chaperoneNames = chaperones.value.filter((chaperone: any) => chaperoneIDs.includes(chaperone.id)).map((chaperone: any) => chaperone.name)
-        return chaperoneNames
+        return chaperoneNames ?? []
       });
 
       event.availability = computed(() => allAvailability.value.filter((avail: any) => avail.event_id === event.id));
