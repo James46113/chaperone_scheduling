@@ -28,7 +28,7 @@ const isPastEvent = computed(() => store.getEvent(props.event).date < new Date()
 
 const updateAvailable = (availability) => {
   const originalAvailability = store.getEvent(props.event).available
-  // store.getEventAvailability(props.event).available = availability
+  store.getEventAvailability(props.event).available = availability
 
   fetchAPI(`chaperones/availability/${store.userID}`, {
     // fetchAPI(`chaperones/availability/1`, { // DEBUG ONLY
@@ -44,10 +44,10 @@ const updateAvailable = (availability) => {
     .then((response) => {
       if (response.status === 403) {
         store.showAlert('Assigned', 'You are already assigned to this event, please contact Angela on +44 7985 925570 if you are no longer available.')
-        // store.getEventAvailability(props.event).available = originalAvailability
+        store.getEventAvailability(props.event).available = originalAvailability
       } else if (!response.ok) {
         store.showAlert('Failed to update availability', 'Are you connected to the internet?')
-        // props.getEventAvailability(props.event).available = originalAvailability
+        props.getEventAvailability(props.event).available = originalAvailability
       }
     }).finally(() => {
       store.loadAvailability();
