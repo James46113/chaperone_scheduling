@@ -332,7 +332,7 @@ function onSignIn(response) {
       store.userID = data.id;
       isSignedIn.value = true;
       loadingData.value = false;
-      console.log(`Logged in with google, ID: ${store.userID}`);
+      console.log(`Logged in with google, data: ${JSON.stringify(data)}`);
       if (proxy.$route.query.redirect) {
         proxy.$router.push(proxy.$route.query.redirect);
       } else {
