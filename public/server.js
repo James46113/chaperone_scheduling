@@ -125,7 +125,7 @@ app.use('/api/p/', async (req, res) => {
     body: JSON.stringify({ token, fingerprint })
   })
   if (!tokenResponse.ok) {
-    console.log('/token/validate failed');
+    console.log(`/token/validate failed: ${token}, ${fingerprint}, ${JSON.stringify(tokenResponse)}`);
     return res.status(401).json({ error: 'Unauthorized' });
   }
   const { email } = await tokenResponse.json();
