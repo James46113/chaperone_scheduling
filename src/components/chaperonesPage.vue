@@ -60,40 +60,6 @@ onMounted(async () => {
     store.loadChaperones();
   }
   loadingData.value = false;
-
-  // await Promise.all([
-  //   fetchAPI('chaperones', {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       chaperones.value = data;
-  //       chaperones.value.sort((a, b) => a.name.localeCompare(b.name));
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error:', error)
-  //     }),
-
-  //   fetchAPI('chaperones/events', {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       numEvents.value = data;
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error:', error)
-  //     })
-  // ])
 })
 
 </script>
-<!-- <template #item.events="{ item }">
-  {{ numEvents.find((num) => num.id === item.id)?.events }}
-</template> -->

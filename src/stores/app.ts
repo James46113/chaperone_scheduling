@@ -70,7 +70,7 @@ export const useAppStore = defineStore('app', () => {
 
       event.availability = computed(() => allAvailability.value.filter((avail: any) => avail.event_id === event.id));
     });
-    events.value = data;
+    events.value = data.sort((a: any, b: any) => a.start - b.start);
   };
 
   const loadChaperones = async () => {
@@ -90,7 +90,7 @@ export const useAppStore = defineStore('app', () => {
       });
     });
 
-    chaperones.value = data;
+    chaperones.value = data.sort((a: any, b: any) => a.name.localeCompare(b.name));
   }
 
   const loadChaperoneSlots = async () => {
