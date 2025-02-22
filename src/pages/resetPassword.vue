@@ -124,7 +124,6 @@ fetch(`/api/public/check_token/${proxy.$route.query.token}`, {
   .then((response) => {
     if (response.ok) {
       validToken.value = true
-      console.log(response.status)
     } else {
       validToken.value = false
     }

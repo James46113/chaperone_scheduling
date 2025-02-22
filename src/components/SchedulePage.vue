@@ -68,13 +68,13 @@
 import { useAppStore } from '@/stores/app'
 
 
+const store = useAppStore();
+
 const { proxy } = getCurrentInstance()
 const events = ref([])
-const chaperone = ref({})
-const chaperones = ref([])
-const chaperone_slots = ref([])
-
-const store = useAppStore();
+const chaperones = ref(store.chaperones)
+const chaperone = ref(store.chaperones.find(chaperone => chaperone.id === props.chaperone_id))
+const chaperone_slots = ref(store.chaperoneSlots)
 
 
 const props = defineProps({
@@ -83,58 +83,62 @@ const props = defineProps({
 
 
 onMounted(async () => {
-  if (!props.chaperone_id) {
-    if (Cookies.get('credential')) {
-      await new Promise(resolve => setTimeout(resolve, 200));
-    } else {
-      if (!isDev.value) {
-        proxy.$router.push('/login')
-      }
-    }
-  }
+  // if (!props.chaperone_id) {
+  //   if (Cookies.get('credential')) {
+  //     await new Promise(resolve => setTimeout(resolve, 200));
+  //   } else {
+  //     if (!isDev.value) {
+  //       proxy.$router.push('/login')
+  //     }
+  //   }
+  // }
   loadingData.value = true
-  await getChaperones();
-  await Promise.all([
+  store.loadChaperoneSlots();
+  store.loadChaperones();
 
-    fetchAPI(`events/chaperone/${props.chaperone_id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        events.value = data.map((event) => ({
-          ...event,
-          lead_chaperone: chaperones.value.find(chaperone => chaperone.id === event.lead_chaperone)?.name ?? null,
-          start: new Date(event.start),
-          end: new Date(event.end),
-        }))
-          .filter(event => event.end > new Date());
-        events.value.sort((a, b) => a.start - b.start)
-      }).catch((error) => {
-        console.error('Error:', error)
-      }),
+  events.value = store.getEventsByChaperone(props.chaperone_id)
 
-    fetchAPI(`chaperone_slots/chaperone/${props.chaperone_id}`, {
-      method: 'GET',
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        chaperone_slots.value = data;
-      }).catch(error => {
-        console.error('Error:', error)
-      })
-  ])
+  // await getChaperones();
+  // await Promise.all([
+  //   fetchAPI(`events/chaperone/${props.chaperone_id}`, {
+  //     method: 'GET',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       events.value = data.map((event) => ({
+  //         ...event,
+  //         lead_chaperone: chaperones.value.find(chaperone => chaperone.id === event.lead_chaperone)?.name ?? null,
+  //         start: new Date(event.start),
+  //         end: new Date(event.end),
+  //       }))
+  //         .filter(event => event.end > new Date());
+  //       events.value.sort((a, b) => a.start - b.start)
+  //     }).catch((error) => {
+  //       console.error('Error:', error)
+  //     }),
 
-  events.value.forEach(event => {
-    event.chaperone_slots = chaperone_slots.value.filter(slot => slot.event_id === event.id).map(slot => ({
-      ...slot,
-      start: new Date(slot.start),
-      end: new Date(slot.end),
-    }));
-    event.chaperone_slots.sort((a, b) => a.start - b.start);
-  })
+  //   fetchAPI(`chaperone_slots/chaperone/${props.chaperone_id}`, {
+  //     method: 'GET',
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       chaperone_slots.value = data;
+  //     }).catch(error => {
+  //       console.error('Error:', error)
+  //     })
+  // ])
+
+  // events.value.forEach(event => {
+  //   event.chaperone_slots = chaperone_slots.value.filter(slot => slot.event_id === event.id).map(slot => ({
+  //     ...slot,
+  //     start: new Date(slot.start),
+  //     end: new Date(slot.end),
+  //   }));
+  //   event.chaperone_slots.sort((a, b) => a.start - b.start);
+  // })
 
   loadingData.value = false
 })

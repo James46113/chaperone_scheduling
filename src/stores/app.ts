@@ -22,6 +22,7 @@ export const useAppStore = defineStore('app', () => {
   const events = ref([]);
   const upcomingEvents = computed(() => events.value.filter((event: any) => event.start > new Date()));
   const chaperones = ref([]);
+  const chaperoneNames = computed(() => chaperones.value.map((chaperone: any) => chaperone.name).sort());
   const chaperoneSlots = ref([]);
   const availability = ref([]); // individual availability
   const allAvailability = ref([]);
@@ -102,8 +103,6 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const loadAvailability = async () => {
-    console.log(`loading availability for ${userID.value}`)
-
     const response = await fetchAPI(`chaperones/availability/${userID.value}`, {
       method: 'GET',
       headers: {
@@ -167,6 +166,11 @@ export const useAppStore = defineStore('app', () => {
     return availability.value.find((avail: any) => avail.event_id == id);
   }
 
+  const getEventsByChaperone = (chaperoneID: number) => {
+    const slots = chaperoneSlots.value.filter((slot: any) => slot.chaperone === chaperoneID && slot.start > new Date());
+    const uniqueEvents = [... new Set(slots.map((slot: any) => getEvent(slot.event_id)))].sort((a: any, b: any) => a.start - b.start);
+    return uniqueEvents;
+  }
 
   return {
     // GENERAL
@@ -185,6 +189,7 @@ export const useAppStore = defineStore('app', () => {
     upcomingEvents,
     chaperoneSlots,
     chaperones,
+    chaperoneNames,
     availability,
     templates,
     templateSlots,
@@ -206,5 +211,6 @@ export const useAppStore = defineStore('app', () => {
     loadTemplateSlots,
     getEvent,
     getEventAvailability,
+    getEventsByChaperone,
   }
 });
