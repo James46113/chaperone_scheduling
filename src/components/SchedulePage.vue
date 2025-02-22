@@ -39,7 +39,7 @@
 
           <v-card-text v-if="false">Lead Chaperone: {{ event.lead_chaperone }}</v-card-text>
           <div v-for="slot in event.slots">
-            <div class="mt-2" v-if="slot.chaperone === chaperone_id">
+            <div class="mt-2" v-if="slot.chaperone == chaperone_id">
               <v-divider />
               <v-card-text><b>{{ slot.title }}</b></v-card-text>
               <v-card-subtitle class="mt-n4">{{ slot.start.toLocaleTimeString([], {
