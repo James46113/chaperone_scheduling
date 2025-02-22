@@ -1,14 +1,14 @@
 <template>
-  <div v-if="store.userID && !loadingAvailability && !eventRef.isPastEvent"
+  <div v-if="store.userID && !loadingAvailability && !eventRef?.isPastEvent"
     :style="small ? '' : 'border: 1px solid #ccc; border-radius: 5px;'">
     <v-card-text v-if="small">Available:</v-card-text>
     <v-card-title v-else class="mb-3">Available:</v-card-title>
     <v-row class="mx-2 mb-3">
       <v-btn variant="flat" max-width="100px" width="50%"
-        :color="eventRef.available === null ? '' : eventRef.available ? '#198754' : ''" @click="updateAvailable(true)"
+        :color="eventRef?.available === null ? '' : eventRef?.available ? '#198754' : ''" @click="updateAvailable(true)"
         :ripple="false">✓</v-btn>
       <v-btn variant="flat" max-width="100px" width="50%"
-        :color="eventRef.available === null ? '' : eventRef.available ? '' : 'primary'" @click="updateAvailable(false)"
+        :color="eventRef?.available === null ? '' : eventRef.available ? '' : 'primary'" @click="updateAvailable(false)"
         :ripple="false">⨯</v-btn>
     </v-row>
   </div>
@@ -29,7 +29,7 @@ onMounted(() => eventRef.value = store.getEvent(props.event))
 const store = useAppStore();
 
 const updateAvailable = (availability) => {
-  const originalAvailability = eventRef.available
+  const originalAvailability = eventRef.value.available
   store.getEventAvailability(props.event).available = availability
 
   fetchAPI(`chaperones/availability/${store.userID}`, {
