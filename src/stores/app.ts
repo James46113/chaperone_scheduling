@@ -54,7 +54,7 @@ export const useDatabaseStore = defineStore('database', () => {
 
     console.log(JSON.stringify(data))
 
-    events.value = data.map((event: any) => {
+    events.value = data.forEach((event: any) => {
       event.start = new Date(event.start);
       event.end = new Date(event.end);
       event.date = new Date(event.start);
@@ -95,7 +95,7 @@ export const useDatabaseStore = defineStore('database', () => {
     });
 
     const data = await response.json();
-    chaperoneSlots.value = data.map((slot: any) => {
+    chaperoneSlots.value = data.forEach((slot: any) => {
       slot.start = new Date(slot.start);
       slot.end = new Date(slot.end);
     });
@@ -134,7 +134,7 @@ export const useDatabaseStore = defineStore('database', () => {
     });
     const data = await response.json();
 
-    templates.value = data.map((template: any) => {
+    templates.value = data.forEach((template: any) => {
       template.start = new Date(template.start);
       template.end = new Date(template.end);
       template.template_slots = templateSlots.value.filter((slot: any) => slot.template_id === template.id);
@@ -149,7 +149,7 @@ export const useDatabaseStore = defineStore('database', () => {
       },
     });
     const data = await response.json();
-    templateSlots.value = data.map((slot: any) => {
+    templateSlots.value = data.forEach((slot: any) => {
       slot.start = new Date(slot.start);
       slot.end = new Date(slot.end);
     });
