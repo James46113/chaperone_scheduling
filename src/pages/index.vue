@@ -99,89 +99,8 @@ const loadData = async () => {
   store.loadAvailability();
   store.loadEvents();
   store.loadChaperones();
-  return;
-  if (store.userID) {
-    getAvailability();
-  }
-
-  const [chaperonesResponse, eventsResponse] = await Promise.all([
-    fetchAPI('chaperones', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }),
-    fetchAPI('events', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-  ]);
-
-  const chaperonesData = await chaperonesResponse.json();
-  chaperones.value = chaperonesData;
-
-  const eventsData = await eventsResponse.json();
-  events.value = eventsData.map((event) => ({
-    id: event.id,
-    title: event.title,
-    date: new Date(event.start),
-    start: new Date(event.start),
-    end: new Date(event.end),
-    location: event.location,
-    lead_chaperone: event.lead_chaperone,
-    available: availability.value.filter(slot => slot.event_id == event.id)[0]?.available,
-  }));
-  events.value.sort((a, b) => a.start - b.start);
-
-  const eventsChaperonesResponse = await fetchAPI('events_chaperones', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  const eventsChaperonesData = await eventsChaperonesResponse.json();
-  events.value.forEach((event) => {
-    event.chaperones = eventsChaperonesData.filter(slot => slot.event_id == event.id)[0]?.chaperones;
-    if (event.chaperones) {
-      event.chaperones = [...new Set(event.chaperones)];
-      const leadIndex = event.chaperones.indexOf(event.lead_chaperone);
-      if (leadIndex !== -1) {
-        event.chaperones.splice(leadIndex, 1);
-        event.chaperones.unshift(event.lead_chaperone);
-      }
-    }
-  });
 }
 
 setInterval(() => { if (reloadData.value) loadData() }, 1000);
-
-
-const getAvailability = () => {
-  loadingAvailability.value = true;
-  if (!store.userID) {
-    return;
-  }
-  fetchAPI(`chaperones/availability/${store.userID}`, {
-    // fetchAPI(`/chaperones/availability/1`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      availability.value = data;
-      events.value.forEach((event) => {
-        event.available = availability.value.filter(slot => slot.event_id == event.id)[0]?.available;
-      });
-    })
-    .catch((error) => console.error('Error:', error))
-    .finally(() => {
-      loadingAvailability.value = false
-    });
-}
 
 </script>
