@@ -54,4 +54,3 @@ export const isDev = computed(() => import.meta.env.VITE_DEV == 1);
 export const isPWA = computed(() => window.matchMedia('(display-mode: standalone)').matches)
 export const isSignedIn = ref(false);
 export const usingPasswordLogin = ref(false);
-export const reloadData = ref(false);

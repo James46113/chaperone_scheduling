@@ -106,7 +106,4 @@ const loadData = async () => {
     store.loadChaperones(),
   ])
 }
-
-setInterval(() => { if (reloadData.value) loadData() }, 1000);
-
 </script>
