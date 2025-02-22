@@ -99,7 +99,7 @@ const { proxy } = getCurrentInstance()
 const store = useAppStore();
 
 const eventID = proxy.$route.query.id
-const event = ref()
+const event = ref({})
 
 const chaperoneSlots = ref([])
 
