@@ -1,5 +1,5 @@
 <template>
-  <div v-if="store.userID && !loadingAvailability && !isPastEvent"
+  <div v-if="store.userID && !loadingAvailability && !store.getEvent(event).isPastEvent"
     :style="small ? '' : 'border: 1px solid #ccc; border-radius: 5px;'">
     <v-card-text v-if="small">Available:</v-card-text>
     <v-card-title v-else class="mb-3">Available:</v-card-title>
@@ -24,7 +24,6 @@ const props = defineProps({
 })
 
 const store = useAppStore();
-const isPastEvent = computed(() => store.getEvent(props.event).date < new Date())
 
 const updateAvailable = (availability) => {
   const originalAvailability = store.getEvent(props.event).available

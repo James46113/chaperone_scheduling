@@ -3,33 +3,35 @@
   <v-card :class="isMobile ? 'pa-4' : 'pa-10'" v-if="!loadingData">
     <v-row>
       <div>
-        <v-card-title class="text-h4 mb-n5" style="white-space: pre-wrap;">{{ event.title }}</v-card-title>
+        <v-card-title class="text-h4 mb-n5" style="white-space: pre-wrap;">{{ store.getEvent(eventID).title
+        }}</v-card-title>
 
-        <v-btn v-if="!isMobile && store.isAdmin && !isPastEvent"
+        <v-btn v-if="!isMobile && store.isAdmin && !store.getEvent(eventID).isPastEvent"
           @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)" color="primary"
           style="position: absolute; right: 32px;">Edit</v-btn>
 
-        <v-card-title v-if="!loadingData">{{ event.dateString }}, {{ event.start }} - {{ event.end }}</v-card-title>
+        <v-card-title v-if="!loadingData">{{ store.getEvent(eventID).dateString }}, {{ store.getEvent(eventID).start }}
+          - {{ store.getEvent(eventID).end }}</v-card-title>
         <v-card-subtitle>
-          {{ event.location }}
+          {{ store.getEvent(eventID).location }}
         </v-card-subtitle>
       </div>
 
       <!-- <v-divider class="my-4"></v-divider> -->
       <div :class="isMobile ? '' : 'ml-6 mt-4'" v-if="!loadingData && !isMobile">
-        <availability-selector :event="event.id" />
+        <availability-selector :event="store.getEvent(eventID).id" />
       </div>
     </v-row>
 
-    <v-btn v-if="isMobile && store.isAdmin && !isPastEvent"
+    <v-btn v-if="isMobile && store.isAdmin && !store.getEvent(eventID).isPastEvent"
       @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)" color="primary" class="mt-10"
       width="100vw">Edit</v-btn>
 
-    <availability-selector :event="event.id" v-if="isMobile" class="mt-8" />
+    <availability-selector :event="store.getEvent(eventID).id" v-if="isMobile" class="mt-8" />
 
     <v-divider class="mb-4 mt-10"></v-divider>
     <v-card-title>Chaperones</v-card-title>
-    <v-card-text v-if="false">Lead Chaperone: {{ event.lead_chaperone }}</v-card-text>
+    <v-card-text v-if="false">Lead Chaperone: {{ store.getEvent(eventID).lead_chaperone }}</v-card-text>
 
     <v-data-table :headers="tableHeaders" :items="chaperoneSlots" hide-default-footer v-if="!isMobile">
       <template #item.startTime="{ item }">
@@ -39,7 +41,7 @@
         {{ new Date(item.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
       </template>
       <template #item.chaperone="{ item }">
-        <span v-if="item.chaperone">{{chaperones.find(chaperone => chaperone.id === item.chaperone)?.name}}</span>
+        <span v-if="item.chaperone">{{store.chaperones.find(chaperone => chaperone.id === item.chaperone)?.name}}</span>
         <v-alert v-else type="warning" class="pa-2">
           <span>No chaperone</span>
         </v-alert>
@@ -59,7 +61,7 @@
     </v-data-table>
 
     <v-card v-else v-for="slot in chaperoneSlots" class="mb-4">
-      <v-card-title v-if="slot.chaperone">{{chaperones.find(chaperone => chaperone.id === slot.chaperone)?.name
+      <v-card-title v-if="slot.chaperone">{{store.chaperones.find(chaperone => chaperone.id === slot.chaperone)?.name
       }}</v-card-title>
       <v-alert v-else type="warning" class="mb-6">No Chaperone</v-alert>
       <v-card-subtitle class="mt-n2">{{ slot.title }}</v-card-subtitle>
@@ -77,7 +79,7 @@
     <v-card-title class="my-3">Details</v-card-title>
     <v-card-text>
       <span style="white-space: pre-wrap;">
-        {{ event.details?.length > 0 ? event.details : 'No details available' }}
+        {{ store.getEvent(eventID).details?.length > 0 ? store.getEvent(eventID).details : 'No details available' }}
       </span>
     </v-card-text>
   </v-card>
@@ -93,12 +95,8 @@ import { useAppStore } from '@/stores/app';
 const { proxy } = getCurrentInstance()
 const store = useAppStore();
 
-const event = ref({})
+const eventID = proxy.$route.query.id
 const chaperoneSlots = ref([])
-const chaperones = ref([])
-const isPastEvent = computed(() => {
-  return event.value.date < new Date()
-})
 
 const tableHeaders = [
   { title: 'Group', key: 'title', width: '20%' },
@@ -109,48 +107,48 @@ const tableHeaders = [
 ];
 
 onMounted(async () => {
-  if (!proxy.$route.query.id) {
-    proxy.$router.push('/')
-  }
+  store.loadEvents()
+  store.loadChaperoneSlots()
+  store.loadAvailability()
 
-  loadingData.value = true
-  await getChaperones();
-  let availability = null;
+  // loadingData.value = true
+  // await getChaperones();
+  // let availability = null;
 
 
-  const [eventData, chaperoneData] = await Promise.all([
-    fetchAPI(`events/${proxy.$route.query.id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then((response) => response.json()),
-    fetchAPI(`chaperone_slots/${proxy.$route.query.id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then((response) => response.json())
-  ]);
+  // const [eventData, chaperoneData] = await Promise.all([
+  //   fetchAPI(`events/${proxy.$route.query.id}`, {
+  //     method: 'GET',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   }).then((response) => response.json()),
+  //   fetchAPI(`chaperone_slots/${proxy.$route.query.id}`, {
+  //     method: 'GET',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   }).then((response) => response.json())
+  // ]);
 
-  eventData.date = new Date(eventData.start)
-  eventData.dateString = eventData.date.toLocaleDateString('en-UK', {
-    weekday: 'short', day: 'numeric',
-    month: 'short', year: 'numeric'
-  });
-  eventData.start = new Date(eventData.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  eventData.end = new Date(eventData.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  // eventData.date = new Date(eventData.start)
+  // eventData.dateString = eventData.date.toLocaleDateString('en-UK', {
+  //   weekday: 'short', day: 'numeric',
+  //   month: 'short', year: 'numeric'
+  // });
+  // eventData.start = new Date(eventData.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  // eventData.end = new Date(eventData.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-  eventData.lead_chaperone = chaperones.value.find(chaperone => chaperone.id == eventData.lead_chaperone)?.name ?? null;
-  eventData.available = availability;
-  event.value = eventData;
-  getAvailability();
-  document.title = `${eventData.title} - Steel City Choristers`;
+  // eventData.lead_chaperone = store.chaperones.value.find(chaperone => chaperone.id == eventData.lead_chaperone)?.name ?? null;
+  // eventData.available = availability;
+  // store.getEvent(eventID) = eventData;
+  // getAvailability();
+  // document.title = `${eventData.title} - Steel City Choristers`;
 
-  chaperoneData.sort((a, b) => new Date(a.start) - new Date(b.start));
-  chaperoneSlots.value = chaperoneData;
+  // chaperoneData.sort((a, b) => new Date(a.start) - new Date(b.start));
+  // chaperoneSlots.value = chaperoneData;
 
-  loadingData.value = false
+  // loadingData.value = false
 })
 
 const getAvailability = () => {
@@ -163,7 +161,7 @@ const getAvailability = () => {
   })
     .then((response) => response.json())
     .then((data) => {
-      event.value.available = data.available;
+      store.getEvent(eventID).available = data.available;
     })
     .catch((error) => {
       console.error('Error:', error)
@@ -171,19 +169,4 @@ const getAvailability = () => {
 
 }
 
-const getChaperones = async () => {
-  await fetchAPI('chaperones', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      chaperones.value = data;
-    })
-    .catch((error) => {
-      console.error('Error:', error)
-    });
-}
 </script>
