@@ -46,9 +46,8 @@
 
         <v-card-text class="pl-0">
           <span v-for="chaperone in sortedChaperones">
-            <v-card-text v-if="chaperone" :style="chaperone.id == event.lead_chaperone ? 'font-weight: bold;' : ''"
-              class="py-0">
-              {{ chaperone.name }}<br>
+            <v-card-text v-if="chaperone" class="py-0">
+              {{ chaperone }}<br>
             </v-card-text>
           </span>
           <v-alert v-if="missingChaperones && store.isAdmin" density="compact" type="warning" class="mt-1"
@@ -72,11 +71,10 @@ const { proxy } = getCurrentInstance()
 const store = useAppStore();
 const props = defineProps({
   event: Object,
-  chaperones: Array,
   small: Boolean
 })
 
-const sortedChaperones = computed(() => props.event.chaperones.sort((a, b) => a.name.localeCompare(b.name)))
+const sortedChaperones = computed(() => props.event.chaperones.sort())
 const missingChaperones = computed(() => props.event.chaperones?.includes(null) && !props.event.chaperones?.every(chaperone => chaperone === null))
 
 

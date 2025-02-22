@@ -15,7 +15,7 @@
 
         <v-calendar class="pa-0" :events="store.events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" hide-week-number>
           <template #event="{ event }" v-if="!isMobile" :interval-height="20">
-            <event-card :event="event" :chaperones="store.chaperones" small />
+            <event-card :event="event" small />
           </template>
           <template #event="{ event }" v-if="isMobile">
             <v-card-text style="font-size: x-small; border-left: 2px solid; padding-left: 0.2em; border-color: #a80056;"
@@ -43,8 +43,7 @@
         <v-divider v-if="store.isAdmin" class="mt-3" />
 
         <div class="my-8"></div>
-        <event-card v-if="!loadingData" v-for="event in store.upcomingEvents" :event="event"
-          :chaperones="store.chaperones" />
+        <event-card v-if="!loadingData" v-for="event in store.upcomingEvents" :event="event" />
         <div v-else class="d-flex justify-center align-center" style="height: 23vh;">
           <v-progress-circular color="primary" indeterminate size="40" />
         </div>
