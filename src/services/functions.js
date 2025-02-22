@@ -48,7 +48,10 @@ const handleResize = () => {
 window.addEventListener('resize', handleResize);
 
 export const isMobile = computed(() => windowWidth.value < 768);
-export const fingerprint = await getFingerprint();
+export let fingerprint = null;
+getFingerprint().then((f) => {
+  fingerprint = f;
+});
 export const loadingData = ref(false);
 export const loadingAvailability = ref(false);
 export const isDev = computed(() => import.meta.env.VITE_DEV == 1);
