@@ -7,7 +7,7 @@ export const useAppStore = defineStore('app', () => {
   const alertMessage = ref('');
   const userEmail = ref('');
   const isAdmin = ref(false);
-  const userID = ref(null);
+  const userID = ref();
   const tabView = ref(isMobile.value ? 'schedule' : 'calendar');
   const showCreateTermDialog = ref(false);
 
@@ -37,8 +37,6 @@ export const useAppStore = defineStore('app', () => {
 
     const data = await response.json();
 
-    console.log(JSON.stringify(data))
-
     data.forEach((event: any) => {
       event.start = new Date(event.start);
       event.end = new Date(event.end);
@@ -56,8 +54,6 @@ export const useAppStore = defineStore('app', () => {
       event.availability = computed(() => allAvailability.value.filter((avail: any) => avail.event_id === event.id));
     });
     events.value = data;
-    console.log(JSON.stringify(events.value)
-    )
   };
 
   const loadChaperones = async () => {
