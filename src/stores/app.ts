@@ -56,7 +56,7 @@ export const useAppStore = defineStore('app', () => {
         weekday: 'short', day: 'numeric',
         month: 'short', year: 'numeric'
       });
-      event.isPastEvent = event.start < new Date();
+      event.isPastEvent = computed(() => event.start < new Date());
       event.slots = computed(() => chaperoneSlots.value.filter((slot: any) => slot.event_id === event.id).sort((a: any, b: any) => a.start - b.start));
       event.available = computed(() => availability.value.filter((avail: any) => avail.event_id === event.id).map((avail: any) => avail.available)[0] ?? null);
 
