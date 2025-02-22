@@ -9,7 +9,8 @@
       </v-row>
 
       <v-alert type="warning" class="mt-4">
-        Granting admin access gives users the ability to edit the chaperone schecule. Please ensure that
+        Granting admin access gives users the ability to edit the chaperone schecule and view all other users' email
+        addresses. Please ensure that
         only trusted individuals are given this level of access.
       </v-alert>
 

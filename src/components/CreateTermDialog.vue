@@ -141,7 +141,7 @@ const createTerm = () => {
     createFridayRehearsal(currentDate);
     currentDate.setDate(currentDate.getDate() + 7);
   }
-  setTimeout(() => reloadData.value = true, 2000);
+  store.loadEvents();
 }
 
 const createMondayRehearsal = (date) => {

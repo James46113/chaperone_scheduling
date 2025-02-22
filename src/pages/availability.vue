@@ -182,57 +182,6 @@ onMounted(async () => {
   }
 
   loadingData.value = false
-  // await Promise.all([
-
-  //   fetchAPI('chaperones', {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       data.sort((a, b) => a.name.localeCompare(b.name));
-  //       chaperones.value = data;
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error:', error)
-  //     }),
-
-  //   fetchAPI('events', {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       data = data.map((event) => ({
-  //         ...event,
-  //         start: new Date(event.start),
-  //         end: new Date(event.end),
-  //       }))
-  //       data.sort((a, b) => a.start - b.start);
-  //       events.value = data;
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error:', error)
-  //     }),
-
-  //   fetchAPI('chaperones/availability', {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       availabilities.value = data;
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error:', error)
-  //     })
-  // ])
 })
 
 const sendAvailabilityEmail = () => {
