@@ -14,7 +14,7 @@
           hour:
             '2-digit', minute: '2-digit'
         }) }}
-          - {{ event?.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</v-card-title>
+          - {{ event.end?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</v-card-title>
         <v-card-subtitle>
           {{ event.location }}
         </v-card-subtitle>
@@ -38,10 +38,10 @@
 
     <v-data-table :headers="tableHeaders" :items="event.slots" hide-default-footer v-if="!isMobile">
       <template #item.startTime="{ item }">
-        {{ new Date(item.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
+        {{ item.start?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
       </template>
       <template #item.endTime="{ item }">
-        {{ new Date(item.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
+        {{ item.end?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
       </template>
       <template #item.chaperone="{ item }">
         <span v-if="item.chaperone">{{store.chaperones.find(chaperone => chaperone.id === item.chaperone)?.name}}</span>
@@ -68,8 +68,8 @@
       }}</v-card-title>
       <v-alert v-else type="warning" class="mb-6">No Chaperone</v-alert>
       <v-card-subtitle class="mt-n2">{{ slot.title }}</v-card-subtitle>
-      <v-card-subtitle>{{ new Date(slot.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }} -
-        {{ new Date(slot.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</v-card-subtitle>
+      <v-card-subtitle>{{ slot.start?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }} -
+        {{ slot.end?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</v-card-subtitle>
       <v-card-text>
         <span v-if="slot.details?.length > 0">
           {{ slot.details }}
@@ -101,8 +101,6 @@ const store = useAppStore();
 const eventID = proxy.$route.query.id
 const event = ref({})
 
-const chaperoneSlots = ref([])
-
 const tableHeaders = [
   { title: 'Group', key: 'title', width: '20%' },
   { title: 'Chaperone', key: 'chaperone', width: '15%' },
@@ -113,6 +111,7 @@ const tableHeaders = [
 
 onMounted(async () => {
   if (!store.eventsLoaded) {
+    loadingData.value = true
     await Promise.all([
       store.loadEvents(),
       store.loadChaperoneSlots(),
@@ -124,7 +123,7 @@ onMounted(async () => {
     store.loadAvailability()
   }
   event.value = store.getEvent(eventID)
-  console.log(event.value.isPastEvent)
+  loadingData.value = false
 
   document.title = `${event.value.title} - Steel City Choristers`;
 
