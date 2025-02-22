@@ -117,15 +117,15 @@
               </th>
             </tr>
 
-            <tr v-for="chaperone in chaperones">
+            <tr v-for="chaperone in store.chaperones">
               <td>{{ chaperone.name }}</td>
               <td v-for="event in eventsInRange">
                 <span
-                  v-if="availabilities.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available">
+                  v-if="store.allAvailability.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available">
                   <v-icon>mdi-check</v-icon>
                 </span>
                 <span
-                  v-else-if="availabilities.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available === null">
+                  v-else-if="store.allAvailability.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available === null">
                   <pre> ?</pre>
                 </span>
               </td>
@@ -150,15 +150,11 @@
 </template>
 
 <script setup>
-import { VDateInput } from 'vuetify/labs/VDateInput'
 import domtoimage from 'dom-to-image';
 import { useAppStore } from '@/stores/app';
 
 const store = useAppStore();
-const chaperones = ref([])
-const events = ref([])
-const eventsInRange = computed(() => events.value.filter(event => event.start >= start.value && event.end <= end.value))
-const availabilities = ref([])
+const eventsInRange = computed(() => store.events.filter(event => event.start >= start.value && event.end <= end.value))
 const showTable = computed(() => eventsInRange.value.length > 0)
 
 const sendingEmails = ref(false)
@@ -173,57 +169,18 @@ const showEndMenu = ref(false)
 onMounted(async () => {
   loadingData.value = true
 
-  await Promise.all([
+  if (!store.allAvailabilityLoaded || !store.eventsLoaded || !store.chaperonesLoaded) {
+    await Promise.all([
+      store.loadChaperones(),
+      store.loadEvents(),
+      store.loadAllAvailability()
+    ])
+  } else {
+    store.loadChaperones()
+    store.loadEvents()
+    store.loadAllAvailability()
+  }
 
-    fetchAPI('chaperones', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        data.sort((a, b) => a.name.localeCompare(b.name));
-        chaperones.value = data;
-      })
-      .catch((error) => {
-        console.error('Error:', error)
-      }),
-
-    fetchAPI('events', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        data = data.map((event) => ({
-          ...event,
-          start: new Date(event.start),
-          end: new Date(event.end),
-        }))
-        data.sort((a, b) => a.start - b.start);
-        events.value = data;
-      })
-      .catch((error) => {
-        console.error('Error:', error)
-      }),
-
-    fetchAPI('chaperones/availability', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        availabilities.value = data;
-      })
-      .catch((error) => {
-        console.error('Error:', error)
-      })
-  ])
   loadingData.value = false
 })
 

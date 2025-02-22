@@ -34,11 +34,6 @@
 <script setup>
 import { useAppStore } from '@/stores/app'
 import { getCurrentInstance } from 'vue'
-import { GoogleLogin, googleLogout } from 'vue3-google-login';
-
-const props = defineProps({
-  updateAvailability: Function
-})
 
 const { proxy } = getCurrentInstance()
 const store = useAppStore();

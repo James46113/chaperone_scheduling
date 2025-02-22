@@ -59,7 +59,7 @@
           </div>
         </v-card-text>
       </div>
-      <availability-selector :event="event" small class="mt-n3" />
+      <availability-selector :event="event.id" small class="mt-n3" />
     </v-card>
   </v-sheet>
 </template>

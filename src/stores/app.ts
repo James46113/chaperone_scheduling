@@ -7,7 +7,7 @@ export const useAppStore = defineStore('app', () => {
   const alertMessage = ref('');
   const userEmail = ref('');
   const isAdmin = ref(false);
-  const userID = ref(null);
+  const userID = ref();
   const tabView = ref(isMobile.value ? 'schedule' : 'calendar');
   const showCreateTermDialog = ref(false);
 
@@ -17,7 +17,171 @@ export const useAppStore = defineStore('app', () => {
     showAlertDialog.value = true;
   };
 
+  // DATABASE
+
+  const events = ref([]);
+  const upcomingEvents = computed(() => events.value.filter((event: any) => event.start > new Date()));
+  const chaperones = ref([]);
+  const chaperoneNames = computed(() => chaperones.value.map((chaperone: any) => chaperone.name).sort());
+  const chaperoneSlots = ref([]);
+  const availability = ref([]); // individual availability
+  const allAvailability = ref([]);
+  const templates = ref([]);
+  const templateSlots = ref([]);
+  const templateNames = computed(() => templates.value.map((template: any) => ({ template_name: template.template_name, id: template.id })));
+
+  const eventsLoaded = computed(() => events.value.length > 0);
+  const chaperonesLoaded = computed(() => chaperones.value.length > 0);
+  const chaperoneSlotsLoaded = computed(() => chaperoneSlots.value.length > 0);
+  const availabilityLoaded = computed(() => availability.value.length > 0);
+  const allAvailabilityLoaded = computed(() => allAvailability.value.length > 0);
+  const templatesLoaded = computed(() => templates.value.length > 0);
+  const templateSlotsLoaded = computed(() => templateSlots.value.length > 0);
+
+
+  const loadEvents = async () => {
+    const response = await fetchAPI('events', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+
+    data.forEach((event: any) => {
+      event.start = new Date(event.start);
+      event.end = new Date(event.end);
+      event.date = new Date(event.start);
+      event.dateString = event.date.toLocaleDateString('en-UK', {
+        weekday: 'short', day: 'numeric',
+        month: 'short', year: 'numeric'
+      });
+      event.isPastEvent = computed(() => event.start < new Date());
+      event.slots = computed(() => chaperoneSlots.value.filter((slot: any) => slot.event_id === event.id).sort((a: any, b: any) => a.start - b.start) ?? []);
+      event.available = computed(() => availability.value.filter((avail: any) => avail.event_id === event.id).map((avail: any) => avail.available)[0] ?? null);
+
+      event.chaperones = computed(() => {
+        const slots = chaperoneSlots.value.filter((slot: any) => slot.event_id === event.id)
+        const chaperoneIDs = slots.map((slot: any) => slot.chaperone)
+        const chaperoneNames = chaperones.value.filter((chaperone: any) => chaperoneIDs.includes(chaperone.id)).map((chaperone: any) => chaperone.name)
+        return chaperoneNames ?? []
+      });
+
+      event.availability = computed(() => allAvailability.value.filter((avail: any) => avail.event_id === event.id));
+    });
+    events.value = data.sort((a: any, b: any) => a.start - b.start);
+  };
+
+  const loadChaperones = async () => {
+    const response = await fetchAPI('chaperones', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+
+    data.forEach((chaperone: any) => {
+      chaperone.numEvents = computed(() => {
+        const uniqueEventIDs = new Set(chaperoneSlots.value.filter((slot: any) => slot.chaperone === chaperone.id).map((slot: any) => slot.event_id));
+        return uniqueEventIDs.size;
+      });
+    });
+
+    chaperones.value = data.sort((a: any, b: any) => a.name.localeCompare(b.name));
+  }
+
+  const loadChaperoneSlots = async () => {
+    const response = await fetchAPI('chaperone_slots', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+    data.forEach((slot: any) => {
+      slot.start = new Date(slot.start);
+      slot.end = new Date(slot.end);
+      slot.chaperoneName = computed(() => chaperones.value.filter((chaperone: any) => chaperone.id === slot.chaperone).map((c: any) => c.name)[0] ?? null);
+    });
+    chaperoneSlots.value = data;
+  }
+
+  const loadAvailability = async () => {
+    const response = await fetchAPI(`chaperones/availability/${userID.value}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+    availability.value = data;
+  }
+
+  const loadAllAvailability = async () => {
+    const response = await fetchAPI(`chaperones/availability`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+    allAvailability.value = data;
+  }
+
+  const loadTemplates = async () => {
+    const response = await fetchAPI('templates', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const data = await response.json();
+
+    data.forEach((template: any) => {
+      template.start = new Date(template.start);
+      template.end = new Date(template.end);
+      template.template_slots = templateSlots.value.filter((slot: any) => slot.template_id === template.id);
+    });
+    templates.value = data;
+  }
+
+  const loadTemplateSlots = async () => {
+    const response = await fetchAPI('template_chaperone_slots', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const data = await response.json();
+    data.forEach((slot: any) => {
+      slot.start = new Date(slot.start);
+      slot.end = new Date(slot.end);
+    });
+    templateSlots.value = data;
+  }
+
+  const getEvent = (id: number) => {
+    return events.value.find((event: any) => event.id == id);
+  }
+
+  const getEventAvailability = (id: number) => {
+    return availability.value.find((avail: any) => avail.event_id == id);
+  }
+
+  const getEventsByChaperone = (chaperoneID: number) => {
+    const slots = chaperoneSlots.value.filter((slot: any) => slot.chaperone == chaperoneID && slot.start > new Date());
+    const uniqueEvents = [... new Set(slots.map((slot: any) => getEvent(slot.event_id)))].sort((a: any, b: any) => a.start - b.start);
+    return uniqueEvents;
+  }
+
   return {
+    // GENERAL
     showAlertDialog,
     alertTitle,
     alertMessage,
@@ -26,6 +190,35 @@ export const useAppStore = defineStore('app', () => {
     isAdmin,
     userID,
     tabView,
-    showCreateTermDialog
+    showCreateTermDialog,
+
+    // DATABASE
+    events,
+    upcomingEvents,
+    chaperoneSlots,
+    chaperones,
+    chaperoneNames,
+    availability,
+    templates,
+    templateSlots,
+    templateNames,
+    allAvailability,
+    eventsLoaded,
+    chaperonesLoaded,
+    chaperoneSlotsLoaded,
+    availabilityLoaded,
+    allAvailabilityLoaded,
+    templatesLoaded,
+    templateSlotsLoaded,
+    loadEvents,
+    loadChaperones,
+    loadChaperoneSlots,
+    loadAvailability,
+    loadAllAvailability,
+    loadTemplates,
+    loadTemplateSlots,
+    getEvent,
+    getEventAvailability,
+    getEventsByChaperone,
   }
-})
+});

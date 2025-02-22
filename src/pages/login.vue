@@ -165,7 +165,6 @@ const tokenLogin = async () => {
   signingIn.value = true;
   const fingerprint = await getFingerprint();
   const token = Cookies.get('passwdAccessToken');
-  console.log(fingerprint)
   fetch('/api/public/login/token', {
     method: 'POST',
     headers: {
@@ -328,11 +327,11 @@ function onSignIn(response) {
       return Promise.reject(response);
     })
     .then((data) => {
+      console.log(`Logged in with google`);
       store.isAdmin = data.is_admin;
       store.userID = data.id;
       isSignedIn.value = true;
       loadingData.value = false;
-      console.log('Logged in with google');
       if (proxy.$route.query.redirect) {
         proxy.$router.push(proxy.$route.query.redirect);
       } else {
