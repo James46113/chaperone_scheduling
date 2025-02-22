@@ -76,7 +76,7 @@ const props = defineProps({
   small: Boolean
 })
 
-const sortedChaperones = computed(() => props.event.chaperones?.map(chaperone => props.chaperones.find(c => c.id === chaperone)).sort((a, b) => a.name.localeCompare(b.name)))
+const sortedChaperones = computed(() => props.event.chaperones.sort((a, b) => a.name.localeCompare(b.name)))
 const missingChaperones = computed(() => props.event.chaperones?.includes(null) && !props.event.chaperones?.every(chaperone => chaperone === null))
 
 
