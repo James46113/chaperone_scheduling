@@ -39,13 +39,8 @@ router.afterEach((to, from) => window.scrollTo(0, 0))
 
 router.beforeEach((to, from, next) => {
   const store = useAppStore();
-  if (window.location.hostname === 'localhost') next();
   if (!isSignedIn.value && to.path !== '/login' && to.path !== '/resetPassword') {
     next(`/login?redirect=${to.fullPath}`);
-    // if (Cookies.get('credential')) {
-    //   next()
-    // } else {
-    // }
   }
 
   if ((to.path.startsWith('/editEvent') ||
