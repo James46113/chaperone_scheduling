@@ -114,8 +114,10 @@ onMounted(async () => {
   if (!store.eventsLoaded) {
     await Promise.all([
       store.loadEvents(),
+      store.loadAvailability(),
       store.loadChaperoneSlots(),
-      store.loadAvailability()])
+      store.loadChaperones(),
+    ])
     event.value = store.getEvent(eventID)
   } else {
     store.loadEvents()

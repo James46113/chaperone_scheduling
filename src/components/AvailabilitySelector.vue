@@ -8,8 +8,8 @@
         :color="eventRef?.available === null ? '' : eventRef?.available ? '#198754' : ''" @click="updateAvailable(true)"
         :ripple="false">✓</v-btn>
       <v-btn variant="flat" max-width="100px" width="50%"
-        :color="eventRef?.available === null ? '' : eventRef.available ? '' : 'primary'" @click="updateAvailable(false)"
-        :ripple="false">⨯</v-btn>
+        :color="eventRef?.available === null ? '' : eventRef?.available ? '' : 'primary'"
+        @click="updateAvailable(false)" :ripple="false">⨯</v-btn>
     </v-row>
   </div>
 </template>
