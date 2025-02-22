@@ -17,21 +17,6 @@ export const useAppStore = defineStore('app', () => {
     showAlertDialog.value = true;
   };
 
-  return {
-    showAlertDialog,
-    alertTitle,
-    alertMessage,
-    showAlert,
-    userEmail,
-    isAdmin,
-    userID,
-    tabView,
-    showCreateTermDialog
-  }
-})
-
-
-export const useDatabaseStore = defineStore('database', () => {
   const events = ref([]);
   const upcomingEvents = computed(() => events.value.filter((event: any) => event.start > new Date()));
   const chaperones = ref([]);
@@ -104,7 +89,7 @@ export const useDatabaseStore = defineStore('database', () => {
   }
 
   const loadAvailability = async () => {
-    const response = await fetchAPI(`chaperones/availability/${useAppStore().userID}`, {
+    const response = await fetchAPI(`chaperones/availability/${userID.value}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -161,6 +146,18 @@ export const useDatabaseStore = defineStore('database', () => {
 
 
   return {
+    // GENERAL
+    showAlertDialog,
+    alertTitle,
+    alertMessage,
+    showAlert,
+    userEmail,
+    isAdmin,
+    userID,
+    tabView,
+    showCreateTermDialog,
+
+    // DATABASE
     events,
     upcomingEvents,
     chaperoneSlots,

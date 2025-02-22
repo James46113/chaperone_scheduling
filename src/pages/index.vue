@@ -13,9 +13,9 @@
           <actions-menu activatorID="calendarMenu" label="Actions" />
         </div>
 
-        <v-calendar class="pa-0" :events="database.events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" hide-week-number>
+        <v-calendar class="pa-0" :events="store.events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" hide-week-number>
           <template #event="{ event }" v-if="!isMobile" :interval-height="20">
-            <event-card :event="event" :chaperones="database.chaperones" small />
+            <event-card :event="event" :chaperones="store.chaperones" small />
           </template>
           <template #event="{ event }" v-if="isMobile">
             <v-card-text style="font-size: x-small; border-left: 2px solid; padding-left: 0.2em; border-color: #a80056;"
@@ -43,8 +43,8 @@
         <v-divider v-if="store.isAdmin" class="mt-3" />
 
         <div class="my-8"></div>
-        <event-card v-if="!loadingData" v-for="event in database.upcomingEvents" :event="event"
-          :chaperones="database.chaperones" />
+        <event-card v-if="!loadingData" v-for="event in store.upcomingEvents" :event="event"
+          :chaperones="store.chaperones" />
         <div v-else class="d-flex justify-center align-center" style="height: 23vh;">
           <v-progress-circular color="primary" indeterminate size="40" />
         </div>
@@ -66,14 +66,13 @@
 <script lang="js" setup>
 import { VCalendar } from 'vuetify/labs/VCalendar'
 import { ref, onMounted, getCurrentInstance } from 'vue'
-import { useAppStore, useDatabaseStore } from '@/stores/app'
+import { useAppStore } from '@/stores/app'
 
 const events = ref([])
 
 const { proxy } = getCurrentInstance()
 
 const store = useAppStore();
-const database = useDatabaseStore();
 
 const chaperones = ref([]);
 
@@ -97,9 +96,9 @@ onMounted(async () => {
 
 const loadData = async () => {
   // loadingData.value = true
-  database.loadAvailability();
-  database.loadEvents();
-  database.loadChaperones();
+  store.loadAvailability();
+  store.loadEvents();
+  store.loadChaperones();
   return;
   if (store.userID) {
     getAvailability();
