@@ -10,11 +10,11 @@
           @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)" color="primary"
           style="position: absolute; right: 32px;">Edit</v-btn>
 
-        <v-card-title v-if="!loadingData">{{ event.dateString }}, {{ event.start.toLocaleTimeString([], {
+        <v-card-title v-if="!loadingData">{{ event.dateString }}, {{ event.start?.toLocaleTimeString([], {
           hour:
             '2-digit', minute: '2-digit'
         }) }}
-          - {{ event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</v-card-title>
+          - {{ event?.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</v-card-title>
         <v-card-subtitle>
           {{ event.location }}
         </v-card-subtitle>
