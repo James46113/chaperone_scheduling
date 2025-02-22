@@ -17,6 +17,8 @@ export const useAppStore = defineStore('app', () => {
     showAlertDialog.value = true;
   };
 
+  // DATABASE
+
   const events = ref([]);
   const upcomingEvents = computed(() => events.value.filter((event: any) => event.start > new Date()));
   const chaperones = ref([]);
@@ -26,6 +28,15 @@ export const useAppStore = defineStore('app', () => {
   const templates = ref([]);
   const templateSlots = ref([]);
   const templateNames = computed(() => templates.value.map((template: any) => ({ template_name: template.template_name, id: template.id })));
+
+  const eventsLoaded = computed(() => events.value.length > 0);
+  const chaperonesLoaded = computed(() => chaperones.value.length > 0);
+  const chaperoneSlotsLoaded = computed(() => chaperoneSlots.value.length > 0);
+  const availabilityLoaded = computed(() => availability.value.length > 0);
+  const allAvailabilityLoaded = computed(() => allAvailability.value.length > 0);
+  const templatesLoaded = computed(() => templates.value.length > 0);
+  const templateSlotsLoaded = computed(() => templateSlots.value.length > 0);
+
 
   const loadEvents = async () => {
     const response = await fetchAPI('events', {
@@ -177,6 +188,14 @@ export const useAppStore = defineStore('app', () => {
     templates,
     templateSlots,
     templateNames,
+    allAvailability,
+    eventsLoaded,
+    chaperonesLoaded,
+    chaperoneSlotsLoaded,
+    availabilityLoaded,
+    allAvailabilityLoaded,
+    templatesLoaded,
+    templateSlotsLoaded,
     loadEvents,
     loadChaperones,
     loadChaperoneSlots,
