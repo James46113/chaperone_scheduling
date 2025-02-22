@@ -87,7 +87,7 @@ onMounted(async () => {
 
   try {
     loadingData.value = true;
-    if (!store.eventsLoaded) {
+    if (!store.eventsLoaded || store.availabilityLoaded || store.chaperonesLoaded) {
       await loadData();
     } else {
       loadData();
