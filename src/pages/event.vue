@@ -110,8 +110,8 @@ const tableHeaders = [
 ];
 
 onMounted(async () => {
+  loadingData.value = true
   if (!store.eventsLoaded) {
-    loadingData.value = true
     await Promise.all([
       store.loadEvents(),
       store.loadChaperoneSlots(),
