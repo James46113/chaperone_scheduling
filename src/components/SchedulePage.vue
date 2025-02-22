@@ -42,7 +42,7 @@
             <v-divider />
             <v-card-text><b>{{ slot.title }}</b></v-card-text>
             <v-card-subtitle class="mt-n4">{{ slot.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            }}
+              }}
               - {{
                 slot.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</v-card-subtitle>
             <v-card-text class="mt-n3">
@@ -76,28 +76,14 @@ const props = defineProps({
 })
 
 const { proxy } = getCurrentInstance()
-const events = ref([])
-const chaperones = store.chaperones
-const chaperone = ref(store.chaperones.find(chaperone => chaperone.id == props.chaperone_id))
-const chaperone_slots = ref(store.chaperoneSlots)
-
+const events = computed(() => store.getEventsByChaperone(props.chaperone_id))
+const chaperone = computed(() => store.chaperones.find(chaperone => chaperone.id == props.chaperone_id))
 
 
 onMounted(async () => {
-  // if (!props.chaperone_id) {
-  //   if (Cookies.get('credential')) {
-  //     await new Promise(resolve => setTimeout(resolve, 200));
-  //   } else {
-  //     if (!isDev.value) {
-  //       proxy.$router.push('/login')
-  //     }
-  //   }
-  // }
   loadingData.value = true
   store.loadChaperoneSlots();
   store.loadChaperones();
-
-  events.value = store.getEventsByChaperone(props.chaperone_id)
 
   // await getChaperones();
   // await Promise.all([
@@ -144,22 +130,22 @@ onMounted(async () => {
   loadingData.value = false
 })
 
-const getChaperones = async () => {
-  await fetchAPI('chaperones', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      chaperones.value = data;
-      chaperone.value = data.find(c => c.id == props.chaperone_id)
-      document.title = `${chaperone.value?.name}'s Schedule - Steel City Choristers`
-    })
-    .catch((error) => {
-      console.error('Error:', error)
-    });
-}
+// const getChaperones = async () => {
+//   await fetchAPI('chaperones', {
+//     method: 'GET',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//   })
+//     .then((response) => response.json())
+//     .then((data) => {
+//       chaperones.value = data;
+//       chaperone.value = data.find(c => c.id == props.chaperone_id)
+//       document.title = `${chaperone.value?.name}'s Schedule - Steel City Choristers`
+//     })
+//     .catch((error) => {
+//       console.error('Error:', error)
+//     });
+// }
 
 </script>
