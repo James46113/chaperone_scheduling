@@ -96,6 +96,9 @@ const { proxy } = getCurrentInstance()
 const store = useAppStore();
 
 const eventID = proxy.$route.query.id
+console.log(store.getEvent(eventID))
+console.log(store.getEvent(eventID).details)
+
 const chaperoneSlots = ref([])
 
 const tableHeaders = [
