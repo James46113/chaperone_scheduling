@@ -82,6 +82,14 @@ export const useAppStore = defineStore('app', () => {
     });
 
     const data = await response.json();
+
+    data.forEach((chaperone: any) => {
+      chaperone.numEvents = computed(() => {
+        const uniqueEventIDs = new Set(chaperoneSlots.value.filter((slot: any) => slot.chaperone === chaperone.id).map((slot: any) => slot.event_id));
+        return uniqueEventIDs.size;
+      });
+    });
+
     chaperones.value = data;
   }
 

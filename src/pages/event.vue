@@ -111,7 +111,7 @@ const tableHeaders = [
 
 onMounted(async () => {
   loadingData.value = true
-  if (!store.eventsLoaded) {
+  if (!store.eventsLoaded || !store.availabilityLoaded || !store.chaperonesLoaded || !store.chaperoneSlotsLoaded) {
     await Promise.all([
       store.loadEvents(),
       store.loadAvailability(),
