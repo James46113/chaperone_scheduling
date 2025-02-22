@@ -42,11 +42,8 @@ export const useAppStore = defineStore('app', () => {
       event.end = new Date(event.end);
       event.date = new Date(event.start);
       event.slots = computed(() => chaperoneSlots.value.filter((slot: any) => slot.event_id === event.id));
-      console.log(availability.value)
-      console.log(event.id)
-      console.log(availability.value.filter((avail: any) => avail.event_id === event.id))
 
-      event.available = computed(() => availability.value.filter((avail: any) => avail.event_id === event.id).map((avail: any) => avail.availabile));
+      event.available = computed(() => availability.value.filter((avail: any) => avail.event_id === event.id).map((avail: any) => avail.availabile)[0]);
 
       event.chaperones = computed(() => {
         const slots = chaperoneSlots.value.filter((slot: any) => slot.event_id === event.id)
