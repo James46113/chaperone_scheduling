@@ -6,7 +6,7 @@ export const fetchAPI = async (url, params) => {
     ...(params.headers || {}),
     'Authorization': `Bearer ${Cookies.get('accessToken')}`,
     'token': Cookies.get('passwdAccessToken'),
-    'fingerprint': await getFingerprint(),
+    'fingerprint': fingerprint,
   };
   console.log(`fingerprint: ${headers.fingerprint}`);
   // const APIURL = window.location.href.startsWith('https://chaperonescheduling-dev.up.railway.app')
@@ -48,6 +48,7 @@ const handleResize = () => {
 window.addEventListener('resize', handleResize);
 
 export const isMobile = computed(() => windowWidth.value < 768);
+export const fingerprint = await getFingerprint();
 export const loadingData = ref(false);
 export const loadingAvailability = ref(false);
 export const isDev = computed(() => import.meta.env.VITE_DEV == 1);
