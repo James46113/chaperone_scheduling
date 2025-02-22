@@ -17,14 +17,12 @@
 <script setup>
 import { useAppStore } from '@/stores/app';
 
-const eventRef = ref({})
+const eventRef = computed(() => store.getEvent(props.event))
 
 const props = defineProps({
   event: Number,
   small: Boolean
 })
-
-onMounted(() => eventRef.value = store.getEvent(props.event))
 
 const store = useAppStore();
 
