@@ -41,9 +41,12 @@ export const useAppStore = defineStore('app', () => {
       event.start = new Date(event.start);
       event.end = new Date(event.end);
       event.date = new Date(event.start);
-      event.slots = computed(() => chaperoneSlots.value.filter((slot: any) => slot.event_id === event.id));
-      console.log(availability.value.filter((avail: any) => avail.event_id === event.id).map((avail: any) => avail.availabile))
-
+      event.dateString = event.date.toLocaleDateString('en-UK', {
+        weekday: 'short', day: 'numeric',
+        month: 'short', year: 'numeric'
+      });
+      event.isPastEvent = event.start < new Date();
+      event.slots = computed(() => chaperoneSlots.value.filter((slot: any) => slot.event_id === event.id).sort((a: any, b: any) => a.start - b.start));
       event.available = computed(() => availability.value.filter((avail: any) => avail.event_id === event.id).map((avail: any) => avail.available)[0] ?? null);
 
       event.chaperones = computed(() => {
