@@ -328,7 +328,7 @@ function onSignIn(response) {
       return Promise.reject(response);
     })
     .then((data) => {
-      console.log(`Logged in with google, data: ${JSON.stringify(data)}`);
+      console.log(`Logged in with google`);
       store.isAdmin = data.is_admin;
       store.userID = data.id;
       isSignedIn.value = true;
