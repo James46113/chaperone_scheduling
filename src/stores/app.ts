@@ -96,6 +96,7 @@ export const useAppStore = defineStore('app', () => {
     data.forEach((slot: any) => {
       slot.start = new Date(slot.start);
       slot.end = new Date(slot.end);
+      slot.chaperoneName = chaperones.value.filter((chaperone: any) => chaperone.id === slot.chaperone).map((c: any) => c.name)[0] ?? null;
     });
     chaperoneSlots.value = data;
   }

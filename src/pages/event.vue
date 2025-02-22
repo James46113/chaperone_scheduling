@@ -43,8 +43,8 @@
       <template #item.endTime="{ item }">
         {{ item.end?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
       </template>
-      <template #item.chaperone="{ item }">
-        <span v-if="item.chaperone">{{store.chaperones.find(chaperone => chaperone.id === item.chaperone)?.name}}</span>
+      <template #item.chaperoneName="{ item }">
+        <span v-if="item.chaperoneName">{{ item.chaperoneName }}</span>
         <v-alert v-else type="warning" class="pa-2">
           <span>No chaperone</span>
         </v-alert>
@@ -103,7 +103,7 @@ const event = ref({})
 
 const tableHeaders = [
   { title: 'Group', key: 'title', width: '20%' },
-  { title: 'Chaperone', key: 'chaperone', width: '15%' },
+  { title: 'Chaperone', key: 'chaperoneName', width: '15%' },
   { title: 'Details', key: 'details', width: '35%' },
   { title: 'Start', key: 'startTime', width: '12%' },
   { title: 'End', key: 'endTime', width: '12%' },
