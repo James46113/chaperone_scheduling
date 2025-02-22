@@ -14,6 +14,7 @@ declare global {
   const defineComponent: typeof import('vue')['defineComponent']
   const effectScope: typeof import('vue')['effectScope']
   const fetchAPI: typeof import('@/services/functions')['fetchAPI']
+  const fingerprint: typeof import('@/services/functions')['fingerprint']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
   const h: typeof import('vue')['h']
@@ -100,6 +101,7 @@ declare module 'vue' {
     readonly defineComponent: UnwrapRef<typeof import('vue')['defineComponent']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
     readonly fetchAPI: UnwrapRef<typeof import('@/services/functions')['fetchAPI']>
+    readonly fingerprint: UnwrapRef<typeof import('@/services/functions')['fingerprint']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
