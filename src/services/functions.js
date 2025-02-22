@@ -8,7 +8,7 @@ export const fetchAPI = async (url, params) => {
     'token': Cookies.get('passwdAccessToken'),
     'fingerprint': await getFingerprint(),
   };
-
+  console.log(`fingerprint: ${headers.fingerprint}`);
   // const APIURL = window.location.href.startsWith('https://chaperonescheduling-dev.up.railway.app')
   //   ? 'https://chaperone_scheduling_api.railway.internal:5000/' : import.meta.env.VITE_API_URL;
   let APIURL;
