@@ -76,7 +76,7 @@ const props = defineProps({
 
 const sortedChaperones = computed(() => props.event.chaperones.sort())
 const missingChaperones = computed(() => props.event.chaperones?.includes(null) && !props.event.chaperones?.every(chaperone => chaperone === null))
-
+console.log(`EVENT CARD: ${props.event.chaperones}`)
 
 const goToEvent = (value) => {
   if (!value.target.closest('.v-btn')) {
