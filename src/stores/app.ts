@@ -21,7 +21,7 @@ export const useAppStore = defineStore('app', () => {
 
   const events = ref([]);
   const upcomingEvents = computed(() => events.value.filter((event: any) => event.start > new Date()));
-  const chaperones = ref([]);
+  const chaperones = ref<any[]>([]);
   const chaperoneNames = computed(() => chaperones.value.map((chaperone: any) => chaperone.name).sort());
   const chaperoneSlots = ref([]);
   const availability = ref([]); // individual availability
@@ -181,6 +181,16 @@ export const useAppStore = defineStore('app', () => {
     return uniqueEvents;
   }
 
+  const deleteChaperone = async (id: number) => {
+    chaperones.value = chaperones.value.filter((chaperone: any) => chaperone.id !== id);
+    loadChaperones();
+    loadChaperoneSlots();
+  }
+
+  const addChaperone = async (chaperone: any) => {
+    chaperones.value.push(chaperone);
+  }
+
   return {
     // GENERAL
     showAlertDialog,
@@ -221,5 +231,7 @@ export const useAppStore = defineStore('app', () => {
     getEvent,
     getEventAvailability,
     getEventsByChaperone,
+    deleteChaperone,
+    addChaperone,
   }
 });
