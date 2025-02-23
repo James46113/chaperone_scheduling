@@ -103,7 +103,7 @@
       <v-sheet v-else-if="showTable" class="table_container">
         <!-- <div style="max-width: 100vw; overflow: scroll;" class="justify-center"> -->
         <div>
-          <table class="my-6 tscroll">
+          <table class="my-6">
             <tr>
               <th></th>
               <th v-for="event in eventsInRange">
@@ -231,23 +231,14 @@ const saveTableAsImage = () => {
 }
 
 </script>
+</script>
 
 <style scoped>
-table {
-  max-width: 100%;
-  overflow-x: scroll;
-}
-
 table,
 th,
 td {
   border: 1px solid black;
   border-collapse: collapse;
-}
-
-table td:first-child {
-  position: sticky;
-  left: 0;
 }
 
 th,
