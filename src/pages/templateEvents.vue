@@ -9,7 +9,7 @@
           @click="proxy.$router.push('/editEvent?id=new&isTemplate=1')">New Template</v-btn>
       </v-row>
       <v-card-text>Click on an event template below to edit it</v-card-text>
-      <v-data-table :items="templates" :headers="headers" hide-default-footer items-per-page="-1"
+      <v-data-table :items="store.templates" :headers="headers" hide-default-footer items-per-page="-1"
         @click:row="editTemplate" hide-default-header>
         <template v-slot:no-data>
           <v-card-text v-if="loadingData">Loading...</v-card-text>
@@ -23,8 +23,11 @@
 </template>
 
 <script setup>
+import { useAppStore } from '@/stores/app'
+
 
 const { proxy } = getCurrentInstance()
+const store = useAppStore();
 document.title = "Template Events - Steel City Choristers"
 
 
@@ -35,21 +38,27 @@ const headers = [
 
 // onMounted(() => {
 loadingData.value = true;
-fetchAPI('templates/list', {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-})
-  .then((response) => response.json())
-  .then((data) => {
-    data.sort((a, b) => a.template_name.localeCompare(b.template_name));
-    templates.value = data;
-    loadingData.value = false;
-  })
-  .catch((error) => {
-    console.error('Error:', error)
-  });
+if (!store.templatesLoaded) {
+  await store.loadTemplates();
+} else {
+  store.loadTemplates();
+}
+loadingData.value = false;
+// fetchAPI('templates/list', {
+//   method: 'GET',
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+// })
+//   .then((response) => response.json())
+//   .then((data) => {
+//     data.sort((a, b) => a.template_name.localeCompare(b.template_name));
+//     templates.value = data;
+//     loadingData.value = false;
+//   })
+//   .catch((error) => {
+//     console.error('Error:', error)
+//   });
 // })
 
 const editTemplate = (value, row) => {
