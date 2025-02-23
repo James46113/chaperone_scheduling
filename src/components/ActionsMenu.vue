@@ -23,7 +23,7 @@
           Send Emails
           <v-icon class="mr-4" style="position: absolute; right: 0;">mdi-email-outline</v-icon>
         </v-list-subheader>
-        <v-list-item prepend-icon="mdi-calendar-today" @click="sendAssignedEventsEmail">
+        <v-list-item prepend-icon="mdi-calendar-check" @click="sendAssignedEventsEmail">
           Assigned Events
         </v-list-item>
         <v-list-item prepend-icon="mdi-calendar-question" @click="sendAvailabilityEmail">

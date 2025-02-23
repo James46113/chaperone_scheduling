@@ -32,13 +32,16 @@
                 <v-card-text v-if="!item.editEmail">
                   {{ item.email }}
                 </v-card-text>
-                <v-text-field v-else v-model="item.email" class="mb-n3 mt-2" :rules="[required]" label="Email" required
-                  @keyup.enter="saveEmail(item)" variant="outlined" density="compact"></v-text-field>
+                <v-text-field v-else autofocus v-model="item.email" class="mb-n3 mt-2" :rules="[required]" label="Email"
+                  required @keyup.enter="saveEmail(item)" variant="outlined" density="compact"></v-text-field>
               </v-col>
               <v-col v-if="item.name !== 'Admin'">
                 <v-btn v-if="!item.editEmail" variant="flat" class="mt-2"
-                  @click="item.editEmail = true"><v-icon>mdi-pencil</v-icon></v-btn>
-                <v-btn v-else variant="flat" class="mt-2" @click="saveEmail(item)"><v-icon>mdi-check</v-icon></v-btn>
+                  @click="editEmail(item)"><v-icon>mdi-pencil</v-icon></v-btn>
+                <v-btn v-if="item.editEmail" variant="flat" class="mt-2"
+                  @click="saveEmail(item)"><v-icon>mdi-check</v-icon></v-btn>
+                <v-btn v-if="item.editEmail" variant="flat" class="mt-2"
+                  @click="cancelEditEmail(item)"><v-icon>mdi-close</v-icon></v-btn>
               </v-col>
             </v-row>
           </template>
@@ -113,6 +116,16 @@ onMounted(async () => {
   //     console.error('Error:', error)
   //   });
 })
+
+const editEmail = (user) => {
+  user.oldEmail = user.email;
+  user.editEmail = true;
+}
+
+const cancelEditEmail = (user) => {
+  user.email = user.oldEmail;
+  user.editEmail = false;
+}
 
 const saveEmail = (user) => {
   user.editEmail = false;
