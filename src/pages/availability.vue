@@ -101,7 +101,8 @@
         <v-progress-circular color="primary" indeterminate size="40" />
       </div>
       <v-sheet v-else-if="showTable" class="table_container">
-        <div style="max-width: 100vw; overflow: scroll;" class="justify-center">
+        <!-- <div style="max-width: 100vw; overflow: scroll;" class="justify-center"> -->
+        <div>
           <table class="my-6 tscroll">
             <tr>
               <th></th>
@@ -235,7 +236,13 @@ const saveTableAsImage = () => {
 .tscroll {
   max-width: 100%;
   overflow-x: scroll;
-  border: solid black 1px;
+}
+
+table,
+th,
+td {
+  border: 1px solid black;
+  border-collapse: collapse;
 }
 
 .tscroll tr td {
