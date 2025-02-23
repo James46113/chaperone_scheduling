@@ -9,7 +9,7 @@
           @click="proxy.$router.push('/editEvent?id=new&isTemplate=1')">New Template</v-btn>
       </v-row>
       <v-card-text>Click on an event template below to edit it</v-card-text>
-      <v-data-table :items="store.templates" :headers="headers" hide-default-footer items-per-page="-1"
+      <v-data-table :items="store.templateNames" :headers="headers" hide-default-footer items-per-page="-1"
         @click:row="editTemplate" hide-default-header>
         <template v-slot:no-data>
           <v-card-text v-if="loadingData">Loading...</v-card-text>
@@ -36,30 +36,30 @@ const headers = [
   { key: 'template_name' }
 ]
 
-// onMounted(() => {
-loadingData.value = true;
-if (!store.templatesLoaded) {
-  await store.loadTemplates();
-} else {
-  store.loadTemplates();
-}
-loadingData.value = false;
-// fetchAPI('templates/list', {
-//   method: 'GET',
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
-// })
-//   .then((response) => response.json())
-//   .then((data) => {
-//     data.sort((a, b) => a.template_name.localeCompare(b.template_name));
-//     templates.value = data;
-//     loadingData.value = false;
-//   })
-//   .catch((error) => {
-//     console.error('Error:', error)
-//   });
-// })
+onMounted(async () => {
+  loadingData.value = true;
+  if (!store.templatesLoaded) {
+    await store.loadTemplates();
+  } else {
+    store.loadTemplates();
+  }
+  loadingData.value = false;
+  // fetchAPI('templates/list', {
+  //   method: 'GET',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  // })
+  //   .then((response) => response.json())
+  //   .then((data) => {
+  //     data.sort((a, b) => a.template_name.localeCompare(b.template_name));
+  //     templates.value = data;
+  //     loadingData.value = false;
+  //   })
+  //   .catch((error) => {
+  //     console.error('Error:', error)
+  //   });
+})
 
 const editTemplate = (value, row) => {
   proxy.$router.push(`/editEvent?id=${row.item.id}&isTemplate=1`)
