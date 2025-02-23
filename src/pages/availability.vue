@@ -1,9 +1,4 @@
 <template>
-  <!-- <table>
-    <tr>
-      <th v-for="event in events">{{ event.start.toLocaleDateString() }}</th>
-    </tr>
-  </table> -->
   <app-header />
   <div class="pa-4 d-flex justify-center">
     <v-card elevation="0" :width="isMobile ? '100vw' : '80vw'">
@@ -107,7 +102,7 @@
       </div>
       <v-sheet v-else-if="showTable" class="table_container">
         <div style="max-width: 100vw; overflow: scroll;" class="justify-center">
-          <table class="my-6">
+          <table class="my-6 tscroll">
             <tr>
               <th></th>
               <th v-for="event in eventsInRange">
@@ -237,11 +232,16 @@ const saveTableAsImage = () => {
 </script>
 
 <style scoped>
-table,
-th,
-td {
-  border: 1px solid black;
-  border-collapse: collapse;
+.tscroll {
+  width: 100%;
+  overflow-x: scroll;
+  margin-bottom: 10px;
+  border: solid black 1px;
+}
+
+.tscroll table td:first-child {
+  position: sticky;
+  left: 0;
 }
 
 th,
