@@ -233,10 +233,14 @@ const saveTableAsImage = () => {
 
 <style scoped>
 .tscroll {
-  width: 100%;
+  max-width: 100%;
   overflow-x: scroll;
-  margin-bottom: 10px;
   border: solid black 1px;
+}
+
+.tscroll tr td {
+  border: solid black 1px;
+  border-collapse: collapse;
 }
 
 .tscroll table td:first-child {
