@@ -146,15 +146,16 @@ const resettingPassword = ref(false);
 const awaitingPasswordReset = ref(false)
 const incorrectPassword = ref(false)
 const resetTimeout = ref(0);
-isSignedIn.value = false;
 
 setInterval(() => { if (resetTimeout.value > 0) resetTimeout.value -= 1 }, 1000)
 
 onMounted(async () => {
   if (Cookies.get('refreshToken') && Cookies.get('credential') && Cookies.get('accessToken')) {
+    signingIn.value = true;
     await checkCredential();
     onSignIn({ credential: Cookies.get('credential') });
   } else if (Cookies.get('passwdAccessToken')) {
+    signingIn.value = true;
     usingPasswordLogin.value = true;
     tokenLogin();
   }
