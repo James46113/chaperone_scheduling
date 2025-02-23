@@ -12,7 +12,7 @@
       <v-data-table :items="store.templateNames" :headers="headers" hide-default-footer items-per-page="-1"
         @click:row="editTemplate" hide-default-header>
         <template v-slot:no-data>
-          <v-card-text v-if="loadingData">Loading...</v-card-text>
+          <v-progress-circular v-if="loadingData" color="primary" indeterminate size="40" class="mt-4" />
           <v-card-text v-else>
             No event templates found
           </v-card-text>
@@ -30,8 +30,6 @@ const { proxy } = getCurrentInstance()
 const store = useAppStore();
 document.title = "Template Events - Steel City Choristers"
 
-
-const templates = ref([])
 const headers = [
   { key: 'template_name' }
 ]
