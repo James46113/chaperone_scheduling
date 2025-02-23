@@ -231,7 +231,6 @@ const saveTableAsImage = () => {
 }
 
 </script>
-</script>
 
 <style scoped>
 table,
