@@ -233,7 +233,7 @@ const saveTableAsImage = () => {
 </script>
 
 <style scoped>
-.tscroll {
+table {
   max-width: 100%;
   overflow-x: scroll;
 }
@@ -245,12 +245,7 @@ td {
   border-collapse: collapse;
 }
 
-.tscroll tr td {
-  border: solid black 1px;
-  border-collapse: collapse;
-}
-
-.tscroll table td:first-child {
+table td:first-child {
   position: sticky;
   left: 0;
 }
