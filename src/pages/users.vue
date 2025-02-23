@@ -15,9 +15,9 @@
       </v-alert>
 
       <div class="d-flex justify-center">
-        <v-data-table :items="users" class="mt-4" :hide-default-header="loadingData" hide-default-footer
+        <v-data-table :items="store.chaperones" class="mt-4" :hide-default-header="loadingData" hide-default-footer
           items-per-page="-1" :headers="headers" density="compact"
-          :height="loadingData ? 120 : (users.length + 1) * 64">
+          :height="loadingData ? 120 : (store.chaperones.length + 1) * 64">
           <template #item.is_admin="{ item }">
             <v-switch :readonly="item.name === 'Admin'" @click="updateAdmin(item)" class="mb-n6" v-model="item.is_admin"
               color="primary" />
@@ -74,7 +74,6 @@
 import { useAppStore } from '@/stores/app'
 
 
-const users = ref([])
 const newUser = ref({ is_admin: false })
 const showNewUserDialog = ref(false)
 
@@ -89,25 +88,31 @@ const headers = computed(() => [
   { title: 'Delete', key: 'delete', mobile: true },
 ].filter(header => !isMobile.value || header.mobile))
 
-// onMounted(() => {
-loadingData.value = true;
-fetchAPI('chaperones', {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+onMounted(async () => {
+  loadingData.value = true;
+  if (!store.chaperonesLoaded) {
+    await store.loadChaperones()
+  } else {
+    store.loadChaperones();
+  }
+  loadingData.value = false;
+  // fetchAPI('chaperones', {
+  //   method: 'GET',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  // })
+  //   .then((response) => response.json())
+  //   .then((data) => {
+  //     data.sort((a, b) => a.name.localeCompare(b.name));
+  //     data.forEach(user => user.editEmail = false);
+  //     users.value = data;
+  //     loadingData.value = false;
+  //   })
+  //   .catch((error) => {
+  //     console.error('Error:', error)
+  //   });
 })
-  .then((response) => response.json())
-  .then((data) => {
-    data.sort((a, b) => a.name.localeCompare(b.name));
-    data.forEach(user => user.editEmail = false);
-    users.value = data;
-    loadingData.value = false;
-  })
-  .catch((error) => {
-    console.error('Error:', error)
-  });
-// })
 
 const saveEmail = (user) => {
   user.editEmail = false;
@@ -118,7 +123,10 @@ const saveEmail = (user) => {
     },
     body: JSON.stringify({ email: user.email })
   })
-    .then((response) => response.json())
+    .then((response) => {
+      store.loadChaperones();
+      store.loadChaperoneSlots();
+    })
     .catch(() => {
       store.showAlert('Error', 'An error occurred while updating the user')
     });
@@ -133,6 +141,7 @@ const createUser = () => {
     store.showAlert('Invalid name', 'Please enter a name')
     return;
   }
+  store.addChaperone(newUser.value)
   fetchAPI('chaperones', {
     method: 'PUT',
     headers: {
@@ -147,8 +156,9 @@ const createUser = () => {
       return response.json()
     })
     .then((data) => {
-      users.value.push(data)
       newUser.value = { is_admin: false, email: null }
+      store.loadChaperones();
+      store.loadChaperoneSlots();
       showNewUserDialog.value = false
     })
     .catch((response) => {
@@ -161,6 +171,7 @@ const createUser = () => {
 }
 
 const deleteUser = (user_id) => {
+  store.deleteChaperone(user_id)
   fetchAPI(`chaperones/${user_id}`, {
     method: 'DELETE',
     headers: {
@@ -174,7 +185,8 @@ const deleteUser = (user_id) => {
       return response.json()
     })
     .then((data) => {
-      users.value = users.value.filter(user => user.id != user_id)
+      store.loadChaperones();
+      store.loadChaperoneSlots();
     })
     .catch((response) => {
       store.showAlert('Error', 'An error occurred while deleting the user')
@@ -195,6 +207,9 @@ const updateAdmin = (user) => {
     .then((response) => {
       if (!response.ok) {
         return Promise.reject(response);
+      } else {
+        store.loadChaperoneSlots();
+        store.loadChaperones();
       }
     })
     .catch((response) => {
