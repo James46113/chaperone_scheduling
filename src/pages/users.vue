@@ -37,7 +37,7 @@
               </v-col>
               <v-col v-if="item.name !== 'Admin'">
                 <v-btn v-if="!item.editEmail" variant="flat" class="mt-2"
-                  @click="editEmail"><v-icon>mdi-pencil</v-icon></v-btn>
+                  @click="editEmail(item)"><v-icon>mdi-pencil</v-icon></v-btn>
                 <v-btn v-else variant="flat" class="mt-2" @click="saveEmail(item)"><v-icon>mdi-check</v-icon></v-btn>
                 <v-btn v-else variant="flat" class="mt-2"
                   @click="cancelEditEmail(item)"><v-icon>mdi-close</v-icon></v-btn>
