@@ -4,7 +4,7 @@
       <v-card width="100vw" class="pa-4" elevation="0" style="position: absolute; top: 14vh">
         <v-img src="/Steel-City-Choristers.png" max-width="200" />
         <v-card-title class="text-h5">Welcome!</v-card-title>
-        <v-card-text v-if="loadingData" class="mt-4">Signing you in...</v-card-text>
+        <v-card-text v-if="signingIn" class="mt-4">Signing you in...</v-card-text>
         <div v-else-if="googleLogin">
           <v-card-text>Please sign in with Google to access the chaperone
             rota.</v-card-text>
@@ -64,7 +64,7 @@
       <v-card width="30vw" class="pa-4" style="position: absolute; top: 14vh">
         <v-img src="/Steel-City-Choristers.png" max-width="200" />
         <v-card-title>Welcome!</v-card-title>
-        <v-card-text v-if="loadingData">Signing you in...</v-card-text>
+        <v-card-text v-if="signingIn">Signing you in...</v-card-text>
         <div v-else-if="googleLogin">
           <v-card-text>Please sign in with Google to access the chaperone rota.</v-card-text>
           <div style="display: flex; justify-content: center;">
@@ -310,7 +310,6 @@ function onCodeReceived(response) {
 
 function onSignIn(response) {
 
-  loadingData.value = true;
   store.userEmail = decodeCredential(response.credential).email;
 
   fetchAPI(`login/${store.userEmail}`, {
@@ -320,7 +319,6 @@ function onSignIn(response) {
       if (response.ok) {
         return response.json();
       }
-      loadingData.value = false;
       signingIn.value = false;
       return Promise.reject(response);
     })
@@ -329,7 +327,6 @@ function onSignIn(response) {
       store.isAdmin = data.is_admin;
       store.userID = data.id;
       isSignedIn.value = true;
-      loadingData.value = false;
       if (proxy.$route.query.redirect) {
         proxy.$router.push(proxy.$route.query.redirect);
       } else {
@@ -349,7 +346,6 @@ function onSignIn(response) {
         store.showAlert('Unauthorised', "You are not authorised to access the chaperones' rota. If you believe this is in error, please contact the chaperoning team.");
       }
       console.error('Error:', error)
-      loadingData.value = false;
       signingIn.value = false;
     });
 }
@@ -375,7 +371,6 @@ async function refreshToken() {
     onSignIn({ credential: data.id_token });
   } catch (error) {
     console.error('Error refreshing token:', error);
-    loadingData.value = false;
     signingIn.value = false;
   }
 }

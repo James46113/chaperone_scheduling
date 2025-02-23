@@ -31,7 +31,7 @@
         <v-row class="pt-5 px-3">
           <v-card-title class="text-h5">Upcoming Events</v-card-title>
           <v-spacer />
-          <div :class="isMobile ? '' : 'mt-4 mr-4'">
+          <div v-if="store.isAdmin" :class="isMobile ? '' : 'mt-4 mr-4'">
             <actions-menu activatorID="listMenu" :label="isMobile ? '' : 'Actions'" />
           </div>
         </v-row>
