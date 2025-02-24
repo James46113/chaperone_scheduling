@@ -19,7 +19,7 @@ export const useAppStore = defineStore('app', () => {
 
   // DATABASE
 
-  const events = ref([]);
+  const events = ref<any>([]);
   const upcomingEvents = computed(() => events.value.filter((event: any) => event.start > new Date()));
   const chaperones = ref<any[]>([]);
   const chaperoneNames = computed(() => chaperones.value.map((chaperone: any) => chaperone.name).sort());
@@ -86,9 +86,8 @@ export const useAppStore = defineStore('app', () => {
 
     data.forEach((chaperone: any) => {
       chaperone.numEvents = computed(() => {
-        const uniqueEventIDs = new Set(chaperoneSlots.value.filter((slot: any) => slot.chaperone === chaperone.id).map((slot: any) => slot.event_id));
-        if (chaperone.name == 'Admin') console.log(uniqueEventIDs);
-        return uniqueEventIDs.size;
+        const uniqueEventIDs = [...new Set(chaperoneSlots.value.filter((slot: any) => slot.chaperone === chaperone.id).map((slot: any) => slot.event_id))];
+        return uniqueEventIDs.filter((eventID: any) => getEvent(eventID).start > new Date()).length;
       });
     });
 
