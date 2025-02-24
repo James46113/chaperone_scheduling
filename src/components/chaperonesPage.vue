@@ -54,10 +54,14 @@ const showSchedule = (value, row) => {
 
 onMounted(async () => {
   loadingData.value = true;
-  if (!store.chaperonesLoaded) {
-    await store.loadChaperones();
+  if (!store.chaperonesLoaded || !store.chaperoneSlotsLoaded) {
+    await Promise.all([
+      store.loadChaperones(),
+      store.loadChaperoneSlots()
+    ])
   } else {
     store.loadChaperones();
+    store.loadChaperoneSlots();
   }
   loadingData.value = false;
 })
