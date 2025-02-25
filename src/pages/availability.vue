@@ -1,4 +1,9 @@
 <template>
+  <!-- <table>
+    <tr>
+      <th v-for="event in events">{{ event.start.toLocaleDateString() }}</th>
+    </tr>
+  </table> -->
   <app-header />
   <div class="pa-4 d-flex justify-center">
     <v-card elevation="0" :width="isMobile ? '100vw' : '80vw'">
@@ -101,8 +106,7 @@
         <v-progress-circular color="primary" indeterminate size="40" />
       </div>
       <v-sheet v-else-if="showTable" class="table_container">
-        <!-- <div style="max-width: 100vw; overflow: scroll;" class="justify-center"> -->
-        <div>
+        <div style="max-width: 100vw; overflow: scroll;" class="justify-center">
           <table class="my-6">
             <tr>
               <th></th>
