@@ -43,7 +43,7 @@
               <v-divider />
               <v-card-text><b>{{ slot.title }}</b></v-card-text>
               <v-card-subtitle class="mt-n4">{{ slot.start.toLocaleTimeString([], {
-                hour: '2-digit', minute: '2-digit'
+                hour: '2-digit', minute: '2-digit', hour12: false
               })
                 }}
                 - {{
