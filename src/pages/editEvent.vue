@@ -3,7 +3,7 @@
   <div class="pa-6" v-if="!loadingData">
     <v-card class="pa-3" elevation="0">
       <v-card-title class="text-h5 ml-n6 mb-4" v-if="newEvent">New {{ isTemplate ? 'Template' : 'Event'
-        }}</v-card-title>
+      }}</v-card-title>
       <v-card-title class="text-h5 ml-n6 mb-4" v-else>Edit {{ isTemplate ? 'Template' : 'Event' }}</v-card-title>
       <v-row v-if="!isMobile">
         <v-col>
@@ -795,15 +795,16 @@ const saveNewEvent = () => {
       saveChaperoneSlots()
         .then((success) => {
           if (success) {
-            store.showAlert("Success", "Event saved successfully.");
+
             Promise.all([
               store.loadEvents(),
               store.loadAvailability(),
               store.loadChaperoneSlots(),
               store.loadChaperones(),
-            ]).then(() =>
+            ]).then(() => {
               proxy.$router.push(`/event?id=${event.value.id}`)
-            )
+              store.showAlert("Success", "Event saved successfully.");
+            })
 
 
           } else {
