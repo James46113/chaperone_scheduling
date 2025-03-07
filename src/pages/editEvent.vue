@@ -796,7 +796,16 @@ const saveNewEvent = () => {
         .then((success) => {
           if (success) {
             store.showAlert("Success", "Event saved successfully.");
-            proxy.$router.push(`/event?id=${event.value.id}`)
+            Promise.all([
+              store.loadEvents(),
+              store.loadAvailability(),
+              store.loadChaperoneSlots(),
+              store.loadChaperones(),
+            ]).then(() =>
+              proxy.$router.push(`/event?id=${event.value.id}`)
+            )
+
+
           } else {
             proxy.$router.push(`/editEvent?id=${event.value.id}`)
             newEvent.value = false
