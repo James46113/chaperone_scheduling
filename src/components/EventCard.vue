@@ -40,8 +40,8 @@
           {{ event.location }}
         </v-card-subtitle>
         <v-card-subtitle>
-          {{ new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }} -
-          {{ new Date(event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
+          {{ new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} -
+          {{ new Date(event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
         </v-card-subtitle>
 
         <v-card-text class="pl-0">
