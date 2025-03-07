@@ -8,7 +8,7 @@
         <div>
           <v-card-subtitle>Term Start</v-card-subtitle>
 
-          <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
+          <v-text-field type="text" readonly variant="outlined" class="px-3" width="80%" prepend-icon="mdi-calendar"
             @click="showStartMenu = true">
             {{ start.toLocaleDateString() }}
 
@@ -30,7 +30,7 @@
 
 
           <v-card-subtitle>Term End</v-card-subtitle>
-          <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
+          <v-text-field type="text" readonly variant="outlined" class="px-3" width="80%" prepend-icon="mdi-calendar"
             @click="showEndMenu = true">
             {{ end.toLocaleDateString() }}
             <v-menu activator="parent" :close-on-content-click="false" v-model="showEndMenu">
