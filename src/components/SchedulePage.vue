@@ -33,8 +33,8 @@
 
           <v-card-subtitle>{{ event.location }}</v-card-subtitle>
           <v-card-subtitle>
-            {{ event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }} -
-            {{ event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
+            {{ event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} -
+            {{ event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
           </v-card-subtitle>
 
           <v-card-text v-if="false">Lead Chaperone: {{ event.lead_chaperone }}</v-card-text>
@@ -47,7 +47,8 @@
               })
                 }}
                 - {{
-                  slot.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</v-card-subtitle>
+                  slot.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+                }}</v-card-subtitle>
               <v-card-text class="mt-n3">
                 <span v-if="slot.details?.length > 0">
                   {{ slot.details }}

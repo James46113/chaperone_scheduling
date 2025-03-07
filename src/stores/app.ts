@@ -191,6 +191,26 @@ export const useAppStore = defineStore('app', () => {
     chaperones.value.push(chaperone);
   }
 
+  const nextEvent = (eventID: number) => {
+    const event = getEvent(eventID);
+    const eventIndex = events.value.indexOf(event);
+    return events.value[eventIndex + 1].id;
+  }
+
+  const previousEvent = (eventID: number) => {
+    const event = getEvent(eventID);
+    const eventIndex = events.value.indexOf(event);
+    return events.value[eventIndex - 1].id;
+  }
+
+  const isLastEvent = (eventID: number) => {
+    return eventID === events.value[events.value.length - 1].id;
+  }
+
+  const isFirstEvent = (eventID: number) => {
+    return eventID === upcomingEvents.value[0].id;
+  }
+
   return {
     // GENERAL
     showAlertDialog,
@@ -233,5 +253,9 @@ export const useAppStore = defineStore('app', () => {
     getEventsByChaperone,
     deleteChaperone,
     addChaperone,
+    nextEvent,
+    previousEvent,
+    isLastEvent,
+    isFirstEvent,
   }
 });
