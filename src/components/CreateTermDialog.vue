@@ -1,8 +1,9 @@
 <template>
-  <v-dialog v-model="store.showCreateTermDialog">
+  <v-dialog v-model="store.showCreateTermDialog" :width="isMobile ? '100vw' : '27vw'">
 
-    <v-card class="pa-2" elevation="0">
-      <v-card-title class="text-h5 mb-3">Create Term</v-card-title>
+    <v-card class="pa-2 pl-8" elevation="0">
+      <v-card-title class="text-h5 mb-3 ml-n3">Create Term</v-card-title>
+
 
       <v-card-subtitle>Term Start</v-card-subtitle>
 

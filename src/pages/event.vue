@@ -14,7 +14,8 @@
           hour:
             '2-digit', minute: '2-digit'
         }) }}
-          - {{ event.end?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</v-card-title>
+          - {{ event.end?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+          }}</v-card-title>
         <v-card-subtitle>
           {{ event.location }}
         </v-card-subtitle>
@@ -38,10 +39,10 @@
 
     <v-data-table :headers="tableHeaders" :items="event.slots" hide-default-footer v-if="!isMobile">
       <template #item.startTime="{ item }">
-        {{ item.start?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
+        {{ item.start?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
       </template>
       <template #item.endTime="{ item }">
-        {{ item.end?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
+        {{ item.end?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
       </template>
       <template #item.chaperoneName="{ item }">
         <span v-if="item.chaperoneName">{{ item.chaperoneName }}</span>
@@ -68,8 +69,8 @@
       }}</v-card-title>
       <v-alert v-else type="warning" class="mb-6">No Chaperone</v-alert>
       <v-card-subtitle class="mt-n2">{{ slot.title }}</v-card-subtitle>
-      <v-card-subtitle>{{ slot.start?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }} -
-        {{ slot.end?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</v-card-subtitle>
+      <v-card-subtitle>{{ slot.start?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} -
+        {{ slot.end?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}</v-card-subtitle>
       <v-card-text>
         <span v-if="slot.details?.length > 0">
           {{ slot.details }}
@@ -154,8 +155,8 @@ onMounted(async () => {
   //   weekday: 'short', day: 'numeric',
   //   month: 'short', year: 'numeric'
   // });
-  // eventData.start = new Date(eventData.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  // eventData.end = new Date(eventData.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  // eventData.start = new Date(eventData.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+  // eventData.end = new Date(eventData.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
 
   // eventData.lead_chaperone = store.chaperones.value.find(chaperone => chaperone.id == eventData.lead_chaperone)?.name ?? null;
   // eventData.available = availability;
