@@ -4,47 +4,51 @@
     <v-card class="pa-2" elevation="0">
       <v-card-title class="text-h5 mb-3">Create Term</v-card-title>
 
-      <v-card-subtitle>Term Start</v-card-subtitle>
+      <div class="d-flex justify-center">
+        <div>
+          <v-card-subtitle>Term Start</v-card-subtitle>
 
-      <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
-        @click="showStartMenu = true">
-        {{ start.toLocaleDateString() }}
+          <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
+            @click="showStartMenu = true">
+            {{ start.toLocaleDateString() }}
 
-        <v-menu activator="parent" :close-on-content-click="false" v-model="showStartMenu">
-          <v-confirm-edit v-model="start">
-            <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
-              <v-date-picker v-model="proxyModel.value" :max="end">
-                <template v-slot:actions>
-                  <!-- <component :is="actions"></component> -->
-                  <v-btn text @click="() => { cancel(); showStartMenu = false; }">Cancel</v-btn>
-                  <v-btn text color="primary" @click="() => { save(); showStartMenu = false; }">Ok</v-btn>
+            <v-menu activator="parent" :close-on-content-click="false" v-model="showStartMenu">
+              <v-confirm-edit v-model="start">
+                <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
+                  <v-date-picker v-model="proxyModel.value" :max="end">
+                    <template v-slot:actions>
+                      <!-- <component :is="actions"></component> -->
+                      <v-btn text @click="() => { cancel(); showStartMenu = false; }">Cancel</v-btn>
+                      <v-btn text color="primary" @click="() => { save(); showStartMenu = false; }">Ok</v-btn>
+                    </template>
+                  </v-date-picker>
                 </template>
-              </v-date-picker>
-            </template>
-          </v-confirm-edit>
-        </v-menu>
+              </v-confirm-edit>
+            </v-menu>
 
-      </v-text-field>
+          </v-text-field>
 
 
-      <v-card-subtitle>Term End</v-card-subtitle>
-      <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
-        @click="showEndMenu = true">
-        {{ end.toLocaleDateString() }}
-        <v-menu activator="parent" :close-on-content-click="false" v-model="showEndMenu">
-          <v-confirm-edit v-model="end">
-            <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
-              <v-date-picker v-model="proxyModel.value" :min="start">
-                <template v-slot:actions>
-                  <!-- <component :is="actions"></component> -->
-                  <v-btn text @click="() => { cancel(); showEndMenu = false; }">Cancel</v-btn>
-                  <v-btn text color="primary" @click="() => { save(); showEndMenu = false; }">Ok</v-btn>
+          <v-card-subtitle>Term End</v-card-subtitle>
+          <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
+            @click="showEndMenu = true">
+            {{ end.toLocaleDateString() }}
+            <v-menu activator="parent" :close-on-content-click="false" v-model="showEndMenu">
+              <v-confirm-edit v-model="end">
+                <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
+                  <v-date-picker v-model="proxyModel.value" :min="start">
+                    <template v-slot:actions>
+                      <!-- <component :is="actions"></component> -->
+                      <v-btn text @click="() => { cancel(); showEndMenu = false; }">Cancel</v-btn>
+                      <v-btn text color="primary" @click="() => { save(); showEndMenu = false; }">Ok</v-btn>
+                    </template>
+                  </v-date-picker>
                 </template>
-              </v-date-picker>
-            </template>
-          </v-confirm-edit>
-        </v-menu>
-      </v-text-field>
+              </v-confirm-edit>
+            </v-menu>
+          </v-text-field>
+        </div>
+      </div>
 
       <v-card-actions>
         <v-btn text @click="store.showCreateTermDialog = false">Cancel</v-btn>
