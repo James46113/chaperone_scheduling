@@ -318,6 +318,9 @@ function onCodeReceived(response) {
     })
     .catch(error => {
       console.error('Error exchanging code for tokens:', error);
+      Cookies.remove('credential');
+      Cookies.remove('accessToken');
+      Cookies.remove('refreshToken');
       signingIn.value = false;
     });
 }
