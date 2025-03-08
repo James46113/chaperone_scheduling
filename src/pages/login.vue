@@ -286,17 +286,15 @@ const resetPassword = () => {
 
 const customLogin = () => {
   signingIn.value = true;
-  let failed = true;
   googleSdkLoaded(google => {
     google.accounts.oauth2.initCodeClient({
       client_id: "898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com",
       scope: 'openid email profile',
       redirect_uri: window.location.href,
       accessType: 'offline',
-      callback: (response) => { failed = false; onCodeReceived(response) }
+      callback: onCodeReceived
     }).requestCode();
   })
-  if (failed) signingIn.value = false;
 }
 
 function onCodeReceived(response) {
@@ -320,6 +318,7 @@ function onCodeReceived(response) {
     })
     .catch(error => {
       console.error('Error exchanging code for tokens:', error);
+      signingIn.value = false;
     });
 }
 
