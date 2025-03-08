@@ -225,7 +225,7 @@ const saveTableAsImage = () => {
   domtoimage.toPng(tableElement, { filter: (element) => element.className !== 'v-btn' })
     .then((dataUrl) => {
       const link = document.createElement('a');
-      link.download = `availability-${start.value.toLocaleDateString('en-GB')}-${end.value.toLocaleDateString('en - GB)}.png`;
+      link.download = `availability-${start.value.toLocaleDateString('en-GB')}-${end.value.toLocaleDateString('en-GB')}.png`;
       link.href = dataUrl;
       link.click();
     })
