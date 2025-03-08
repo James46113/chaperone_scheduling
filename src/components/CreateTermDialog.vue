@@ -9,7 +9,7 @@
 
       <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
         @click="showStartMenu = true">
-        {{ start.toLocaleDateString() }}
+        {{ start.toLocaleDateString('en-GB) }}
 
         <v-menu activator="parent" :close-on-content-click="false" v-model="showStartMenu">
           <v-confirm-edit v-model="start">
@@ -31,7 +31,7 @@
       <v-card-subtitle>Term End</v-card-subtitle>
       <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
         @click="showEndMenu = true">
-        {{ end.toLocaleDateString() }}
+        {{ end.toLocaleDateString('en-GB) }}
         <v-menu activator="parent" :close-on-content-click="false" v-model="showEndMenu">
           <v-confirm-edit v-model="end">
             <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
