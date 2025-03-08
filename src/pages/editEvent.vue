@@ -47,7 +47,7 @@
 
           <v-text-field type="text" readonly variant="outlined" class="mt-3" max-width="300" prepend-icon="mdi-calendar"
             @click="showDateMenu = true">
-            {{ event.date?.toLocaleDateString() }}
+            {{ event.date?.toLocaleDateString('en-GB') }}
             <v-menu activator="parent" :close-on-content-click="false" v-model="showDateMenu">
               <v-confirm-edit v-model="event.date">
                 <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
@@ -86,7 +86,7 @@
       <div v-else>
         <v-text-field v-if="!isTemplate" type="text" readonly variant="outlined" class="mt-3" max-width="300"
           prepend-icon="mdi-calendar" @click="showDateMenu = true">
-          {{ event.date?.toLocaleDateString() }}
+          {{ event.date?.toLocaleDateString('en-GB') }}
           <v-menu activator="parent" :close-on-content-click="false" v-model="showDateMenu">
             <v-confirm-edit v-model="event.date">
               <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
