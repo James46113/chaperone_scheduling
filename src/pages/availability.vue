@@ -1,7 +1,7 @@
 <template>
   <!-- <table>
     <tr>
-      <th v-for="event in events">{{ event.start.toLocaleDateString() }}</th>
+      <th v-for="event in events">{{ event.start.toLocaleDateString('en-GB') }}</th>
     </tr>
   </table> -->
   <app-header />
@@ -14,7 +14,7 @@
 
         <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
           @click="showStartMenu = true">
-          {{ start.toLocaleDateString() }}
+          {{ start.toLocaleDateString('en-GB') }}
 
           <v-menu activator="parent" :close-on-content-click="false" v-model="showStartMenu">
             <v-confirm-edit v-model="start">
@@ -36,7 +36,7 @@
 
         <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
           @click="showEndMenu = true">
-          {{ end.toLocaleDateString() }}
+          {{ end.toLocaleDateString('en-GB') }}
           <v-menu activator="parent" :close-on-content-click="false" v-model="showEndMenu">
             <v-confirm-edit v-model="end">
               <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
@@ -65,7 +65,7 @@
       <v-div v-else>
         <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
           @click="showStartMenu = true">
-          {{ start.toLocaleDateString() }}
+          {{ start.toLocaleDateString('en-GB') }}
 
           <v-menu activator="parent" :close-on-content-click="false" v-model="showStartMenu">
             <v-confirm-edit v-model="start">
@@ -85,7 +85,7 @@
         <v-card-text class="mt-n4" width="100%" style="text-align: center;">To</v-card-text>
         <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
           @click="showEndMenu = true">
-          {{ end.toLocaleDateString() }}
+          {{ end.toLocaleDateString('en-GB') }}
           <v-menu activator="parent" :close-on-content-click="false" v-model="showEndMenu">
             <v-confirm-edit v-model="end">
               <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
@@ -112,7 +112,7 @@
               <th></th>
               <th v-for="event in eventsInRange">
                 <div class="vertical-text rotate">
-                  {{ event.start.toLocaleDateString() }}
+                  {{ event.start.toLocaleDateString('en-GB') }}
                 </div>
               </th>
             </tr>
@@ -132,7 +132,7 @@
             </tr>
             <tr style="font-size: xx-small;">
               <td colspan="100%">
-                Generated on {{ new Date().toLocaleDateString() }} - Steel City Choristers
+                Generated on {{ new Date().toLocaleDateString('en-GB') }} - Steel City Choristers
               </td>
             </tr>
           </table>
@@ -225,7 +225,7 @@ const saveTableAsImage = () => {
   domtoimage.toPng(tableElement, { filter: (element) => element.className !== 'v-btn' })
     .then((dataUrl) => {
       const link = document.createElement('a');
-      link.download = `availability-${start.value.toLocaleDateString()}-${end.value.toLocaleDateString()}.png`;
+      link.download = `availability-${start.value.toLocaleDateString('en-GB')}-${end.value.toLocaleDateString('en-GB')}.png`;
       link.href = dataUrl;
       link.click();
     })
