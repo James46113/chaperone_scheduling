@@ -134,7 +134,6 @@ import { useAppStore } from '@/stores/app';
 import { GoogleLogin, decodeCredential, googleSdkLoaded } from 'vue3-google-login';
 import { getCurrentInstance } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
-import { getFingerprint } from '@thumbmarkjs/thumbmarkjs';
 
 const store = useAppStore();
 const { proxy } = getCurrentInstance();
@@ -296,6 +295,7 @@ const customLogin = () => {
       callback: onCodeReceived
     }).requestCode();
   })
+  signingIn.value = false;
 }
 
 function onCodeReceived(response) {
