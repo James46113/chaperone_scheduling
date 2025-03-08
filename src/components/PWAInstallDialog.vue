@@ -13,6 +13,9 @@
         Steps to install:
         <ol class="ml-8 mt-3">
           <li>
+            Make sure you are using Safari browser
+          </li>
+          <li>
             Press the "share" icon:
             <img src="/ios-share.svg" width="20px" />
           </li>
