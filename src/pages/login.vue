@@ -5,7 +5,7 @@
         <v-img src="/Steel-City-Choristers.png" max-width="200" />
         <v-card-title class="text-h5">Welcome!</v-card-title>
         <v-card-text v-if="signingIn" class="mt-4">Signing you in...</v-card-text>
-        <v-btn v-if="signingIn" color="primary" class="mt-4" @click="cancelSignIn">Cancel</v-btn>
+        <v-btn v-if="signingIn" color="primary" class="ml-4 mb-2" @click="cancelSignIn">Cancel</v-btn>
         <div v-else-if="googleLogin">
           <v-card-text>Please sign in with Google to access the chaperone
             rota.</v-card-text>
@@ -66,7 +66,7 @@
         <v-img src="/Steel-City-Choristers.png" max-width="200" />
         <v-card-title>Welcome!</v-card-title>
         <v-card-text v-if="signingIn">Signing you in...</v-card-text>
-        <v-btn v-if="signingIn" color="primary" class="mt-4" @click="cancelSignIn">Cancel</v-btn>
+        <v-btn v-if="signingIn" color="primary" class="ml-4 mb-2" @click="cancelSignIn">Cancel</v-btn>
         <div v-else-if="googleLogin">
           <v-card-text>Please sign in with Google to access the chaperone rota.</v-card-text>
           <div style="display: flex; justify-content: center;">
