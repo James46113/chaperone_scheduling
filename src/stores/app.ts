@@ -91,7 +91,7 @@ export const useAppStore = defineStore('app', () => {
       });
     });
 
-    chaperones.value = data.sort((a: any, b: any) => a.name.localeCompare(b.name));
+    chaperones.value = data.sort((a: any, b: any) => a.name.localeCompare(b.name)).filter((chaperone: any) => chaperone.name !== 'Choir Phone');
   }
 
   const loadChaperoneSlots = async () => {
