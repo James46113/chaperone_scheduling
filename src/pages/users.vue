@@ -9,7 +9,8 @@
       </v-row>
 
       <v-alert type="warning" class="mt-4">
-        Granting admin access gives users the ability to edit the chaperone schecule and view all other users' email
+        Granting Choir Phone access gives users the ability to edit the chaperone schecule and view all other users'
+        email
         addresses. Please ensure that
         only trusted individuals are given this level of access.
       </v-alert>
@@ -19,11 +20,11 @@
           items-per-page="-1" :headers="headers" density="compact"
           :height="loadingData ? 120 : (store.chaperones.length + 1) * 64">
           <template #item.is_admin="{ item }">
-            <v-switch :readonly="item.name === 'Admin'" @click="updateAdmin(item)" class="mb-n6" v-model="item.is_admin"
-              color="primary" />
+            <v-switch :readonly="item.name === 'Choir Phone'" @click="updateAdmin(item)" class="mb-n6"
+              v-model="item.is_admin" color="primary" />
           </template>
           <template #item.delete="{ item }">
-            <v-btn v-if="item.name !== 'Admin'" @click="deleteUser(item.id)"
+            <v-btn v-if="item.name !== 'Choir Phone'" @click="deleteUser(item.id)"
               variant="flat"><v-icon>mdi-delete</v-icon></v-btn>
           </template>
           <template #item.email="{ item }">
@@ -35,7 +36,7 @@
                 <v-text-field v-else autofocus v-model="item.email" class="mb-n3 mt-2" :rules="[required]" label="Email"
                   required @keyup.enter="saveEmail(item)" variant="outlined" density="compact"></v-text-field>
               </v-col>
-              <v-col v-if="item.name !== 'Admin'">
+              <v-col v-if="item.name !== 'Choir Phone'">
                 <v-btn v-if="!item.editEmail" variant="flat" class="mt-2"
                   @click="editEmail(item)"><v-icon>mdi-pencil</v-icon></v-btn>
                 <v-btn v-if="item.editEmail" variant="flat" class="mt-2"
@@ -62,7 +63,7 @@
           @keyup.enter="createUser"></v-text-field>
         <v-text-field v-model="newUser.name" :rules="[required]" label="Name" required
           @keyup.enter="createUser"></v-text-field>
-        <v-switch v-model="newUser.is_admin" label="Admin" color="primary" />
+        <v-switch v-model="newUser.is_admin" label="Choir Phone" color="primary" />
       </v-card-text>
       <v-card-actions>
         <v-btn @click="showNewUserDialog = false">Cancel</v-btn>
@@ -207,7 +208,7 @@ const deleteUser = (user_id) => {
 }
 
 const updateAdmin = (user) => {
-  if (user.name === 'Admin') {
+  if (user.name === 'Choir Phone') {
     return;
   }
   fetchAPI(`chaperones/${user.id}`, {
