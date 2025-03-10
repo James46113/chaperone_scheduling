@@ -76,7 +76,6 @@ const store = useAppStore();
 document.title = "Chaperones' Calendar - Steel City Choristers"
 
 onMounted(async () => {
-  if (store.isChoirPhone == 10) store.tabView = 'list';
   if (proxy.$route.query.view) {
     store.tabView = proxy.$route.query.view;
   }

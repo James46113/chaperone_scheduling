@@ -2,14 +2,13 @@
 import { defineStore } from 'pinia'
 
 export const useAppStore = defineStore('app', () => {
-  const isChoirPhone = computed(() => userID.value == 10);
   const showAlertDialog = ref(false);
   const alertTitle = ref('');
   const alertMessage = ref('');
   const userEmail = ref('');
   const isAdmin = ref(false);
   const userID = ref();
-  const tabView = ref(isChoirPhone.value ? 'list' : isMobile.value ? 'schedule' : 'calendar');
+  const tabView = ref(isMobile.value ? 'schedule' : 'calendar');
   const showCreateTermDialog = ref(false);
 
   const showAlert = (title: string, message: string) => {
@@ -214,7 +213,6 @@ export const useAppStore = defineStore('app', () => {
 
   return {
     // GENERAL
-    isChoirPhone,
     showAlertDialog,
     alertTitle,
     alertMessage,
