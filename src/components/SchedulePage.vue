@@ -85,7 +85,6 @@ const chaperone = computed(() => store.chaperones.find(chaperone => chaperone.id
 
 onMounted(async () => {
   loadingData.value = true
-  if (props.chaperone_id == 10) proxy.$router.push('/')
 
   if (!store.eventsLoaded || !store.chaperonesLoaded || !store.chaperoneSlotsLoaded) {
     await Promise.all([
