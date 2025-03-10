@@ -3,7 +3,7 @@
   <div class="pa-6" v-if="!loadingData">
     <v-card class="pa-3" elevation="0">
       <v-card-title class="text-h5 ml-n6 mb-4" v-if="newEvent">New {{ isTemplate ? 'Template' : 'Event'
-      }}</v-card-title>
+        }}</v-card-title>
       <v-card-title class="text-h5 ml-n6 mb-4" v-else>Edit {{ isTemplate ? 'Template' : 'Event' }}</v-card-title>
       <v-row v-if="!isMobile">
         <v-col>
@@ -825,7 +825,8 @@ const getChaperones = async () => {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log(JSON.stringify(data))
+      console.log(data)
+      console.log(data.filter(chaperone => chaperone.name !== 'Choir Phone'))
       chaperones.value = data.filter(chaperone => chaperone.name !== 'Choir Phone');
       chaperoneNames.value = chaperones.value.map(chaperone => chaperone.name).sort()
     })
