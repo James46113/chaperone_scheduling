@@ -552,7 +552,7 @@ const loadAvailability = () => {
     .then((data) => {
       availability.value = data.map(a => (
         {
-          name: chaperones.value.find(chaperone => chaperone.id === a.chaperone_id).name,
+          name: chaperones.value.find(chaperone => chaperone.id === a.chaperone_id)?.name,
           available: a.available
         })).sort((a, b) => a.name.localeCompare(b.name));
       availability.value = [...availableChaperones.value, ...unansweredChaperones.value, ...unavailableChaperones.value]
@@ -825,8 +825,6 @@ const getChaperones = async () => {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log(data)
-      console.log(data.filter(chaperone => chaperone.name !== 'Choir Phone'))
       chaperones.value = data.filter(chaperone => chaperone.name !== 'Choir Phone');
       chaperoneNames.value = chaperones.value.map(chaperone => chaperone.name).sort()
     })
