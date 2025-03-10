@@ -8,7 +8,7 @@ export const useAppStore = defineStore('app', () => {
   const userEmail = ref('');
   const isAdmin = ref(false);
   const userID = ref();
-  const tabView = ref(isMobile.value ? 'schedule' : 'calendar');
+  const tabView = ref(userID.value == 10 ? 'list' : isMobile.value ? 'schedule' : 'calendar');
   const showCreateTermDialog = ref(false);
 
   const showAlert = (title: string, message: string) => {
