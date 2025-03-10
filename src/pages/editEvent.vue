@@ -3,7 +3,7 @@
   <div class="pa-6" v-if="!loadingData">
     <v-card class="pa-3" elevation="0">
       <v-card-title class="text-h5 ml-n6 mb-4" v-if="newEvent">New {{ isTemplate ? 'Template' : 'Event'
-        }}</v-card-title>
+      }}</v-card-title>
       <v-card-title class="text-h5 ml-n6 mb-4" v-else>Edit {{ isTemplate ? 'Template' : 'Event' }}</v-card-title>
       <v-row v-if="!isMobile">
         <v-col>
@@ -554,7 +554,7 @@ const loadAvailability = () => {
         {
           name: chaperones.value.find(chaperone => chaperone.id === a.chaperone_id)?.name,
           available: a.available
-        })).sort((a, b) => a.name.localeCompare(b.name));
+        })).filter(a => a.name).sort((a, b) => a.name.localeCompare(b.name));
       availability.value = [...availableChaperones.value, ...unansweredChaperones.value, ...unavailableChaperones.value]
     })
     .catch((error) => {
