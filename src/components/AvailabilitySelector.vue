@@ -1,5 +1,5 @@
 <template>
-  <div v-if="store.userID && !loadingAvailability && !eventRef?.isPastEvent"
+  <div v-if="store.userID && !loadingAvailability && !eventRef?.isPastEvent && !store.isChoirPhone"
     :style="small ? '' : 'border: 1px solid #ccc; border-radius: 5px;'">
     <v-card-text v-if="small">Available:</v-card-text>
     <v-card-title v-else class="mb-3">Available:</v-card-title>
