@@ -137,7 +137,7 @@ export const useAppStore = defineStore('app', () => {
     });
 
     const data = await response.json();
-    allAvailability.value = data;
+    allAvailability.value = data.filter((avail: any) => avail.chaperone_id !== 10);
   }
 
   const loadTemplates = async () => {

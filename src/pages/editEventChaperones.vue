@@ -58,7 +58,10 @@
 
     </v-card>
   </v-card>
-  <v-progress-circular v-else color="primary" indeterminate size="40" />
+  <div v-else class="d-flex justify-center">
+    <v-progress-circular color="primary" indeterminate size="40" />
+  </div>
+
 </template>
 
 <script setup>
