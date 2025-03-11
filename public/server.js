@@ -1,11 +1,13 @@
 import express from 'express';
 import fetch from 'node-fetch';
+import cors from 'cors';
 
 const app = express();
 const port = 3000;
 const url = `http://chaperone_scheduling_api.railway.internal:5000`;
 
 app.use(express.json());
+app.user(cors());
 
 
 app.post('/api/token', async (req, res) => {
@@ -113,6 +115,7 @@ app.use('/api/public/', async (req, res) => {
     return res.status(response.status).json(await response.json());
   }
   catch {
+    console.log(`FAILED: ${url}/public${req.url}`)
     return res.status(response.status).send(clone.text());
   }
 });
