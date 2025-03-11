@@ -1,6 +1,6 @@
 <template>
   <app-header />
-  <v-card elevation="0" class="pa-6">
+  <v-card elevation="0" class="pa-6" v-if="!loadingData">
     <v-card-title class="text-h5">Assign Chaperones</v-card-title>
     <v-chip v-for="chaperone in sortedChaperones" :class="'ma-1 ' + chipColor(chaperone)"
       :draggable="chipColor(chaperone) !== 'error'" :color="chipColor(chaperone)"
@@ -58,6 +58,7 @@
 
     </v-card>
   </v-card>
+  <v-progress-circular v-else color="primary" indeterminate size="40" />
 </template>
 
 <script setup>
@@ -70,10 +71,21 @@ const currentEventID = ref(parseInt(proxy.$route.query.id))
 const currentEvent = computed(() => store.getEvent(currentEventID.value))
 
 onMounted(async () => {
-  store.loadEvents()
-  store.loadAllAvailability()
-  store.loadChaperoneSlots()
-  store.loadChaperones()
+  loadingData.value = true
+  if (!store.eventsLoaded || !store.allAvailabilityLoaded || !store.chaperoneSlotsLoaded || !store.chaperonesLoaded) {
+    await Promise.all([
+      store.loadEvents(),
+      store.loadAllAvailability(),
+      store.loadChaperoneSlots(),
+      store.loadChaperones()
+    ])
+  } else {
+    store.loadEvents()
+    store.loadAllAvailability()
+    store.loadChaperoneSlots()
+    store.loadChaperones()
+  }
+  loadingData.value = false
 })
 
 const chipColor = (chaperone) => {
