@@ -3,7 +3,7 @@
   <div class="pa-6" v-if="!loadingData">
     <v-card class="pa-3" elevation="0">
       <v-card-title class="text-h5 ml-n6 mb-4" v-if="newEvent">New {{ isTemplate ? 'Template' : 'Event'
-        }}</v-card-title>
+      }}</v-card-title>
       <v-card-title class="text-h5 ml-n6 mb-4" v-else>Edit {{ isTemplate ? 'Template' : 'Event' }}</v-card-title>
       <v-row v-if="!isMobile">
         <v-col>
@@ -368,12 +368,12 @@ const assignedChaperones = computed(() => {
 const required = value => !!value || 'Field is required.';
 
 const tableHeaders = computed(() => [
-  { title: 'Group', key: 'title', width: '20%', showTemplate: true },
+  { title: 'Group', key: 'title', width: '20%', showTemplate: true, showWhenNew: true },
   { title: 'Chaperone', key: 'chaperone', width: '15%', showTemplate: false, showWhenNew: false },
-  { title: 'Details', key: 'details', width: '35%', showTemplate: true },
-  { title: 'Start', key: 'startTime', width: '12%', showTemplate: true },
-  { title: 'End', key: 'endTime', width: '12%', showTemplate: true },
-  { title: 'Remove', key: 'remove', width: '6%', showTemplate: true }
+  { title: 'Details', key: 'details', width: '35%', showTemplate: true, showWhenNew: true },
+  { title: 'Start', key: 'startTime', width: '12%', showTemplate: true, showWhenNew: true },
+  { title: 'End', key: 'endTime', width: '12%', showTemplate: true, showWhenNew: true },
+  { title: 'Remove', key: 'remove', width: '6%', showTemplate: true, showWhenNew: true }
 ].filter(header => (isTemplate.value ? header.showTemplate : true) && (newEvent.value ? header.showWhenNew : true)));
 
 
