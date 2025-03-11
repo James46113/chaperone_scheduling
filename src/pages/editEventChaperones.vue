@@ -58,31 +58,33 @@
       </v-row>
 
       <div style="display: flex; flex-wrap: wrap;">
-        <v-card v-for="slot in currentEvent?.slots" class="ma-3">
-          <v-card-text>{{ slot.title }}</v-card-text>
-          <v-card-subtitle class="mt-n4">{{ slot.start.toLocaleTimeString([], {
-            hour: '2-digit', minute: '2-digit',
-            hour12: false
-          })
-          }} - {{ slot.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
-          </v-card-subtitle>
-          <v-card-text>{{ slot.details }}</v-card-text>
-          <v-text-field readonly variant="outlined" class="mx-2 mt-n5" width="10vw" density="compact"
-            @dragover="allowDrop" @drop="drop($event, slot)">
-            <v-chip v-if="slot.chaperone" append-icon="mdi-close" :color="chipColor(store.getChaperone(slot.chaperone))"
-              @click="removeChaperone(slot)">{{
-                store.getChaperone(slot.chaperone).name }}</v-chip>
-          </v-text-field>
-        </v-card>
+        <v-sheet v-for="slot in currentEvent?.slots" class="ma-3" variant="outlined" color="primary"
+          style="padding: 1px" rounded>
+          <v-card elevation="0">
+            <v-card-text>{{ slot.title }}</v-card-text>
+            <v-card-subtitle class="mt-n4">{{ slot.start.toLocaleTimeString([], {
+              hour: '2-digit', minute: '2-digit',
+              hour12: false
+            })
+            }} - {{ slot.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
+            </v-card-subtitle>
+            <v-card-text>{{ slot.details }}</v-card-text>
+            <v-text-field readonly variant="outlined" class="mx-2 mt-n5" width="10vw" density="compact"
+              @dragover="allowDrop" @drop="drop($event, slot)">
+              <v-chip v-if="slot.chaperone" append-icon="mdi-close"
+                :color="chipColor(store.getChaperone(slot.chaperone))" @click="removeChaperone(slot)">{{
+                  store.getChaperone(slot.chaperone).name }}</v-chip>
+            </v-text-field>
+          </v-card>
+        </v-sheet>
         <v-card-text v-if="currentEvent?.slots.length === 0"><i>No Chaperone Slots</i></v-card-text>
       </div>
 
     </v-card>
   </v-card>
-  <div v-else class="d-flex justify-center">
+  <div v-else class="d-flex justify-center align-center" style="height: 70vh;">
     <v-progress-circular color="primary" indeterminate size="40" />
   </div>
-
 </template>
 
 <script setup>
