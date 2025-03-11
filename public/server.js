@@ -108,11 +108,12 @@ app.use('/api/public/', async (req, res) => {
     headers: req.headers,
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
   });
+  const clone = response.clone();
   try {
     return res.status(response.status).json(await response.json());
   }
   catch {
-    return res.status(response.status).send(response.clone().text());
+    return res.status(response.status).send(clone.text());
   }
 });
 
