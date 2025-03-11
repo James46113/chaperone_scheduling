@@ -369,12 +369,12 @@ const required = value => !!value || 'Field is required.';
 
 const tableHeaders = computed(() => [
   { title: 'Group', key: 'title', width: '20%', showTemplate: true },
-  { title: 'Chaperone', key: 'chaperone', width: '15%', showTemplate: false },
+  { title: 'Chaperone', key: 'chaperone', width: '15%', showTemplate: false, showWhenNew: false },
   { title: 'Details', key: 'details', width: '35%', showTemplate: true },
   { title: 'Start', key: 'startTime', width: '12%', showTemplate: true },
   { title: 'End', key: 'endTime', width: '12%', showTemplate: true },
   { title: 'Remove', key: 'remove', width: '6%', showTemplate: true }
-].filter(header => isTemplate.value ? header.showTemplate : true));
+].filter(header => (isTemplate.value ? header.showTemplate : true) && (newEvent.value ? header.showWhenNew : true)));
 
 
 onMounted(async () => {
