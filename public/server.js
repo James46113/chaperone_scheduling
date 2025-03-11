@@ -108,8 +108,12 @@ app.use('/api/public/', async (req, res) => {
     headers: req.headers,
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
   });
-
-  return res.status(response.status).json(await response.json());
+  try {
+    return res.status(response.status).json(await response.json());
+  }
+  catch {
+    return res.status(response.status).send(response.clone().text());
+  }
 });
 
 
@@ -133,7 +137,6 @@ app.use('/api/p/', async (req, res) => {
     headers: { ...req.headers, email: email },
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
   })
-  console.log('request failed')
   return res.status(response.status).json(await response.json());
 });
 
