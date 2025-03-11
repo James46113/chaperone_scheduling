@@ -1,10 +1,8 @@
 import express from 'express';
 import fetch from 'node-fetch';
-import { OAuth2Client } from 'google-auth-library';
 
 const app = express();
 const port = 3000;
-const client = new OAuth2Client('898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com');
 const url = `http://chaperone_scheduling_api.railway.internal:5000`;
 
 app.use(express.json());
