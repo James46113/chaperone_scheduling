@@ -37,21 +37,21 @@ router.isReady().then(() => {
 
 router.afterEach((to, from) => window.scrollTo(0, 0))
 
-router.beforeEach((to, from, next) => {
-  const store = useAppStore();
-  if (!isSignedIn.value && to.path !== '/login' && to.path !== '/resetPassword') {
-    next(`/login?redirect=${to.fullPath}`);
-  }
-  else if ((to.path.startsWith('/editEvent') ||
-    to.path.startsWith('/templateEvents') ||
-    to.path.startsWith('/users') ||
-    to.path.startsWith('/availability')
-  ) && !store.isAdmin) {
-    next('/');
-  }
-  else {
-    next();
-  }
-});
+// router.beforeEach((to, from, next) => {
+//   const store = useAppStore();
+//   if (!isSignedIn.value && to.path !== '/login' && to.path !== '/resetPassword') {
+//     next(`/login?redirect=${to.fullPath}`);
+//   }
+//   else if ((to.path.startsWith('/editEvent') ||
+//     to.path.startsWith('/templateEvents') ||
+//     to.path.startsWith('/users') ||
+//     to.path.startsWith('/availability')
+//   ) && !store.isAdmin) {
+//     next('/');
+//   }
+//   else {
+//     next();
+//   }
+// });
 
 export default router

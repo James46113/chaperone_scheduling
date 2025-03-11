@@ -1,7 +1,28 @@
 <template>
   <app-header />
   <v-card elevation="0" class="pa-6" v-if="!loadingData">
-    <v-card-title class="text-h5">Assign Chaperones</v-card-title>
+    <v-row>
+      <div>
+        <v-card-title class="text-h5">Assign Chaperones</v-card-title>
+        <v-card-text>Click and drag the chaperones onto the the slots for each event. <br />
+          The chaperone slots will save automatically.</v-card-text>
+      </div>
+      <v-spacer />
+      <div style="border: 1px solid #e0e0e0; padding: 10px; border-radius: 5px;" class="mr-5 mb-4">
+        <span class="text-h6">Key</span>
+        <v-spacer />
+        Colours:
+        <v-chip class="mr-1" color="success">Availabile</v-chip>
+        <v-chip class="mr-1" color="orange">Unknown</v-chip>
+        <v-chip class="mr-1" color="error">Unavailabile</v-chip>
+        <v-spacer class="my-2" />
+        Format:
+        <v-chip color="success">Name: Assigned Events</v-chip>
+      </div>
+    </v-row>
+
+    <v-divider class="my-3" />
+
     <v-chip v-for="chaperone in sortedChaperones" :class="'ma-1 ' + chipColor(chaperone)"
       :draggable="chipColor(chaperone) !== 'error'" :color="chipColor(chaperone)"
       @dragstart="dragStart($event, chaperone)">{{
@@ -75,23 +96,27 @@ const currentEvent = computed(() => store.getEvent(currentEventID.value))
 
 onMounted(async () => {
   loadingData.value = true
-  if (!store.eventsLoaded || !store.allAvailabilityLoaded || !store.chaperoneSlotsLoaded || !store.chaperonesLoaded) {
-    await Promise.all([
-      store.loadEvents(),
-      store.loadAllAvailability(),
-      store.loadChaperoneSlots(),
-      store.loadChaperones()
-    ])
+  if (window.location.hostname === 'localhost') {
+
+    store.loadDevAvailability()
+    store.loadDevChaperoneSlots();
+    store.loadDevChaperones();
+    store.loadDevEvents();
   } else {
-    store.loadEvents()
-    store.loadAllAvailability()
-    store.loadChaperoneSlots()
-    store.loadChaperones()
+    if (!store.eventsLoaded || !store.allAvailabilityLoaded || !store.chaperoneSlotsLoaded || !store.chaperonesLoaded) {
+      await Promise.all([
+        store.loadEvents(),
+        store.loadAllAvailability(),
+        store.loadChaperoneSlots(),
+        store.loadChaperones()
+      ])
+    } else {
+      store.loadEvents()
+      store.loadAllAvailability()
+      store.loadChaperoneSlots()
+      store.loadChaperones()
+    }
   }
-  // store.loadDevAvailability()
-  // store.loadDevChaperoneSlots();
-  // store.loadDevChaperones();
-  // store.loadDevEvents();
   loadingData.value = false
 })
 
@@ -128,6 +153,7 @@ const dragStart = (e, chaperone) => {
 
 const removeChaperone = (slot) => {
   currentEvent.value.slots.find(s => s.id === slot.id).chaperone = null
+  store.updateChaperoneSlot(slot)
 }
 
 const nextEvent = () => {
