@@ -7,8 +7,12 @@ const port = 3000;
 const url = `http://chaperone_scheduling_api.railway.internal:5000`;
 
 app.use(express.json());
-app.user(cors());
-
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Content-Type', 'Authorization']
+}));
 
 app.post('/api/token', async (req, res) => {
   const { code } = req.body;
