@@ -3,7 +3,7 @@
   <div class="pa-6" v-if="!loadingData">
     <v-card class="pa-3" elevation="0">
       <v-card-title class="text-h5 ml-n6 mb-4" v-if="newEvent">New {{ isTemplate ? 'Template' : 'Event'
-      }}</v-card-title>
+        }}</v-card-title>
       <v-card-title class="text-h5 ml-n6 mb-4" v-else>Edit {{ isTemplate ? 'Template' : 'Event' }}</v-card-title>
       <v-row v-if="!isMobile">
         <v-col>
@@ -143,7 +143,7 @@
               <v-list-item v-bind="props" :disabled="item.raw.available === false">
                 <v-list-item-subtitle>
                   <v-chip width="100px" height="100%" density="compact" size="small"
-                    :color="item.raw.available ? 'green' : item.raw.available === false ? 'red' : 'orange'">
+                    :color="item.raw.available ? 'green' : item.raw.available === false ? 'error' : 'orange'">
                     {{ item.raw.available ? 'Available' : item.raw.available === false ? 'Unavailable' : 'Not Answered'
                     }}
                   </v-chip>
@@ -264,7 +264,7 @@
               <v-list-item v-bind="props" :disabled="item.raw.available === false">
                 <v-list-item-subtitle>
                   <v-chip width="100px" height="100%" density="compact" size="small"
-                    :color="item.raw.available ? 'green' : item.raw.available === false ? 'red' : 'orange'">
+                    :color="item.raw.available ? 'green' : item.raw.available === false ? 'error' : 'orange'">
                     {{ item.raw.available ? 'Available' : item.raw.available === false ? 'Unavailable' : 'Not Answered'
                     }}
                   </v-chip>
