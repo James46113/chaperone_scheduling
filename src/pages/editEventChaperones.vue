@@ -70,10 +70,10 @@ const currentEventID = ref(parseInt(proxy.$route.query.id))
 const currentEvent = computed(() => store.getEvent(currentEventID.value))
 
 onMounted(async () => {
-  store.loadDevEvents()
-  store.loadDevAvailability()
-  store.loadDevChaperoneSlots()
-  store.loadDevChaperones()
+  store.loadEvents()
+  store.loadAllAvailability()
+  store.loadChaperoneSlots()
+  store.loadChaperones()
 })
 
 const chipColor = (chaperone) => {
