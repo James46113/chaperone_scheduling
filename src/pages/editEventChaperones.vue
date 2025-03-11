@@ -88,6 +88,10 @@ onMounted(async () => {
     store.loadChaperoneSlots()
     store.loadChaperones()
   }
+  // store.loadDevAvailability()
+  // store.loadDevChaperoneSlots();
+  // store.loadDevChaperones();
+  // store.loadDevEvents();
   loadingData.value = false
 })
 
@@ -103,7 +107,7 @@ const sortedChaperones = computed(() => {
   const eventAvailabile = eventAvailability.filter(availability => availability.available)
   const eventUnknown = eventAvailability.filter(availability => availability.available === null)
   const eventUnavailable = eventAvailability.filter(availability => availability.available === false)
-  return [...eventAvailabile, ...eventUnknown, ...eventUnavailable].map(availability => store.getChaperone(availability.chaperone_id))
+  return [...eventAvailabile, ...eventUnknown, ...eventUnavailable].map(availability => store.getChaperone(availability.chaperone_id)).filter(c => c)
 })
 
 
