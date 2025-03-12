@@ -15,6 +15,7 @@
     "@mdi/font": "7.4.47",
     "@thumbmarkjs/thumbmarkjs": "^0.19.1",
     "core-js": "^3.37.1",
+    "cors": "^2.8.5",
     "dom-to-image": "^2.6.0",
     "express": "^4.21.2",
     "google-auth-library": "^9.15.1",
