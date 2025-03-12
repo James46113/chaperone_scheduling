@@ -118,20 +118,20 @@ const tableHeaders = [
 
 onMounted(async () => {
   loadingData.value = true
-  // if (!store.eventsLoaded || !store.availabilityLoaded || !store.chaperonesLoaded || !store.chaperoneSlotsLoaded) {
-  //   await Promise.all([
-  //     store.loadEvents(),
-  //     store.loadAvailability(),
-  //     store.loadChaperoneSlots(),
-  //     store.loadChaperones(),
-  //   ])
-  //   event.value = store.getEvent(eventID)
-  // } else {
-  //   store.loadEvents()
-  //   store.loadChaperoneSlots()
-  //   store.loadAvailability()
-  //   store.loadChaperones()
-  // }
+  if (!store.eventsLoaded || !store.availabilityLoaded || !store.chaperonesLoaded || !store.chaperoneSlotsLoaded) {
+    await Promise.all([
+      store.loadEvents(),
+      store.loadAvailability(),
+      store.loadChaperoneSlots(),
+      store.loadChaperones(),
+    ])
+    event.value = store.getEvent(eventID)
+  } else {
+    store.loadEvents()
+    store.loadChaperoneSlots()
+    store.loadAvailability()
+    store.loadChaperones()
+  }
 
   event.value = store.getEvent(eventID)
   loadingData.value = false
