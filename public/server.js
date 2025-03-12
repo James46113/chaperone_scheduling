@@ -10,8 +10,8 @@ app.use(express.json());
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'fingerprint'],
+  exposedHeaders: ['Content-Type', 'Authorization', 'fingerprint']
 }));
 
 app.post('/api/token', async (req, res) => {
@@ -199,6 +199,7 @@ app.use('/api', async (req, res) => {
     return res.status(500).json({ error: `Internal Server Error: ${error}` });
   }
 });
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
