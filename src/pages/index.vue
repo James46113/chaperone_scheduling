@@ -67,6 +67,7 @@ import { VCalendar } from 'vuetify/labs/VCalendar'
 import { ref, onMounted, getCurrentInstance } from 'vue'
 import { useAppStore } from '@/stores/app'
 
+const events = ref([])
 
 const { proxy } = getCurrentInstance()
 
