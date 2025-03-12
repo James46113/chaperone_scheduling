@@ -5,7 +5,8 @@
       <div>
         <v-card-title class="text-h5">Assign Chaperones</v-card-title>
         <v-card-text>Click and drag the chaperones onto the the slots for each event. <br />
-          The chaperone slots will save automatically.</v-card-text>
+          The chaperone slots will save automatically.<br />
+          Use the "Previous" and "Next" buttons to cycle through upcoming events.</v-card-text>
       </div>
       <v-spacer />
       <div style="border: 1px solid #e0e0e0; padding: 10px; border-radius: 5px;" class="mr-5 mb-4">

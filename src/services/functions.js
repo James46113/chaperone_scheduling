@@ -17,6 +17,13 @@ export const fetchAPI = async (url, params) => {
     APIURL = '/api/'
   }
 
+  // let HOSTNAME;
+  // if (window.location.hostname === 'localhost') {
+  //   HOSTNAME = 'https://dev-chaperones-steelcitychoristers.up.railway.app';
+  // } else {
+  //   HOSTNAME = ''
+  // }
+
   return fetch(APIURL + url, {
     ...params,
     headers
