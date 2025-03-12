@@ -1,18 +1,14 @@
 import express from 'express';
 import fetch from 'node-fetch';
-import cors from 'cors';
+import { OAuth2Client } from 'google-auth-library';
 
 const app = express();
 const port = 3000;
+const client = new OAuth2Client('898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com');
 const url = `http://chaperone_scheduling_api.railway.internal:5000`;
 
 app.use(express.json());
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['Content-Type', 'Authorization']
-}));
+
 
 app.post('/api/token', async (req, res) => {
   const { code } = req.body;
@@ -114,14 +110,8 @@ app.use('/api/public/', async (req, res) => {
     headers: req.headers,
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
   });
-  const clone = response.clone();
-  try {
-    return res.status(response.status).json(await response.json());
-  }
-  catch {
-    console.log(`FAILED: ${url}/public${req.url}`)
-    return res.status(response.status).send(clone.text());
-  }
+
+  return res.status(response.status).json(await response.json());
 });
 
 
@@ -145,6 +135,7 @@ app.use('/api/p/', async (req, res) => {
     headers: { ...req.headers, email: email },
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
   })
+  console.log('request failed')
   return res.status(response.status).json(await response.json());
 });
 
