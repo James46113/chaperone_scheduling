@@ -143,7 +143,7 @@
               <v-list-item v-bind="props" :disabled="item.raw.available === false">
                 <v-list-item-subtitle>
                   <v-chip width="100px" height="100%" density="compact" size="small"
-                    :color="item.raw.available ? 'green' : item.raw.available === false ? 'red' : 'orange'">
+                    :color="item.raw.available ? 'green' : item.raw.available === false ? 'error' : 'orange'">
                     {{ item.raw.available ? 'Available' : item.raw.available === false ? 'Unavailable' : 'Not Answered'
                     }}
                   </v-chip>
@@ -264,7 +264,7 @@
               <v-list-item v-bind="props" :disabled="item.raw.available === false">
                 <v-list-item-subtitle>
                   <v-chip width="100px" height="100%" density="compact" size="small"
-                    :color="item.raw.available ? 'green' : item.raw.available === false ? 'red' : 'orange'">
+                    :color="item.raw.available ? 'green' : item.raw.available === false ? 'error' : 'orange'">
                     {{ item.raw.available ? 'Available' : item.raw.available === false ? 'Unavailable' : 'Not Answered'
                     }}
                   </v-chip>
@@ -368,13 +368,13 @@ const assignedChaperones = computed(() => {
 const required = value => !!value || 'Field is required.';
 
 const tableHeaders = computed(() => [
-  { title: 'Group', key: 'title', width: '20%', showTemplate: true },
-  { title: 'Chaperone', key: 'chaperone', width: '15%', showTemplate: false },
-  { title: 'Details', key: 'details', width: '35%', showTemplate: true },
-  { title: 'Start', key: 'startTime', width: '12%', showTemplate: true },
-  { title: 'End', key: 'endTime', width: '12%', showTemplate: true },
-  { title: 'Remove', key: 'remove', width: '6%', showTemplate: true }
-].filter(header => isTemplate.value ? header.showTemplate : true));
+  { title: 'Group', key: 'title', width: '20%', showTemplate: true, showWhenNew: true },
+  { title: 'Chaperone', key: 'chaperone', width: '15%', showTemplate: false, showWhenNew: false },
+  { title: 'Details', key: 'details', width: '35%', showTemplate: true, showWhenNew: true },
+  { title: 'Start', key: 'startTime', width: '12%', showTemplate: true, showWhenNew: true },
+  { title: 'End', key: 'endTime', width: '12%', showTemplate: true, showWhenNew: true },
+  { title: 'Remove', key: 'remove', width: '6%', showTemplate: true, showWhenNew: true }
+].filter(header => (isTemplate.value ? header.showTemplate : true) && (newEvent.value ? header.showWhenNew : true)));
 
 
 onMounted(async () => {

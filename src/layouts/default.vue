@@ -1,9 +1,5 @@
 <template>
   <v-main>
-    <!-- <v-alert type="warning" v-if="proxy.$route.path != '/login' && !isDev">The rota was correct
-      at time of entry. This system is
-      not currently
-      live. Do not rely on it to provide up-to-date information</v-alert> -->
     <router-view />
 
     <AlertDialog />
@@ -28,17 +24,6 @@ import { useAppStore } from '@/stores/app';
 const { proxy } = getCurrentInstance();
 const store = useAppStore();
 const showNavigationBar = computed(() => !['/login', '/offline', '/resetPassword'].includes(proxy.$route.path))
-
-// onMounted(() => {
-//   if (window.location.hostname === 'localhost') {
-//     store.userEmail = "jamescaroe@gmail.com"
-//     store.userID = 8
-//     store.isAdmin = true
-//     console.log('Dev mode')
-//   }
-// })
-
-// onMounted(() => window.scrollTo(0, 0))
 
 const goHome = (tab) => {
   store.tabView = tab;
