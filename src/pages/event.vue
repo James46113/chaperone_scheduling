@@ -8,7 +8,7 @@
 
         <v-btn v-if="!isMobile && store.isAdmin && !event.isPastEvent"
           @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)" color="primary"
-          style="position: absolute; right: 32px;">Edit Event</v-btn>
+          style="position: absolute; right: 32px;">Edit</v-btn>
 
         <v-card-title v-if="!loadingData">{{ event.dateString }}, {{ event.start?.toLocaleTimeString([], {
           hour:
@@ -34,13 +34,7 @@
     <availability-selector :event="event.id" v-if="isMobile" class="mt-8" />
 
     <v-divider class="mb-4 mt-10"></v-divider>
-    <v-row>
-      <v-card-title>Chaperones</v-card-title>
-      <v-spacer />
-      <v-btn flat color="primary" class="my-1" v-if="store.isAdmin && !isMobile"
-        @click="proxy.$router.push(`/editEventChaperones?id=${eventID}`)">Edit Chaperones</v-btn>
-    </v-row>
-
+    <v-card-title>Chaperones</v-card-title>
     <v-card-text v-if="false">Lead Chaperone: {{ event.lead_chaperone }}</v-card-text>
 
     <v-data-table :headers="tableHeaders" :items="event.slots" hide-default-footer v-if="!isMobile">
@@ -118,21 +112,19 @@ const tableHeaders = [
 
 onMounted(async () => {
   loadingData.value = true
-  // if (!store.eventsLoaded || !store.availabilityLoaded || !store.chaperonesLoaded || !store.chaperoneSlotsLoaded) {
-  //   await Promise.all([
-  //     store.loadEvents(),
-  //     store.loadAvailability(),
-  //     store.loadChaperoneSlots(),
-  //     store.loadChaperones(),
-  //   ])
-  //   event.value = store.getEvent(eventID)
-  // } else {
-  //   store.loadEvents()
-  //   store.loadChaperoneSlots()
-  //   store.loadAvailability()
-  //   store.loadChaperones()
-  // }
-
+  if (!store.eventsLoaded || !store.availabilityLoaded || !store.chaperonesLoaded || !store.chaperoneSlotsLoaded) {
+    await Promise.all([
+      store.loadEvents(),
+      store.loadAvailability(),
+      store.loadChaperoneSlots(),
+      store.loadChaperones(),
+    ])
+    event.value = store.getEvent(eventID)
+  } else {
+    store.loadEvents()
+    store.loadChaperoneSlots()
+    store.loadAvailability()
+  }
   event.value = store.getEvent(eventID)
   loadingData.value = false
 
