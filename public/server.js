@@ -120,7 +120,7 @@ app.use('/api/public/', async (req, res) => {
   }
   catch {
     console.log(`FAILED: ${url}/public${req.url}`)
-    return res.status(response.status).send(clone.text());
+    return res.status(response.status).send(await clone.text());
   }
 });
 
@@ -145,7 +145,14 @@ app.use('/api/p/', async (req, res) => {
     headers: { ...req.headers, email: email },
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
   })
-  return res.status(response.status).json(await response.json());
+  const clone = response.clone();
+  try {
+    return res.status(response.status).json(await response.json());
+  }
+  catch {
+    console.log(`FAILED: ${url}/api/p${req.url}`)
+    return res.status(response.status).send(await clone.text());
+  }
 });
 
 app.use('/api', async (req, res) => {
