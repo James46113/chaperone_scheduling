@@ -23,6 +23,7 @@ declare module 'vue-router/auto-routes' {
     '/availability': RouteRecordInfo<'/availability', '/availability', Record<never, never>, Record<never, never>>,
     '/chaperones': RouteRecordInfo<'/chaperones', '/chaperones', Record<never, never>, Record<never, never>>,
     '/editEvent': RouteRecordInfo<'/editEvent', '/editEvent', Record<never, never>, Record<never, never>>,
+    '/editEventChaperones': RouteRecordInfo<'/editEventChaperones', '/editEventChaperones', Record<never, never>, Record<never, never>>,
     '/event': RouteRecordInfo<'/event', '/event', Record<never, never>, Record<never, never>>,
     '/login': RouteRecordInfo<'/login', '/login', Record<never, never>, Record<never, never>>,
     '/offline': RouteRecordInfo<'/offline', '/offline', Record<never, never>, Record<never, never>>,
