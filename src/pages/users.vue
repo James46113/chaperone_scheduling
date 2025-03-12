@@ -63,7 +63,7 @@
           @keyup.enter="createUser"></v-text-field>
         <v-text-field v-model="newUser.name" :rules="[required]" label="Name" required
           @keyup.enter="createUser"></v-text-field>
-        <v-switch v-model="newUser.is_admin" label="Choir Phone" color="primary" />
+        <v-switch v-model="newUser.is_admin" label="Admin" color="primary" />
       </v-card-text>
       <v-card-actions>
         <v-btn @click="showNewUserDialog = false">Cancel</v-btn>
