@@ -10,8 +10,8 @@ app.use(express.json());
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'fingerprint'],
-  exposedHeaders: ['Content-Type', 'Authorization', 'fingerprint']
+  allowedHeaders: ['Content-Type', 'Authorization', 'fingerprint', 'token'],
+  exposedHeaders: ['Content-Type', 'Authorization', 'fingerprint', 'token']
 }));
 
 app.post('/api/token', async (req, res) => {
