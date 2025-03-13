@@ -12,7 +12,7 @@ declare module 'vue' {
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     AppHeader: typeof import('./components/AppHeader.vue')['default']
     AvailabilitySelector: typeof import('./components/AvailabilitySelector.vue')['default']
-    ChaperonesPage: typeof import('./components/ChaperonesPage.vue')['default']
+    ChaperonesPage: typeof import('./components/chaperonesPage.vue')['default']
     CreateTermDialog: typeof import('./components/CreateTermDialog.vue')['default']
     EventCard: typeof import('./components/EventCard.vue')['default']
     PWAInstallDialog: typeof import('./components/PWAInstallDialog.vue')['default']
