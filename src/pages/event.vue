@@ -4,7 +4,7 @@
     <v-row>
       <div>
         <v-card-title class="text-h4 mb-n5" style="white-space: pre-wrap;">{{ event.title
-        }}</v-card-title>
+          }}</v-card-title>
 
         <v-btn v-if="!isMobile && store.isAdmin && !event.isPastEvent"
           @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)" color="primary"
@@ -37,7 +37,7 @@
     <v-row>
       <v-card-title>Chaperones</v-card-title>
       <v-spacer />
-      <v-btn flat color="primary" class="my-1" v-if="store.isAdmin && !isMobile"
+      <v-btn flat color="primary" class="my-1" v-if="store.isAdmin && !isMobile && !event.isPastEvent"
         @click="proxy.$router.push(`/editEventChaperones?id=${eventID}`)">Edit Chaperones</v-btn>
     </v-row>
 
@@ -72,7 +72,7 @@
 
     <v-card v-else v-for="slot in event.slots" class="mb-4">
       <v-card-title v-if="slot.chaperone">{{store.chaperones.find(chaperone => chaperone.id === slot.chaperone)?.name
-      }}</v-card-title>
+        }}</v-card-title>
       <v-alert v-else type="warning" class="mb-6">No Chaperone</v-alert>
       <v-card-subtitle class="mt-n2">{{ slot.title }}</v-card-subtitle>
       <v-card-subtitle>{{ slot.start?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} -
