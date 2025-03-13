@@ -10,8 +10,8 @@ app.use(express.json());
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'fingerprint', 'token'],
+  exposedHeaders: ['Content-Type', 'Authorization', 'fingerprint', 'token']
 }));
 
 app.post('/api/token', async (req, res) => {
@@ -120,7 +120,7 @@ app.use('/api/public/', async (req, res) => {
   }
   catch {
     console.log(`FAILED: ${url}/public${req.url}`)
-    return res.status(response.status).send(clone.text());
+    return res.status(response.status).send(await clone.text());
   }
 });
 
@@ -145,7 +145,14 @@ app.use('/api/p/', async (req, res) => {
     headers: { ...req.headers, email: email },
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
   })
-  return res.status(response.status).json(await response.json());
+  const clone = response.clone();
+  try {
+    return res.status(response.status).json(await response.json());
+  }
+  catch {
+    console.log(`FAILED: ${url}/api/p${req.url}`)
+    return res.status(response.status).send(await clone.text());
+  }
 });
 
 app.use('/api', async (req, res) => {
@@ -199,6 +206,7 @@ app.use('/api', async (req, res) => {
     return res.status(500).json({ error: `Internal Server Error: ${error}` });
   }
 });
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
