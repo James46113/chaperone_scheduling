@@ -19,7 +19,7 @@
           </template>
           <template #event="{ event }" v-if="isMobile">
             <v-card-text style="font-size: x-small; border-left: 2px solid; padding-left: 0.2em; border-color: #a80056;"
-              class="py-0" @click="proxy.$router.push(`/event?id=${event.id}`)">
+              class="py-0" @click="proxy.$router.push(`/event/${event.id}`)">
               {{ event.title }}
             </v-card-text>
           </template>

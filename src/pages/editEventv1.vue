@@ -142,7 +142,7 @@
             <template v-slot:item="{ props, item }">
               <v-list-item v-bind="props" :disabled="item.raw.available === false">
                 <v-list-item-subtitle>
-                  <v-chip width="100px" height="100%" density="compact" size="small"
+                  <v-chip variant="outlined" width="100px" height="100%" density="compact" size="small"
                     :color="item.raw.available ? 'green' : item.raw.available === false ? 'error' : 'orange'">
                     {{ item.raw.available ? 'Available' : item.raw.available === false ? 'Unavailable' : 'Not Answered'
                     }}
@@ -263,7 +263,7 @@
             <template v-slot:item="{ props, item }">
               <v-list-item v-bind="props" :disabled="item.raw.available === false">
                 <v-list-item-subtitle>
-                  <v-chip width="100px" height="100%" density="compact" size="small"
+                  <v-chip variant="outlined" width="100px" height="100%" density="compact" size="small"
                     :color="item.raw.available ? 'green' : item.raw.available === false ? 'error' : 'orange'">
                     {{ item.raw.available ? 'Available' : item.raw.available === false ? 'Unavailable' : 'Not Answered'
                     }}
@@ -388,7 +388,6 @@ onMounted(async () => {
   }
 
   loadingData.value = true;
-
 
   await getChaperones();
 
@@ -637,7 +636,7 @@ const deleteEvent = () => {
       if (!response.ok) {
         failed = true;
       }
-      fetchAPI(`chaperone_slots/${event.value.id}`, {
+      fetchAPI(`chaperone_slots/event/${event.value.id}`, {
         method: 'DELETE',
       }).then((response) => {
         if (!response.ok) {
@@ -978,7 +977,7 @@ const saveChaperoneSlots = async () => {
     return false;
   }
 
-  await fetchAPI(`chaperone_slots/${event.value.id}`, {
+  await fetchAPI(`chaperone_slots/event/${event.value.id}`, {
     method: 'DELETE'
   })
 

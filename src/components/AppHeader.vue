@@ -9,11 +9,11 @@
       Report Error
     </v-btn>
 
-    <v-btn v-if="store.isAdmin && !isMobile" class="mt-4 mr-3" @click="proxy.$router.push('/templateEvents')">
+    <v-btn v-if="store.isAdmin && !isMobile" class="mt-4 mr-3" @click="proxy.$router.push('/templates')">
       <v-icon size="25">mdi-note-text</v-icon>
     </v-btn>
 
-    <v-btn v-if="!isMobile" class="mt-4 mr-3" @click="proxy.$router.push(`/schedule?id=${store.userID}`)">
+    <v-btn v-if="!isMobile" class="mt-4 mr-3" @click="proxy.$router.push(`/chaperones/${store.userID}`)">
       <v-icon size="25">mdi-account</v-icon>
     </v-btn>
 

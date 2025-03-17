@@ -17,45 +17,52 @@
             password</v-card-text>
         </div>
         <div v-else>
-          <div class="text-subtitle-1 text-medium-emphasis mt-2 mb-1">Email</div>
-          <v-text-field density="compact" prepend-inner-icon="mdi-email-outline" variant="outlined" color="primary"
-            placeholder="Your Email" v-model="email" type="email" />
+          <v-form>
 
-          <div v-if="!resettingPassword">
-            <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between mb-n1">
-              Password
-              <span tabindex="-1" style="cursor: pointer;" class="text-caption text-decoration-none text-primary"
-                @click="resettingPassword = true">
-                Forgot password?</span>
+            <div class="text-subtitle-1 text-medium-emphasis mt-2 mb-1">Email</div>
+            <v-text-field density="compact" prepend-inner-icon="mdi-email-outline" variant="outlined" color="primary"
+              placeholder="Your Email" v-model="email" type="email" autocomplete="email" />
+
+            <div v-if="!resettingPassword">
+              <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between mb-n1">
+                Password
+                <span tabindex="-1" style="cursor: pointer;" class="text-caption text-decoration-none text-primary"
+                  @click="resettingPassword = true">
+                  Forgot password?</span>
+              </div>
+
+              <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
+                @click:append-inner="passwordVisible = !passwordVisible"
+                :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'" variant="outlined" color="primary"
+                placeholder="Your Password" v-model="password" :type="passwordVisible ? 'text' : 'password'"
+                class="mt-2" @keyup.enter="passwordLogin" autocomplete="current-password" />
+
+              <v-card-text class="text-primary my-n3" style="text-align: center;" v-if="incorrectPassword">Incorrect
+                email
+                or
+                password</v-card-text>
+
+              <v-btn @click="passwordLogin" :loading="signingIn" color="primary" class="mt-4" width="100%">Sign
+                In</v-btn>
+
+              <v-btn variant="outlined" :disabled="signingIn" width="100%" @click="customLogin"
+                class="text-body-2 mt-4">
+                <img src="/Google__G__logo.svg" class="mr-2" />
+                Sign in with Google
+              </v-btn>
             </div>
-
-            <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
-              @click:append-inner="passwordVisible = !passwordVisible"
-              :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'" variant="outlined" color="primary"
-              placeholder="Your Password" v-model="password" :type="passwordVisible ? 'text' : 'password'" class="mt-2"
-              @keyup.enter="passwordLogin" />
-
-            <v-card-text class="text-primary my-n3" style="text-align: center;" v-if="incorrectPassword">Incorrect email
-              or
-              password</v-card-text>
-
-            <v-btn @click="passwordLogin" :loading="signingIn" color="primary" class="mt-4" width="100%">Sign In</v-btn>
-
-            <v-btn variant="outlined" :disabled="signingIn" width="100%" @click="customLogin" class="text-body-2 mt-4">
-              <img src="/Google__G__logo.svg" class="mr-2" />
-              Sign in with Google
-            </v-btn>
-          </div>
-          <div v-else>
-            <v-btn color="primary" :disabled="resetTimeout > 0" width="100%" :loading="awaitingPasswordReset"
-              @click="resetPassword" class="mt-4">Reset Password</v-btn>
-            <v-card-text v-if="resetTimeout > 0" class="text-primary mt-0 mb-n6" style="text-align: center;">Please wait
-              {{
-                resetTimeout }} seconds before trying again.</v-card-text>
-            <v-card-text @click="resettingPassword = false" class="text-primary mt-2"
-              style="text-align: center; cursor: pointer;">Back to Sign
-              in</v-card-text>
-          </div>
+            <div v-else>
+              <v-btn color="primary" :disabled="resetTimeout > 0" width="100%" :loading="awaitingPasswordReset"
+                @click="resetPassword" class="mt-4">Reset Password</v-btn>
+              <v-card-text v-if="resetTimeout > 0" class="text-primary mt-0 mb-n6" style="text-align: center;">Please
+                wait
+                {{
+                  resetTimeout }} seconds before trying again.</v-card-text>
+              <v-card-text @click="resettingPassword = false" class="text-primary mt-2"
+                style="text-align: center; cursor: pointer;">Back to Sign
+                in</v-card-text>
+            </div>
+          </v-form>
         </div>
       </v-card>
     </div>
@@ -83,46 +90,52 @@
         </div>
         <div v-else>
           <div class="text-subtitle-1 text-medium-emphasis mt-2 mb-1">Email</div>
-          <v-text-field density="compact" prepend-inner-icon="mdi-email-outline" variant="outlined" color="primary"
-            placeholder="Your Email" v-model="email" type="email" />
+          <v-form>
+            <v-text-field density="compact" prepend-inner-icon="mdi-email-outline" variant="outlined" color="primary"
+              placeholder="Your Email" v-model="email" type="email" autocomplete="email" />
 
-          <div v-if="!resettingPassword">
-            <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between mb-n1">
-              Password
-              <span tabindex="-1" style="cursor: pointer;" class="text-caption text-decoration-none text-primary"
-                @click="resettingPassword = true">
-                Forgot password?</span>
+            <div v-if="!resettingPassword">
+              <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between mb-n1">
+                Password
+                <span tabindex="-1" style="cursor: pointer;" class="text-caption text-decoration-none text-primary"
+                  @click="resettingPassword = true">
+                  Forgot password?</span>
+              </div>
+
+              <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline" autocomplete="current-password"
+                @click:append-inner="passwordVisible = !passwordVisible"
+                :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'" variant="outlined" color="primary"
+                placeholder="Your Password" v-model="password" :type="passwordVisible ? 'text' : 'password'"
+                class="mt-2" @keyup.enter="passwordLogin" />
+
+              <v-card-text class="text-primary my-n3" style="text-align: center;" v-if="incorrectPassword">Incorrect
+                email
+                or
+                password</v-card-text>
+
+              <v-btn @click="passwordLogin" :loading="signingIn" color="primary" class="mt-4" width="100%">Sign
+                In</v-btn>
+
+              <v-btn variant="outlined" :disabled="signingIn" width="100%" @click="customLogin"
+                class="text-body-2 mt-4">
+                <img src="/Google__G__logo.svg" class="mr-2" />
+                Sign in with Google
+              </v-btn>
             </div>
+            <div v-else>
+              <v-btn color="primary" width="100%" :loading="awaitingPasswordReset" @click="resetPassword" class="mt-4"
+                :disabled="resetTimeout > 0">Reset Password</v-btn>
 
-            <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
-              @click:append-inner="passwordVisible = !passwordVisible"
-              :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'" variant="outlined" color="primary"
-              placeholder="Your Password" v-model="password" :type="passwordVisible ? 'text' : 'password'" class="mt-2"
-              @keyup.enter="passwordLogin" />
+              <v-card-text v-if="resetTimeout > 0" class="text-primary mt-2 mb-n6" style="text-align: center;">Please
+                wait
+                {{
+                  resetTimeout }} seconds before trying again.</v-card-text>
 
-            <v-card-text class="text-primary my-n3" style="text-align: center;" v-if="incorrectPassword">Incorrect email
-              or
-              password</v-card-text>
-
-            <v-btn @click="passwordLogin" :loading="signingIn" color="primary" class="mt-4" width="100%">Sign In</v-btn>
-
-            <v-btn variant="outlined" :disabled="signingIn" width="100%" @click="customLogin" class="text-body-2 mt-4">
-              <img src="/Google__G__logo.svg" class="mr-2" />
-              Sign in with Google
-            </v-btn>
-          </div>
-          <div v-else>
-            <v-btn color="primary" width="100%" :loading="awaitingPasswordReset" @click="resetPassword" class="mt-4"
-              :disabled="resetTimeout > 0">Reset Password</v-btn>
-
-            <v-card-text v-if="resetTimeout > 0" class="text-primary mt-2 mb-n6" style="text-align: center;">Please wait
-              {{
-                resetTimeout }} seconds before trying again.</v-card-text>
-
-            <v-card-text @click="resettingPassword = false" class="text-primary mt-2"
-              style="text-align: center; cursor: pointer;">Back to Sign
-              in</v-card-text>
-          </div>
+              <v-card-text @click="resettingPassword = false" class="text-primary mt-2"
+                style="text-align: center; cursor: pointer;">Back to Sign
+                in</v-card-text>
+            </div>
+          </v-form>
         </div>
       </v-card>
     </div>
@@ -177,7 +190,7 @@ const cancelSignIn = () => {
 const tokenLogin = async () => {
   signingIn.value = true;
   const token = Cookies.get('passwdAccessToken');
-  fetch('/api/public/login/token', {
+  fetchAPI('/api/public/login/token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -193,8 +206,11 @@ const tokenLogin = async () => {
     store.isAdmin = data.is_admin;
     store.userEmail = data.email;
     isSignedIn.value = true;
-    proxy.$router.push('/');
-    console.log('Logged in with token');
+    if (proxy.$route.query.redirect) {
+      proxy.$router.push(proxy.$route.query.redirect);
+    } else {
+      proxy.$router.push('/');
+    } console.log('Logged in with token');
   }).catch(error => {
     Cookies.remove('passwdAccessToken');
     signingIn.value = false;
@@ -206,7 +222,7 @@ const passwordLogin = async () => {
   incorrectPassword.value = false;
   signingIn.value = true;
   try {
-    const response = await fetch('/api/public/login/password', {
+    const response = await fetchAPI('/api/public/login/password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -222,8 +238,11 @@ const passwordLogin = async () => {
       store.userEmail = responseJson.email;
       usingPasswordLogin.value = true;
       isSignedIn.value = true;
-      proxy.$router.push('/');
-      console.log('Logged in with password');
+      if (proxy.$route.query.redirect) {
+        proxy.$router.push(proxy.$route.query.redirect);
+      } else {
+        proxy.$router.push('/');
+      } console.log('Logged in with password');
     } else {
       incorrectPassword.value = true;
       signingIn.value = false;
@@ -238,7 +257,7 @@ const passwordLogin = async () => {
 
 const resetPassword = () => {
   awaitingPasswordReset.value = true;
-  const token = window.location.hostname + "/resetPassword?token=" + uuidv4();
+  const token = "https://" + window.location.hostname + "/resetPassword?token=" + uuidv4();
 
   if (email.value === '') {
     store.showAlert('Error', 'Please enter your email address to reset your password.');
@@ -251,7 +270,7 @@ const resetPassword = () => {
     return;
   }
 
-  fetch('/api/public/forgot_password', {
+  fetchAPI('/api/public/forgot_password', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -299,7 +318,7 @@ const customLogin = () => {
 
 function onCodeReceived(response) {
   // Exchange the authorization code for tokens
-  fetch('/api/token', {
+  fetchAPI('/api/token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -369,7 +388,7 @@ function onSignIn(response) {
 
 async function refreshToken() {
   try {
-    const response = await fetch('/api/refresh-token', {
+    const response = await fetchAPI('/api/refresh-token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
