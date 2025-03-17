@@ -12,7 +12,7 @@
           Create Events
           <v-icon class="mr-3" style="position: absolute; right: 0;">mdi-calendar-text</v-icon>
         </v-list-subheader>
-        <v-list-item prepend-icon="mdi-calendar-plus" @click="proxy.$router.push('/editEvent?id=new')">
+        <v-list-item prepend-icon="mdi-calendar-plus" @click="proxy.$router.push('/event/new')">
           New Event
         </v-list-item>
         <v-list-item prepend-icon="mdi-calendar-multiple" @click="createTerm">

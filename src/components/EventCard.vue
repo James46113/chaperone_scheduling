@@ -79,7 +79,7 @@ const missingChaperones = computed(() => props.event.chaperones?.includes(null) 
 
 const goToEvent = (value) => {
   if (!value.target.closest('.v-btn')) {
-    proxy.$router.push(`/event?id=${props.event.id}`)
+    proxy.$router.push(`/event/${props.event.id}`)
   }
 }
 

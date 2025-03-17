@@ -6,7 +6,7 @@
         : "'s" }} Schedule</v-card-title>
 
       <v-sheet v-for="event in events" elevation="2" class="my-2" variant="outlined" color="primary"
-        style="padding: 1px; cursor: pointer;" rounded @click="proxy.$router.push(`/event?id=${event.id}`)">
+        style="padding: 1px; cursor: pointer;" rounded @click="proxy.$router.push(`/event/${event.id}`)">
         <v-card class="pa-1">
           <v-icon v-if="isMobile" color="primary" size="25" class="mt-2 mr-3"
             style="position: absolute; right: 0px">mdi-open-in-new</v-icon>
