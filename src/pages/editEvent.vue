@@ -6,7 +6,7 @@
 <script setup>
 
 import { useAppStore } from '@/stores/app';
-import editPage from '@/components/editPage.vue';
+import EditPage from '@/components/EditPage.vue';
 
 
 const store = useAppStore();
