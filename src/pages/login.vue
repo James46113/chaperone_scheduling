@@ -222,7 +222,7 @@ const passwordLogin = async () => {
   incorrectPassword.value = false;
   signingIn.value = true;
   try {
-    const response = await fetchAPI('/api/public/login/password', {
+    const response = await fetchAPI('/public/login/password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
