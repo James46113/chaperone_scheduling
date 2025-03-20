@@ -1,6 +1,6 @@
 <template>
   <edit-page :event="event" :deleteEvent="deleteEvent" :saveEvent="saveEvent" :newSlot="newSlot"
-    :removeSlot="removeSlot" :isTemplate="isTemplate" :isNewEvent="false" />
+    :removeSlot="removeSlot" :isTemplate="isTemplate" :isNewEvent="false" :notFound="notFound" />
 </template>
 
 <script setup>
@@ -14,6 +14,7 @@ const { proxy } = getCurrentInstance();
 const EVENTID = computed(() => proxy.$route.params.id);
 const isTemplate = computed(() => proxy.$route.path.startsWith('/templates'));
 const event = ref({});
+const notFound = ref(false);
 
 onMounted(async () => {
   loadingData.value = true;
@@ -75,6 +76,10 @@ const loadEvent = async () => {
   }
   store.lockEvents();
   const tempEvent = store.getEvent(EVENTID.value);
+  if (!tempEvent) {
+    notFound.value = true;
+    return;
+  }
 
   tempEvent.startHours = String(tempEvent.start.getHours()).padStart(2, '0');
   tempEvent.startMinutes = String(tempEvent.start.getMinutes()).padStart(2, '0');
@@ -105,7 +110,10 @@ const loadTemplate = async () => {
   }
 
   const tempTemplate = store.getTemplate(EVENTID.value);
-  console.log(tempTemplate);
+  if (!tempTemplate) {
+    notFound.value = true;
+    return;
+  }
 
   tempTemplate.startHours = String(tempTemplate.start.getHours()).padStart(2, '0');
   tempTemplate.startMinutes = String(tempTemplate.start.getMinutes()).padStart(2, '0');

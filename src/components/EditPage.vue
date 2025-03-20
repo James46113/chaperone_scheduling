@@ -1,6 +1,6 @@
 <template>
   <app-header />
-  <div class="pa-6" v-if="!loadingData">
+  <div class="pa-6" v-if="!loadingData && !notFound">
     <v-card class="pa-3" elevation="0">
       <v-card-title class="text-h5 ml-n6 mb-4">Edit {{ isTemplate ? 'Template' : 'Event' }}</v-card-title>
       <v-row>
@@ -298,6 +298,24 @@
 
     </v-card>
   </div>
+  <div v-else-if="notFound" class="d-flex justify-center mt-10">
+    <v-card class="ma-4 pa-4" :width="isMobile ? '100vw' : '40vw'">
+
+      <v-img src="/Steel-City-Choristers.png" width="15vw"></v-img>
+      <v-card-title>{{ isTemplate ? 'Template' : 'Event' }} Not Found</v-card-title>
+      <v-card-text>
+        The {{ isTemplate ? 'template' : 'event' }} you are looking for does not exist. It may have been deleted. Please
+        check the URL and try again.
+      </v-card-text>
+
+      <div class="d-flex justify-center">
+        <v-btn v-if="!isTemplate" @click="proxy.$router.push('/')" variant="flat" width="20%"
+          color="primary">Events</v-btn>
+        <v-btn v-else @click="proxy.$router.push('/templates')" variant="flat" width="20%"
+          color="primary">Templates</v-btn>
+      </div>
+    </v-card>
+  </div>
   <div v-else class="d-flex justify-center align-center" style="height: 70vh;">
     <v-progress-circular color="primary" indeterminate size="40" />
   </div>
@@ -327,6 +345,7 @@ const definedProps = defineProps({
   saveEvent: Function,
   newSlot: Function,
   removeSlot: Function,
+  notFound: Boolean,
 })
 
 const props = toRefs(definedProps)
@@ -339,6 +358,8 @@ const saving = ref(false)
 const deleting = ref(false)
 const required = value => !!value || 'Field is required.';
 const isDefaultTemplate = computed(() => [2, 3].includes(event.value.id));
+
+const { proxy } = getCurrentInstance();
 
 const selectedTemplate = ref();
 
