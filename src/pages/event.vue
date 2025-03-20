@@ -1,10 +1,10 @@
 <template>
   <app-header />
-  <v-card :class="isMobile ? 'pa-4' : 'pa-10'" v-if="!loadingData">
+  <v-card :class="isMobile ? 'pa-4' : 'pa-10'" v-if="!loadingData && !notFound">
     <v-row>
       <div>
         <v-card-title class="text-h4 mb-n5" style="white-space: pre-wrap;">{{ event.title
-          }}</v-card-title>
+        }}</v-card-title>
 
         <v-btn v-if="!isMobile && store.isAdmin && !event.isPastEvent"
           @click="proxy.$router.push(`/event/${proxy.$route.params.id}/edit`)" color="primary"
@@ -72,7 +72,7 @@
 
     <v-card v-else v-for="slot in event.slots" class="mb-4">
       <v-card-title v-if="slot.chaperone">{{store.chaperones.find(chaperone => chaperone.id === slot.chaperone)?.name
-        }}</v-card-title>
+      }}</v-card-title>
       <v-alert v-else type="warning" class="mb-6">No Chaperone</v-alert>
       <v-card-subtitle class="mt-n2">{{ slot.title }}</v-card-subtitle>
       <v-card-subtitle>{{ slot.start?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} -
@@ -93,6 +93,20 @@
       </span>
     </v-card-text>
   </v-card>
+  <div v-else-if="notFound" class="d-flex justify-center mt-10">
+    <v-card class="ma-4 pa-4" :width="isMobile ? '100vw' : '40vw'">
+
+      <v-img src="/Steel-City-Choristers.png" width="15vw"></v-img>
+      <v-card-title>Event Not Found</v-card-title>
+      <v-card-text>
+        The event you are looking for does not exist. It may have been deleted. Please check the URL and try again.
+      </v-card-text>
+
+      <div class="d-flex justify-center">
+        <v-btn @click="proxy.$router.push('/')" variant="flat" width="20%" color="primary">Events</v-btn>
+      </div>
+    </v-card>
+  </div>
   <div v-else class="d-flex justify-center align-center" style="height: 70vh;">
     <v-progress-circular color="primary" indeterminate size="40" />
   </div>
@@ -107,6 +121,7 @@ const store = useAppStore();
 
 const eventID = proxy.$route.params.id
 const event = ref({})
+const notFound = ref(false)
 
 const tableHeaders = [
   { title: 'Group', key: 'title', width: '20%' },
@@ -133,6 +148,9 @@ onMounted(async () => {
   }
 
   event.value = store.getEvent(eventID)
+  if (!event.value) {
+    notFound.value = true
+  }
   loadingData.value = false
 
   document.title = `${event.value.title} - Steel City Choristers`;

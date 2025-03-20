@@ -196,7 +196,7 @@ export const useAppStore = defineStore('app', () => {
     });
 
     const data = await response.json();
-    availability.value = data.filter((avail: any) => avail.chaperone_id !== 10);
+    availability.value = data.filter((avail: any) => avail.chaperone_id !== 0);
   }
 
   const loadAllAvailability = async () => {
@@ -212,7 +212,7 @@ export const useAppStore = defineStore('app', () => {
       avail.chaperoneName = computed(() => chaperones.value.filter((chaperone: any) => chaperone.id === avail.chaperone_id).map((c: any) => c.name
       )[0] ?? null);
     });
-    allAvailability.value = data.filter((avail: any) => avail.chaperone_id !== 10);
+    allAvailability.value = data.filter((avail: any) => avail.chaperone_id !== 0);
   }
 
   const loadTemplates = async () => {

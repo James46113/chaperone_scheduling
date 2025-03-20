@@ -50,10 +50,10 @@
               {{ chaperone }}<br>
             </v-card-text>
           </span>
-          <v-alert v-if="missingChaperones && store.isAdmin" density="compact" type="warning" class="mt-1"
-            max-width="400px">Empty
+          <v-alert v-if="missingChaperones && store.isAdmin && !event.isPastEvent" density="compact" type="warning"
+            class="mt-1" max-width="400px">Empty
             Slot(s)</v-alert>
-          <div v-if="loadingData" class="d-flex justify-center align-center">
+          <div v-if="loadingData && sortedChaperones.length === 0" class="d-flex justify-center align-center">
             <v-progress-circular color="primary" indeterminate />
           </div>
         </v-card-text>
