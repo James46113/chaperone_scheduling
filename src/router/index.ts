@@ -13,7 +13,7 @@ import event from '@/pages/event.vue'
 import schedule from '@/pages/schedule.vue'
 import editEventChaperones from '@/pages/editEventChaperones.vue'
 import templateEvents from '@/pages/templateEvents.vue'
-import editEventV3 from '@/pages/editEventV3.vue'
+import editEvent from '@/pages/editEvent.vue'
 import newEvent from '@/pages/newEvent.vue'
 
 const newRoutes = [
@@ -24,7 +24,7 @@ const newRoutes = [
   },
   {
     path: '/event/:id/edit',
-    component: editEventV3,
+    component: editEvent,
   },
   {
     path: '/event/new',
