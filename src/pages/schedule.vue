@@ -1,6 +1,6 @@
 <template>
   <app-header />
-  <schedule-page :chaperone_id="proxy.$route.query.id" />
+  <schedule-page :chaperone_id="proxy.$route.params.id" />
 </template>
 
 <script setup>

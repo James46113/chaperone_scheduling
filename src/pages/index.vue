@@ -13,13 +13,14 @@
           <actions-menu activatorID="calendarMenu" label="Actions" />
         </div>
 
+        <v-progress-linear v-if="loadingData" indeterminate color="primary" />
         <v-calendar class="pa-0" :events="store.events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" hide-week-number>
           <template #event="{ event }" v-if="!isMobile" :interval-height="20">
             <event-card :event="event" small />
           </template>
           <template #event="{ event }" v-if="isMobile">
             <v-card-text style="font-size: x-small; border-left: 2px solid; padding-left: 0.2em; border-color: #a80056;"
-              class="py-0" @click="proxy.$router.push(`/event?id=${event.id}`)">
+              class="py-0" @click="proxy.$router.push(`/event/${event.id}`)">
               {{ event.title }}
             </v-card-text>
           </template>
@@ -80,18 +81,13 @@ onMounted(async () => {
     store.tabView = proxy.$route.query.view;
   }
 
-  try {
+  if (!store.eventsLoaded || !store.availabilityLoaded || !store.chaperonesLoaded || !store.chaperoneSlotsLoaded) {
     loadingData.value = true;
-    if (!store.eventsLoaded || !store.availabilityLoaded || !store.chaperonesLoaded || !store.chaperoneSlotsLoaded) {
-      await loadData();
-    } else {
-      loadData();
-    }
-  } catch (error) {
-    console.error('Error:', error);
-  } finally {
-    loadingData.value = false;
+    await loadData();
+  } else {
+    loadData();
   }
+  loadingData.value = false;
 })
 
 const loadData = async () => {

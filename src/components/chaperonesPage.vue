@@ -1,5 +1,5 @@
 <template>
-  <div class="pa-4 d-flex justify-center">
+  <div class="pa-4 d-flex justify-center" v-if="!loadingData">
     <v-card elevation="0" :width="isMobile ? '100vw' : '80vw'">
       <v-row>
         <v-card-title class="text-h5 mt-3 ml-3">Chaperones' Schedules</v-card-title>
@@ -30,6 +30,10 @@
     </v-card>
   </div>
 
+  <div v-else class="d-flex justify-center align-center" style="height: 70vh;">
+    <v-progress-circular color="primary" indeterminate size="40" />
+  </div>
+
 </template>
 
 
@@ -48,18 +52,20 @@ const { proxy } = getCurrentInstance();
 const store = useAppStore();
 
 const showSchedule = (value, row) => {
-  proxy.$router.push(`/schedule?id=${row.item.id}`)
+  proxy.$router.push(`/chaperones/${row.item.id}`)
 }
 
 
 onMounted(async () => {
   loadingData.value = true;
-  if (!store.chaperonesLoaded || !store.chaperoneSlotsLoaded) {
+  if (!store.chaperonesLoaded || !store.chaperoneSlotsLoaded || !store.eventsLoaded) {
     await Promise.all([
+      store.loadEvents(),
       store.loadChaperones(),
       store.loadChaperoneSlots()
     ])
   } else {
+    store.loadEvents();
     store.loadChaperones();
     store.loadChaperoneSlots();
   }

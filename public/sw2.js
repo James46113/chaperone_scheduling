@@ -77,6 +77,7 @@ self.addEventListener('fetch', (event) => {
       } catch (error) {
         const cache = await caches.open(CACHE);
         const cachedResp = await cache.match(event.request);
+        console.error(`Failed to fetch ${event.request.url}: ${error}`);
         return cachedResp || new Response('Resource not available', { status: 503 });
       }
     })());

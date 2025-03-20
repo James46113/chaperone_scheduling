@@ -9,11 +9,52 @@ import { createRouter, createWebHistory } from 'vue-router/auto'
 import { setupLayouts } from 'virtual:generated-layouts'
 import { routes } from 'vue-router/auto-routes'
 import { useAppStore } from '@/stores/app'
+import event from '@/pages/event.vue'
+import schedule from '@/pages/schedule.vue'
+import editEventChaperones from '@/pages/editEventChaperones.vue'
+import templateEvents from '@/pages/templateEvents.vue'
+import editEvent from '@/pages/editEvent.vue'
+import newEvent from '@/pages/newEvent.vue'
 
+const newRoutes = [
+  ...routes,
+  {
+    path: '/event/:id',
+    component: event,
+  },
+  {
+    path: '/event/:id/edit',
+    component: editEvent,
+  },
+  {
+    path: '/event/new',
+    component: newEvent,
+  },
+  {
+    path: '/chaperones/:id',
+    component: schedule,
+  },
+  {
+    path: '/event/:id/edit/chaperones',
+    component: editEventChaperones,
+  },
+  {
+    path: '/templates',
+    component: templateEvents,
+  },
+  {
+    path: '/templates/:id/edit',
+    component: editEvent,
+  },
+  {
+    path: '/templates/new',
+    component: newEvent,
+  },
+]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: setupLayouts(routes),
+  routes: setupLayouts(newRoutes),
 })
 
 // Workaround for https://github.com/vitejs/vite/issues/11804
