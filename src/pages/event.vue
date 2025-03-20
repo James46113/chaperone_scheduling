@@ -1,18 +1,18 @@
 <template>
   <app-header />
-  <v-card :class="isMobile ? 'pa-4' : 'pa-10'" v-if="!loadingData">
+  <v-card :class="isMobile ? 'pa-4' : 'pa-10'" v-if="!loadingData && !notFound">
     <v-row>
       <div>
         <v-card-title class="text-h4 mb-n5" style="white-space: pre-wrap;">{{ event.title
-          }}</v-card-title>
+        }}</v-card-title>
 
         <v-btn v-if="!isMobile && store.isAdmin && !event.isPastEvent"
-          @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)" color="primary"
+          @click="proxy.$router.push(`/event/${proxy.$route.params.id}/edit`)" color="primary"
           style="position: absolute; right: 32px;">Edit Event</v-btn>
 
         <v-card-title v-if="!loadingData">{{ event.dateString }}, {{ event.start?.toLocaleTimeString([], {
           hour:
-            '2-digit', minute: '2-digit'
+            '2-digit', minute: '2-digit', hour12: false
         }) }}
           - {{ event.end?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
           }}</v-card-title>
@@ -28,7 +28,7 @@
     </v-row>
 
     <v-btn v-if="isMobile && store.isAdmin && !event.isPastEvent"
-      @click="proxy.$router.push(`/editEvent?id=${proxy.$route.query.id}`)" color="primary" class="mt-10"
+      @click="proxy.$router.push(`/event/${proxy.$route.params.id}/edit`)" color="primary" class="mt-10"
       width="100vw">Edit</v-btn>
 
     <availability-selector :event="event.id" v-if="isMobile" class="mt-8" />
@@ -38,7 +38,7 @@
       <v-card-title>Chaperones</v-card-title>
       <v-spacer />
       <v-btn flat color="primary" class="my-1" v-if="store.isAdmin && !isMobile && !event.isPastEvent"
-        @click="proxy.$router.push(`/editEventChaperones?id=${eventID}`)">Edit Chaperones</v-btn>
+        @click="proxy.$router.push(`/event/${eventID}/edit/chaperones`)">Edit Chaperones</v-btn>
     </v-row>
 
     <v-card-text v-if="false">Lead Chaperone: {{ event.lead_chaperone }}</v-card-text>
@@ -72,7 +72,7 @@
 
     <v-card v-else v-for="slot in event.slots" class="mb-4">
       <v-card-title v-if="slot.chaperone">{{store.chaperones.find(chaperone => chaperone.id === slot.chaperone)?.name
-        }}</v-card-title>
+      }}</v-card-title>
       <v-alert v-else type="warning" class="mb-6">No Chaperone</v-alert>
       <v-card-subtitle class="mt-n2">{{ slot.title }}</v-card-subtitle>
       <v-card-subtitle>{{ slot.start?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} -
@@ -93,6 +93,20 @@
       </span>
     </v-card-text>
   </v-card>
+  <div v-else-if="notFound" class="d-flex justify-center mt-10">
+    <v-card class="ma-4 pa-4" :width="isMobile ? '100vw' : '40vw'">
+
+      <v-img src="/Steel-City-Choristers.png" width="15vw"></v-img>
+      <v-card-title>Event Not Found</v-card-title>
+      <v-card-text>
+        The event you are looking for does not exist. It may have been deleted. Please check the URL and try again.
+      </v-card-text>
+
+      <div class="d-flex justify-center">
+        <v-btn @click="proxy.$router.push('/')" variant="flat" width="20%" color="primary">Events</v-btn>
+      </div>
+    </v-card>
+  </div>
   <div v-else class="d-flex justify-center align-center" style="height: 70vh;">
     <v-progress-circular color="primary" indeterminate size="40" />
   </div>
@@ -105,8 +119,9 @@ import { useAppStore } from '@/stores/app';
 const { proxy } = getCurrentInstance()
 const store = useAppStore();
 
-const eventID = proxy.$route.query.id
+const eventID = proxy.$route.params.id
 const event = ref({})
+const notFound = ref(false)
 
 const tableHeaders = [
   { title: 'Group', key: 'title', width: '20%' },
@@ -125,7 +140,6 @@ onMounted(async () => {
       store.loadChaperoneSlots(),
       store.loadChaperones(),
     ])
-    event.value = store.getEvent(eventID)
   } else {
     store.loadEvents()
     store.loadChaperoneSlots()
@@ -134,66 +148,11 @@ onMounted(async () => {
   }
 
   event.value = store.getEvent(eventID)
+  if (!event.value) {
+    notFound.value = true
+  }
   loadingData.value = false
 
   document.title = `${event.value.title} - Steel City Choristers`;
-
-  // loadingData.value = true
-  // await getChaperones();
-  // let availability = null;
-
-
-  // const [eventData, chaperoneData] = await Promise.all([
-  //   fetchAPI(`events/${proxy.$route.query.id}`, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   }).then((response) => response.json()),
-  //   fetchAPI(`chaperone_slots/${proxy.$route.query.id}`, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   }).then((response) => response.json())
-  // ]);
-
-  // eventData.date = new Date(eventData.start)
-  // eventData.dateString = eventData.date.toLocaleDateString('en-UK', {
-  //   weekday: 'short', day: 'numeric',
-  //   month: 'short', year: 'numeric'
-  // });
-  // eventData.start = new Date(eventData.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-  // eventData.end = new Date(eventData.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-
-  // eventData.lead_chaperone = store.chaperones.value.find(chaperone => chaperone.id == eventData.lead_chaperone)?.name ?? null;
-  // eventData.available = availability;
-  // event = eventData;
-  // getAvailability();
-  // document.title = `${eventData.title} - Steel City Choristers`;
-
-  // chaperoneData.sort((a, b) => new Date(a.start) - new Date(b.start));
-  // chaperoneSlots.value = chaperoneData;
-
-  // loadingData.value = false
 })
-
-const getAvailability = () => {
-  fetchAPI(`chaperones/availability/${store.userID}/${proxy.$route.query.id}`, {
-    // fetchAPI(`chaperones/availability/1/${proxy.$route.query.id}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      event.value.available = data.available;
-    })
-    .catch((error) => {
-      console.error('Error:', error)
-    });
-
-}
-
 </script>

@@ -11,20 +11,22 @@ export const fetchAPI = async (url, params) => {
   // const APIURL = window.location.href.startsWith('https://chaperonescheduling-dev.up.railway.app')
   //   ? 'https://chaperone_scheduling_api.railway.internal:5000/' : import.meta.env.VITE_API_URL;
   let APIURL;
-  if (usingPasswordLogin.value) {
+  if (!isSignedIn.value) {
+    APIURL = "";
+  } else if (usingPasswordLogin.value) {
     APIURL = '/api/p/';
   } else {
     APIURL = '/api/'
   }
 
-  // let HOSTNAME;
-  // if (window.location.hostname === 'localhost') {
-  //   HOSTNAME = 'https://dev-chaperones-steelcitychoristers.up.railway.app';
-  // } else {
-  //   HOSTNAME = ''
-  // }
+  let HOSTNAME;
+  if (window.location.hostname === 'localhost') {
+    HOSTNAME = 'https://chaperones.steelcitychoristers.org.uk';
+  } else {
+    HOSTNAME = ''
+  }
 
-  return fetch(APIURL + url, {
+  return fetch(HOSTNAME + APIURL + url, {
     ...params,
     headers
   }).then((response) => {

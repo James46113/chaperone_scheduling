@@ -9,7 +9,7 @@
       </v-row>
 
       <v-alert type="warning" class="mt-4">
-        Granting Choir Phone access gives users the ability to edit the chaperone schecule and view all other users'
+        Granting admin access gives users the ability to edit the chaperone schecule and view all other users'
         email
         addresses. Please ensure that
         only trusted individuals are given this level of access.
