@@ -190,7 +190,7 @@ const cancelSignIn = () => {
 const tokenLogin = async () => {
   signingIn.value = true;
   const token = Cookies.get('passwdAccessToken');
-  fetchAPI('/api/public/login/token', {
+  fetchAPI('/public/login/token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -270,7 +270,7 @@ const resetPassword = () => {
     return;
   }
 
-  fetchAPI('/api/public/forgot_password', {
+  fetchAPI('/public/forgot_password', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -318,7 +318,7 @@ const customLogin = () => {
 
 function onCodeReceived(response) {
   // Exchange the authorization code for tokens
-  fetchAPI('/api/token', {
+  fetchAPI('/token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -388,7 +388,7 @@ function onSignIn(response) {
 
 async function refreshToken() {
   try {
-    const response = await fetchAPI('/api/refresh-token', {
+    const response = await fetchAPI('/refresh-token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
