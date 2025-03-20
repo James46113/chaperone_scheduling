@@ -44,7 +44,7 @@ const newRoutes = [
   },
   {
     path: '/templates/:id/edit',
-    component: editEventV3,
+    component: editEvent,
   },
   {
     path: '/templates/new',
