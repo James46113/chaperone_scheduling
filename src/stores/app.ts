@@ -105,23 +105,29 @@ export const useAppStore = defineStore('app', () => {
         return chaperoneNames ?? []
       });
 
-      event.availability = computed(() => allAvailability.value.filter((avail: any) => avail.event_id === event.id));
+      event.rawAvailability = computed(() => allAvailability.value.filter((avail: any) => avail.event_id === event.id));
+
       event.availableChaperones = computed(() => {
-        const avail = event.availability.value.filter((avail: any) => avail.available === true);
-        return avail.map((avail: any) => chaperones.value.filter((chaperone: any) => chaperone.id === avail.chaperone_id).map((c: any) => c.name)[0] ?? null);
+        const avail = event.rawAvailability.value.filter((avail: any) => avail.available === true);
+        return avail.map((avail: any) => chaperones.value.filter((chaperone: any) => chaperone.id === avail.chaperone_id).map((c: any) => c.name)[0] ?? null).sort();
       })
 
       event.unavailableChaperones = computed(() => {
-        const avail = event.availability.value.filter((avail: any) => avail.available === false);
-        return avail.map((avail: any) => chaperones.value.filter((chaperone: any) => chaperone.id === avail.chaperone_id).map((c: any) => c.name)[0] ?? null);
+        const avail = event.rawAvailability.value.filter((avail: any) => avail.available === false);
+        return avail.map((avail: any) => chaperones.value.filter((chaperone: any) => chaperone.id === avail.chaperone_id).map((c: any) => c.name)[0] ?? null).sort();
       })
 
       event.unansweredChaperones = computed(() => {
-        const avail = event.availability.value.filter((avail: any) => avail.available === null);
-        return avail.map((avail: any) => chaperones.value.filter((chaperone: any) => chaperone.id === avail.chaperone_id).map((c: any) => c.name)[0] ?? null);
+        const avail = event.rawAvailability.value.filter((avail: any) => avail.available === null);
+        return avail.map((avail: any) => chaperones.value.filter((chaperone: any) => chaperone.id === avail.chaperone_id).map((c: any) => c.name)[0] ?? null).sort();
       })
 
-      // event.availability = [...event.availableChaperones.value, ...event.unansweredChaperones.value, ...event.unavailableChaperones.value];
+      event.availability = computed(() => {
+        const available = event.rawAvailability.value.filter((avail: any) => avail.available === true).sort((a: any, b: any) => a.chaperoneName.localeCompare(b.chaperoneName));
+        const unavailable = event.rawAvailability.value.filter((avail: any) => avail.available === false).sort((a: any, b: any) => a.chaperoneName.localeCompare(b.chaperoneName));
+        const unanswered = event.rawAvailability.value.filter((avail: any) => avail.available === null).sort((a: any, b: any) => a.chaperoneName.localeCompare(b.chaperoneName));
+        return [...available, ...unavailable, ...unanswered];
+      })
     });
 
     return data.sort((a: any, b: any) => a.start - b.start);
@@ -160,6 +166,7 @@ export const useAppStore = defineStore('app', () => {
       slot.start = new Date(slot.start);
       slot.end = new Date(slot.end);
       slot.chaperoneName = computed(() => chaperones.value.filter((chaperone: any) => chaperone.id === slot.chaperone).map((c: any) => c.name)[0] ?? null);
+      slot.setChaperone = (id: number) => slot.chaperone = id;
     });
     if (eventsLocked.value) return;
     chaperoneSlots.value = data;
@@ -212,7 +219,7 @@ export const useAppStore = defineStore('app', () => {
       avail.chaperoneName = computed(() => chaperones.value.filter((chaperone: any) => chaperone.id === avail.chaperone_id).map((c: any) => c.name
       )[0] ?? null);
     });
-    allAvailability.value = data.filter((avail: any) => avail.chaperone_id !== 0);
+    allAvailability.value = data.filter((avail: any) => avail.chaperone_id != 0);
   }
 
   const loadTemplates = async () => {
