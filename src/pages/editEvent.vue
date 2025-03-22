@@ -220,7 +220,7 @@ const saveEvent = async () => {
       slot.start = start;
       slot.end = end;
 
-      slot.chaperone = slot.selectedChaperoneID;
+      slot.setChaperone(slot.selectedChaperoneID);
 
       if (slot.start >= slot.end) {
         store.showAlert('Invalid Time', 'Chaperone end time must be after start time.')
