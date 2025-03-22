@@ -91,6 +91,12 @@ onMounted(async () => {
 })
 
 const loadData = async () => {
+  if (store.isAdmin) {
+    store.loadAllAvailability();
+    store.loadTemplateSlots();
+    store.loadTemplates();
+  }
+
   await Promise.all([
     store.loadAvailability(),
     store.loadEvents(),

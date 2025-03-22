@@ -190,7 +190,7 @@ const cancelSignIn = () => {
 const tokenLogin = async () => {
   signingIn.value = true;
   const token = Cookies.get('passwdAccessToken');
-  fetchAPI('/public/login/token', {
+  fetchAPI('public/login/token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
