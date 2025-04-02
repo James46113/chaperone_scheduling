@@ -61,10 +61,10 @@ const install = async () => {
     installPrompt.prompt();
     const choiceResult = await installPrompt.userChoice;
     if (choiceResult.outcome === 'accepted') {
-      Cookies.set('dontShowPWA', 'true');
+      Cookies.set('dontShowPWA', 'true', { expires: 365, secure: true, sameSite: 'strict' });
     } else {
       if (dontShowAgain.value) {
-        Cookies.set('dontShowPWA', 'true');
+        Cookies.set('dontShowPWA', 'true', { expires: 365, secure: true, sameSite: 'strict' });
       }
     }
     installPrompt = null;
@@ -74,7 +74,7 @@ const install = async () => {
 
 const close = () => {
   if (dontShowAgain.value) {
-    Cookies.set('dontShowPWA', 'true');
+    Cookies.set('dontShowPWA', 'true', { expires: 365, secure: true, sameSite: 'strict' });
   }
   showPWAinstall.value = false;
 }

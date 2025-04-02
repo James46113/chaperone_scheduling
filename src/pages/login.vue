@@ -232,7 +232,7 @@ const passwordLogin = async () => {
 
     if (response.ok) {
       const responseJson = await response.json();
-      Cookies.set('passwdAccessToken', responseJson.access_token);
+      Cookies.set('passwdAccessToken', responseJson.access_token, { expires: 365, secure: true, sameSite: 'strict' });
       store.userID = responseJson.id;
       store.isAdmin = responseJson.is_admin;
       store.userEmail = responseJson.email;
@@ -330,9 +330,9 @@ function onCodeReceived(response) {
       if (undefined in [data.id_token, data.access_token, data.refresh_token]) {
         throw new Error('Invalid response from server');
       }
-      Cookies.set('credential', data.id_token);
-      Cookies.set('accessToken', data.access_token);
-      Cookies.set('refreshToken', data.refresh_token);
+      Cookies.set('credential', data.id_token, { expires: 365, secure: true, sameSite: 'strict' });
+      Cookies.set('accessToken', data.access_token, { expires: 365, secure: true, sameSite: 'strict' });
+      Cookies.set('refreshToken', data.refresh_token, { expires: 365, secure: true, sameSite: 'strict' });
       onSignIn({ credential: data.id_token });
     })
     .catch(error => {
@@ -402,8 +402,8 @@ async function refreshToken() {
     if (undefined in [data.id_token, data.access_token]) {
       throw new Error('Invalid response from server');
     }
-    Cookies.set('accessToken', data.access_token);
-    Cookies.set('credential', data.id_token);
+    Cookies.set('accessToken', data.access_token, { expires: 365, secure: true, sameSite: 'strict' });
+    Cookies.set('credential', data.id_token, { expires: 365, secure: true, sameSite: 'strict' });
     onSignIn({ credential: data.id_token });
   } catch (error) {
     console.error('Error refreshing token:', error);
