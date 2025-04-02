@@ -81,6 +81,7 @@ onMounted(async () => {
     store.tabView = proxy.$route.query.view;
   }
 
+  loadingData.value = false;
   if (!store.eventsLoaded || !store.availabilityLoaded || !store.chaperonesLoaded || !store.chaperoneSlotsLoaded) {
     loadingData.value = true;
     await loadData();
