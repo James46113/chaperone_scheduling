@@ -82,7 +82,7 @@ const createTerm = () => {
 
   let currentDate = new Date(start.value);
   let day = currentDate.getDay();
-  let diff = currentDate.getDate() - day + 1//(day === 0 ? -6 : 1); // adjust when day is sunday
+  let diff = currentDate.getDate() - (day === 0 ? 6 : day - 1); // For Monday
   currentDate.setDate(diff);
   if (currentDate < start.value) {
     currentDate.setDate(currentDate.getDate() + 7);
@@ -95,7 +95,7 @@ const createTerm = () => {
 
   currentDate = new Date(start.value);
   day = currentDate.getDay();
-  diff = currentDate.getDate() - day + 5//(day === 0 ? -6 : 1); // adjust when day is sunday
+  diff = currentDate.getDate() - (day === 0 ? 2 : day - 5); // For Friday
 
   currentDate.setDate(diff);
   if (currentDate < start.value) {
@@ -122,20 +122,23 @@ const createFridayRehearsal = (date) => {
 }
 
 const createRehearsal = (template_id, date) => {
-  const rehearsal = store.templates.find(template => template.id === template_id);
+  // Create a new copy of the rehearsal object to avoid modifying the original
+  const template = store.templates.find(template => template.id === template_id);
+  const rehearsal = { ...template };
 
+  // Set the start and end times for the rehearsal
   const startDate = new Date(date);
-  startDate.setHours(new Date(rehearsal.start).getHours(), new Date(rehearsal.start).getMinutes(), 0, 0);
+  startDate.setHours(new Date(template.start).getHours(), new Date(template.start).getMinutes(), 0, 0);
   rehearsal.start = startDate.toISOString();
 
   const endDate = new Date(date);
-  endDate.setHours(new Date(rehearsal.end).getHours(), new Date(rehearsal.end).getMinutes(), 0, 0);
+  endDate.setHours(new Date(template.end).getHours(), new Date(template.end).getMinutes(), 0, 0);
   rehearsal.end = endDate.toISOString();
 
-  let chaperoneSlots = store.templateSlots.filter(slot => slot.template_id === template_id);
+  const chaperoneSlots = store.templateSlots.filter(slot => slot.template_id === template_id);
   console.log(JSON.stringify(rehearsal));
 
-
+  // Save the rehearsal
   fetchAPI("events", {
     method: 'PUT',
     headers: {
@@ -148,10 +151,12 @@ const createRehearsal = (template_id, date) => {
       saving.value = false;
       return;
     }
-    return response.json()
+    return response.json();
   })
     .then((data) => {
       rehearsal.id = data.id;
+
+      // Save chaperone slots for the event
       chaperoneSlots.forEach(slot => {
         fetchAPI("chaperone_slots", {
           method: 'PUT',
@@ -165,9 +170,9 @@ const createRehearsal = (template_id, date) => {
             end: new Date(slot.end).toISOString(),
             chaperone: null,
           }),
-        })
+        });
       });
     });
-}
+};
 
 </script>
