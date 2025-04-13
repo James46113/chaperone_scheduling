@@ -473,7 +473,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const saveChaperoneSlot = async (slot: any) => {
-    slot.chaperone = chaperones.value.filter((chaperone: any) => chaperone.name === slot.chaperoneName)[0]?.id;
+    slot.chaperone = slot.selectedChaperoneID;
     if (slot.id) {
       const response = await fetchAPI(`chaperone_slots/${slot.id}`, {
         method: 'PATCH',
