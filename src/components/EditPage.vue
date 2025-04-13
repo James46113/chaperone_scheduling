@@ -4,15 +4,15 @@
     <v-card class="pa-3" elevation="0">
       <v-card-title class="text-h5 ml-n6 mb-4">Edit {{ isTemplate ? 'Template' : 'Event' }}</v-card-title>
 
-      <v-select v-if="!isTemplate && isNewEvent && isMobile" :items="store.templateNames" item-title="template_name"
-        v-model="selectedTemplate" variant="outlined" class="mx-6" @update:model-value="loadTemplate"
-        placeholder="Load Template" width="100%" />
-
       <v-row>
         <v-col>
           <v-text-field v-if="isTemplate" :width="isMobile ? '100%' : '65vw'" :rules="[required]"
             v-model="event.template_name" label="Template Name" variant="outlined" class="mb-1"
             :readonly="isDefaultTemplate" />
+
+          <v-select v-if="!isTemplate && isNewEvent && isMobile" :items="store.templateNames" item-title="template_name"
+            v-model="selectedTemplate" variant="outlined" class="mx-6" @update:model-value="loadTemplate"
+            placeholder="Load Template" width="100%" />
 
           <v-text-field :width="isMobile ? '100%' : '65vw'" :rules="[required]" v-model="event.title"
             label="Event Title" variant="outlined" class="mb-1" />
