@@ -11,8 +11,8 @@
             :readonly="isDefaultTemplate" />
 
           <v-select v-if="!isTemplate && isNewEvent && isMobile" :items="store.templateNames" item-title="template_name"
-            v-model="selectedTemplate" variant="outlined" class="mx-6" @update:model-value="loadTemplate"
-            placeholder="Load Template" width="100%" />
+            v-model="selectedTemplate" variant="outlined" @update:model-value="loadTemplate" placeholder="Load Template"
+            width="100%" />
 
           <v-text-field :width="isMobile ? '100%' : '65vw'" :rules="[required]" v-model="event.title"
             label="Event Title" variant="outlined" class="mb-1" />
