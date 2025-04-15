@@ -36,7 +36,9 @@
 
       <v-row class="mb-1" v-if="!isMobile">
         <v-col v-if="!isTemplate">
-          <v-text-field type="text" readonly variant="outlined" class="mt-3" max-width="300" prepend-icon="mdi-calendar"
+          <date-picker label="Date" :date="event.date?.toISOString().split('T')[0]"
+            @update:date="event.date = new Date($event)" />
+          <!-- <v-text-field type="text" readonly variant="outlined" class="mt-3" max-width="300" prepend-icon="mdi-calendar"
             @click="showDateMenu = true">
             {{ event.date?.toLocaleDateString('en-GB') }}
             <v-menu activator="parent" :close-on-content-click="false" v-model="showDateMenu">
@@ -44,37 +46,36 @@
                 <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
                   <v-date-picker v-model="proxyModel.value">
                     <template v-slot:actions>
-                      <!-- <component :is="actions"></component> -->
                       <v-btn text @click="() => { cancel(); showDateMenu = false; }">Cancel</v-btn>
                       <v-btn text color="primary" @click="() => { save(); showDateMenu = false; }">Ok</v-btn>
                     </template>
-                  </v-date-picker>
-                </template>
-              </v-confirm-edit>
-            </v-menu>
-          </v-text-field>
+</v-date-picker>
+</template>
+</v-confirm-edit>
+</v-menu>
+</v-text-field> -->
 
 
         </v-col>
         <v-col>
-          <v-row class="my-2">
-            <span class="ml-4 mt-5 mr-3">Start</span>
-            <time-picker :hours="event.startHours" :minutes="event.startMinutes" @update:hours="updateEventStartHours"
-              @update:minutes="updateEventStartMinutes" />
-          </v-row>
+          <!-- <v-row class="my-2"> -->
+          <!-- <span class="ml-4 mt-5 mr-3">Start</span> -->
+          <time-picker label="Start" :hours="event.startHours" :minutes="event.startMinutes"
+            @update:hours="updateEventStartHours" @update:minutes="updateEventStartMinutes" />
+          <!-- </v-row> -->
         </v-col>
         <v-col>
-          <v-row class="my-2">
-            <span class="ml-4 mt-5 mr-5">End</span>
-            <time-picker :hours="event.endHours" :minutes="event.endMinutes" @update:hours="updateEventEndHours"
-              @update:minutes="updateEventEndMinutes" />
-          </v-row>
+          <!-- <v-row class="my-2"> -->
+          <!-- <span class="ml-4 mt-5 mr-5">End</span> -->
+          <time-picker label="End" :hours="event.endHours" :minutes="event.endMinutes"
+            @update:hours="updateEventEndHours" @update:minutes="updateEventEndMinutes" />
+          <!-- </v-row> -->
         </v-col>
         <v-col></v-col>
       </v-row>
 
       <div v-else>
-        <v-text-field type="text" readonly variant="outlined" class="mt-3" max-width="300" prepend-icon="mdi-calendar"
+        <!-- <v-text-field type="text" readonly variant="outlined" class="mt-3" max-width="300" prepend-icon="mdi-calendar"
           @click="showDateMenu = true" v-if="!isTemplate">
           {{ event.date?.toLocaleDateString('en-GB') }}
           <v-menu activator="parent" :close-on-content-click="false" v-model="showDateMenu">
@@ -82,7 +83,6 @@
               <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
                 <v-date-picker v-model="proxyModel.value">
                   <template v-slot:actions>
-                    <!-- <component :is="actions"></component> -->
                     <v-btn text @click="() => { cancel(); showDateMenu = false; }">Cancel</v-btn>
                     <v-btn text color="primary" @click="() => { save(); showDateMenu = false; }">Ok</v-btn>
                   </template>
@@ -91,7 +91,14 @@
             </v-confirm-edit>
           </v-menu>
         </v-text-field>
-
+ -->
+        <v-row class="px-3">
+          <span class="ml-4 mt-3 mr-3">
+            Date
+          </span>
+          <v-spacer />
+          <date-picker :date="event.date?.toISOString().split('T')[0]" @update:date="event.date = new Date($event)" />
+        </v-row>
         <v-row class="px-3">
           <span class="ml-4 mt-5 mr-3">Start</span>
           <v-spacer />
@@ -146,12 +153,12 @@
         </template>
 
         <template v-slot:item.startTime="{ item }">
-          <time-picker :hours="item.startHours" :minutes="item.startMinutes" @update:hours="item.startHours = $event"
-            @update:minutes="item.startMinutes = $event" />
+          <time-picker class="mt-3" :hours="item.startHours" :minutes="item.startMinutes"
+            @update:hours="item.startHours = $event" @update:minutes="item.startMinutes = $event" />
         </template>
         <template v-slot:item.endTime="{ item }">
-          <time-picker :hours="item.endHours" :minutes="item.endMinutes" @update:hours="item.endHours = $event"
-            @update:minutes="item.endMinutes = $event" />
+          <time-picker class="mt-3" :hours="item.endHours" :minutes="item.endMinutes"
+            @update:hours="item.endHours = $event" @update:minutes="item.endMinutes = $event" />
         </template>
         <template v-slot:item.details="{ item }">
           <v-textarea v-model="item.details" label="Details (Optional)" variant="outlined" density="compact"
@@ -275,7 +282,7 @@
               @update:minutes="slot.startMinutes = $event" class="mr-3" />
           </v-row>
 
-          <v-row class="mt-n7">
+          <v-row class="mt-n5">
             <span class="mt-4 ml-7">End</span>
             <v-spacer />
             <time-picker :hours="slot.endHours" :minutes="slot.endMinutes" @update:hours="slot.endHours = $event"
