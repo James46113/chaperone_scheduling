@@ -14,6 +14,7 @@ declare module 'vue' {
     AvailabilitySelector: typeof import('./components/AvailabilitySelector.vue')['default']
     ChaperonesPage: typeof import('./components/chaperonesPage.vue')['default']
     CreateTermDialog: typeof import('./components/CreateTermDialog.vue')['default']
+    DatePicker: typeof import('./components/DatePicker.vue')['default']
     EditPage: typeof import('./components/EditPage.vue')['default']
     EventCard: typeof import('./components/EventCard.vue')['default']
     PWAInstallDialog: typeof import('./components/PWAInstallDialog.vue')['default']
