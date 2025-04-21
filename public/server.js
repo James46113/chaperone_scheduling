@@ -145,13 +145,18 @@ app.use('/api/p/', async (req, res) => {
     headers: { ...req.headers, email: email },
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
   })
-  const clone = response.clone();
+
+
+  // const clone = await response.clone();
+
   try {
     return res.status(response.status).json(await response.json());
   }
   catch {
-    console.log(`FAILED: ${url}/api/p${req.url}`)
-    return res.status(response.status).send(await clone.text());
+    // const text = await clone.text();
+    // console.log(`FAILED: ${url}/api/p${req.url}`)
+    const text="failed"
+    return res.status(response.status).send(text);
   }
 });
 
