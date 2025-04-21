@@ -4,52 +4,20 @@
     <v-card class="pa-2 pl-8" elevation="0">
       <v-card-title class="text-h5 mb-3 ml-n3">Create Term</v-card-title>
 
+      <div class="ml-7">
+        <date-picker label="Term Start" totalWidth="17vw" :date="start.toISOString().split('T')[0]"
+          @update:date="start = new Date($event)" class="mt-4"></date-picker>
 
-      <v-card-subtitle>Term Start</v-card-subtitle>
+        <date-picker label="Term End" totalWidth="17vw" :date="end.toISOString().split('T')[0]"
+          @update:date="end = new Date($event)" class="my-4"></date-picker>
+      </div>
 
-      <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
-        @click="showStartMenu = true">
-        {{ start.toLocaleDateString('en-GB') }}
-
-        <v-menu activator="parent" :close-on-content-click="false" v-model="showStartMenu">
-          <v-confirm-edit v-model="start">
-            <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
-              <v-date-picker v-model="proxyModel.value" :max="end">
-                <template v-slot:actions>
-                  <!-- <component :is="actions"></component> -->
-                  <v-btn text @click="() => { cancel(); showStartMenu = false; }">Cancel</v-btn>
-                  <v-btn text color="primary" @click="() => { save(); showStartMenu = false; }">Ok</v-btn>
-                </template>
-              </v-date-picker>
-            </template>
-          </v-confirm-edit>
-        </v-menu>
-
-      </v-text-field>
-
-
-      <v-card-subtitle>Term End</v-card-subtitle>
-      <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
-        @click="showEndMenu = true">
-        {{ end.toLocaleDateString('en-GB') }}
-        <v-menu activator="parent" :close-on-content-click="false" v-model="showEndMenu">
-          <v-confirm-edit v-model="end">
-            <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
-              <v-date-picker v-model="proxyModel.value" :min="start">
-                <template v-slot:actions>
-                  <!-- <component :is="actions"></component> -->
-                  <v-btn text @click="() => { cancel(); showEndMenu = false; }">Cancel</v-btn>
-                  <v-btn text color="primary" @click="() => { save(); showEndMenu = false; }">Ok</v-btn>
-                </template>
-              </v-date-picker>
-            </template>
-          </v-confirm-edit>
-        </v-menu>
-      </v-text-field>
+      <v-card-text class="text-primary" v-if="start > end">Term start date must be after the term end
+        date.</v-card-text>
 
       <v-card-actions>
         <v-btn text @click="store.showCreateTermDialog = false">Cancel</v-btn>
-        <v-btn color="primary" variant="flat" @click="createTerm">Create</v-btn>
+        <v-btn :disabled="start > end" color="primary" variant="flat" @click="createTerm">Create</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

@@ -22,7 +22,7 @@ export const fetchAPI = async (url, params) => {
 
   let HOSTNAME;
   if (window.location.hostname === 'localhost') {
-    HOSTNAME = 'https://chaperones.steelcitychoristers.org.uk';
+    HOSTNAME = 'http://localhost:3000';
   } else {
     HOSTNAME = ''
   }
