@@ -37,25 +37,7 @@
       <v-row class="mb-1" v-if="!isMobile">
         <v-col v-if="!isTemplate">
           <date-picker label="Date" :date="event.date?.toISOString().split('T')[0]"
-            @update:date="event.date = new Date($event)" />
-          <!-- <v-text-field type="text" readonly variant="outlined" class="mt-3" max-width="300" prepend-icon="mdi-calendar"
-            @click="showDateMenu = true">
-            {{ event.date?.toLocaleDateString('en-GB') }}
-            <v-menu activator="parent" :close-on-content-click="false" v-model="showDateMenu">
-              <v-confirm-edit v-model="event.date">
-                <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
-                  <v-date-picker v-model="proxyModel.value">
-                    <template v-slot:actions>
-                      <v-btn text @click="() => { cancel(); showDateMenu = false; }">Cancel</v-btn>
-                      <v-btn text color="primary" @click="() => { save(); showDateMenu = false; }">Ok</v-btn>
-                    </template>
-</v-date-picker>
-</template>
-</v-confirm-edit>
-</v-menu>
-</v-text-field> -->
-
-
+            @update:date="event.date = new Date($event)" totalWidth="240px" />
         </v-col>
         <v-col>
           <!-- <v-row class="my-2"> -->
