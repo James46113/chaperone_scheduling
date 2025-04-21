@@ -4,8 +4,11 @@ import cors from 'cors';
 
 const app = express();
 const port = 3000;
-const url = `http://chaperone_scheduling_api.railway.internal:5000`;
-
+const url = 
+`http://chaperone_scheduling_api.railway.internal:5000`;
+/*
+"http://localhost:5000" 
+*/
 app.use(express.json());
 app.use(cors({
   origin: '*',
@@ -114,13 +117,12 @@ app.use('/api/public/', async (req, res) => {
     headers: req.headers,
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
   });
-  const clone = response.clone();
   try {
     return res.status(response.status).json(await response.json());
   }
   catch {
     console.log(`FAILED: ${url}/public${req.url}`)
-    return res.status(response.status).send(await clone.text());
+    return res.status(response.status).send("failed");
   }
 });
 
@@ -140,23 +142,21 @@ app.use('/api/p/', async (req, res) => {
   }
   const { email } = await tokenResponse.json();
 
+
   const response = await fetch(`${url}${req.url}`, {
     method: req.method,
     headers: { ...req.headers, email: email },
     body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
   })
 
-
-  // const clone = await response.clone();
-
   try {
-    return res.status(response.status).json(await response.json());
+    const json = await response.json();
+    console.log(`SUCCESS: ${url}/api/p${req.url}`)
+    return res.status(response.status).json(json);
   }
   catch {
-    // const text = await clone.text();
-    // console.log(`FAILED: ${url}/api/p${req.url}`)
-    const text="failed"
-    return res.status(response.status).send(text);
+    console.log(`FAILED: ${url}/api/p${req.url}`)
+    return res.status(response.status).send("failed");
   }
 });
 

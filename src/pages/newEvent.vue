@@ -92,7 +92,7 @@ const saveEvent = async () => {
     return;
   }
 
-  event.value.slots.forEach((slot) => {
+  for (const slot of event.value.slots) {
     const start = new Date(event.value.date);
     start.setHours(slot.startHours, slot.startMinutes, 0, 0);
 
@@ -103,15 +103,20 @@ const saveEvent = async () => {
     slot.end = end;
 
     if (slot.start >= slot.end) {
-      store.showAlert('Invalid Time', 'Chaperone end time must be after start time.')
-      return;
+      store.showAlert('Invalid Time', 'Chaperone end time must be after start time.');
+      return; // Exits the parent function.
     }
 
     if (slot.end > event.value.end || slot.start < event.value.start) {
-      store.showAlert('Invalid Time', 'Chaperone times must be within event times.')
+      store.showAlert('Invalid Time', 'Chaperone times must be within event times.');
       return;
     }
-  });
+
+    if (!slot.title) {
+      store.showAlert('Missing Group', 'Chaperone must have a group.');
+      return;
+    }
+  }
 
   if (isTemplate.value) {
     if (await store.createNewTemplate(event.value)) {
