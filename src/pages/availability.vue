@@ -121,12 +121,15 @@
               <td>{{ chaperone.name }}</td>
               <td v-for="event in eventsInRange">
                 <span
-                  v-if="store.allAvailability.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available">
-                  <v-icon>mdi-check</v-icon>
+                  v-if="store.allAvailability.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available"
+                  style="text-align: center;">
+                  <!-- <v-icon>mdi-check</v-icon> -->
+                  <pre>✓</pre>
                 </span>
                 <span
-                  v-else-if="store.allAvailability.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available === null">
-                  <pre> ?</pre>
+                  v-else-if="store.allAvailability.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available === null"
+                  style="text-align: center;">
+                  <pre>?</pre>
                 </span>
               </td>
             </tr>
