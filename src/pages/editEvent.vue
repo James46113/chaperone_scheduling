@@ -220,9 +220,9 @@ const saveEvent = async () => {
       slot.start = start;
       slot.end = end;
       if (slot.id){
-        slot.setChaperone(slot.selectedChaperoneID);
+        slot.setChaperone(slot.selectedChaperoneID ?? null);
       } else {
-        slot.chaperone = slot.selectedChaperoneID;
+        slot.chaperone = slot.selectedChaperoneID ?? null;
       }
 
       if (slot.start >= slot.end) {
