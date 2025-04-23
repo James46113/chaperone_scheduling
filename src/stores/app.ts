@@ -92,6 +92,9 @@ export const useAppStore = defineStore('app', () => {
         weekday: 'short', day: 'numeric',
         month: 'short', year: 'numeric'
       });
+      if (event.id == 126){
+        console.log(event.start)
+      }
 
       event.isPastEvent = computed(() => event.start < new Date());
       event.slots = computed(() => chaperoneSlots.value.filter((slot: any) => slot.event_id === event.id).sort((a: any, b: any) => a.start - b.start) ?? []);
@@ -328,8 +331,8 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const getEventsByChaperone = (chaperoneID: number) => {
-    const slots = chaperoneSlots.value.filter((slot: any) => slot.chaperone == chaperoneID && slot.start > new Date());
-    const uniqueEvents = [... new Set(slots.map((slot: any) => getEvent(slot.event_id)))].sort((a: any, b: any) => a.start - b.start);
+    const slots = chaperoneSlots.value.filter((slot: any) => slot.chaperone == chaperoneID);
+    const uniqueEvents = [... new Set(slots.map((slot: any) => getEvent(slot.event_id)))].sort((a: any, b: any) => a.start - b.start).filter((event: any) => event.start > new Date());
     return uniqueEvents;
   }
 
