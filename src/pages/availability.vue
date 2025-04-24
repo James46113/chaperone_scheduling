@@ -11,10 +11,10 @@
 
       <v-row class="mt-6 pl-5" v-if="!isMobile">
 
-        <date-picker label="Start" totalWidth="13vw" :date="start.toISOString().split('T')[0]"
+        <date-picker label="Start" totalWidth="240px" :date="start.toISOString().split('T')[0]"
           @update:date="start = new Date($event)"></date-picker>
 
-        <date-picker label="End" totalWidth="13vw" :date="end.toISOString().split('T')[0]"
+        <date-picker label="End" totalWidth="240px" :date="end.toISOString().split('T')[0]"
           @update:date="end = new Date($event)" class="ml-6"></date-picker>
 
         <v-spacer />
@@ -28,10 +28,10 @@
       </v-row>
 
       <v-div v-else>
-        <date-picker label="Start" totalWidth="13vw" :date="start.toISOString().split('T')[0]"
-          @update:date="start = new Date($event)"></date-picker>
+        <date-picker label="Start" totalWidth="240px" :date="start.toISOString().split('T')[0]"
+          @update:date="start = new Date($event)" class="ml-6"></date-picker>
 
-        <date-picker label="End" totalWidth="13vw" :date="end.toISOString().split('T')[0]"
+        <date-picker label="End" totalWidth="240px" :date="end.toISOString().split('T')[0]"
           @update:date="end = new Date($event)" class="ml-6"></date-picker>
       </v-div>
 
@@ -43,10 +43,10 @@
           <table class="my-6">
             <tr>
               <th></th>
-              <th v-for="event in eventsInRange">
-                <div class="vertical-text rotate">
+              <th v-for="event in eventsInRange" class="pa-1">
+                <span class="vertical-text rotate">
                   {{ event.start.toLocaleDateString('en-GB') }}
-                </div>
+                </span>
               </th>
             </tr>
 
