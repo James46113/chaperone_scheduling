@@ -49,9 +49,8 @@ const updateAvailable = (availability) => {
         store.showAlert('Failed to update availability', 'Are you connected to the internet?')
         props.getEventAvailability(props.event).available = originalAvailability
       }
-    }).finally(() => {
       store.loadAvailability();
     })
 }
-
+  
 </script>
