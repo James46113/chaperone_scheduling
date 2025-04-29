@@ -1,5 +1,6 @@
 import { getFingerprint } from "@thumbmarkjs/thumbmarkjs";
 import Cookies from "js-cookie";
+import { getCurrentInstance } from "vue";
 
 export const fetchAPI = async (url, params) => {
   const headers = {
@@ -31,7 +32,7 @@ export const fetchAPI = async (url, params) => {
     ...params,
     headers
   }).then((response) => {
-    if (response.status === 401) {
+    if (response.status === 401 && !offline.value) {
       Cookies.remove('credential');
       Cookies.remove('accessToken');
       Cookies.remove('refreshToken');
@@ -42,7 +43,8 @@ export const fetchAPI = async (url, params) => {
     return response;
   })
     .catch((e) => {
-      console.error(e);
+      offline.value = true;
+      console.error('Error fetching API:', e);
     })
 };
 
@@ -67,3 +69,13 @@ export const isDev = computed(() => import.meta.env.VITE_DEV == 1);
 export const isPWA = computed(() => window.matchMedia('(display-mode: standalone)').matches)
 export const isSignedIn = ref(false);
 export const usingPasswordLogin = ref(false);
+
+export const offline = ref(window.navigator.onLine === false);
+window.addEventListener('online', () => { offline.value = false });
+window.addEventListener('offline', () => { 
+  offline.value = true;
+  const currentPath = window.location.pathname;
+  if (currentPath.startsWith('/login')) {
+    window.location.href = '/';
+  }
+});

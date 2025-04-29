@@ -164,6 +164,13 @@ const resetTimeout = ref(0);
 setInterval(() => { if (resetTimeout.value > 0) resetTimeout.value -= 1 }, 1000)
 
 onMounted(async () => {
+  fetchAPI('ping', { method: 'GET' }).then(() => {
+    if (offline.value){
+      store.isAdmin = Cookies.get('isAdmin') == 'true';
+      store.userID = Cookies.get('userID');
+      proxy.$router.push(proxy.$route.query.redirect);
+    }
+  })
   if (Cookies.get('refreshToken') && Cookies.get('credential') && Cookies.get('accessToken')) {
     signingIn.value = true;
     await checkCredential();
@@ -203,6 +210,8 @@ const tokenLogin = async () => {
     throw new Error('Invalid token');
   }).then(data => {
     store.userID = data.id;
+    Cookies.set('isAdmin', data.is_admin, { expires: 365, secure: true, sameSite: 'strict' });
+    Cookies.set('userID', data.id, { expires: 365, secure: true, sameSite: 'strict' });
     store.isAdmin = data.is_admin;
     store.userEmail = data.email;
     isSignedIn.value = true;
@@ -234,6 +243,8 @@ const passwordLogin = async () => {
       const responseJson = await response.json();
       Cookies.set('passwdAccessToken', responseJson.access_token, { expires: 365, secure: true, sameSite: 'strict' });
       store.userID = responseJson.id;
+      Cookies.set('isAdmin', responseJson.is_admin, { expires: 365, secure: true, sameSite: 'strict' });
+      Cookies.set('userID', responseJson.id, { expires: 365, secure: true, sameSite: 'strict' });
       store.isAdmin = responseJson.is_admin;
       store.userEmail = responseJson.email;
       usingPasswordLogin.value = true;
@@ -362,6 +373,8 @@ function onSignIn(response) {
       console.log(`Logged in with google`);
       store.isAdmin = data.is_admin;
       store.userID = data.id;
+      Cookies.set('isAdmin', data.is_admin, { expires: 365, secure: true, sameSite: 'strict' });
+      Cookies.set('userID', data.id, { expires: 365, secure: true, sameSite: 'strict' });
       isSignedIn.value = true;
       if (proxy.$route.query.redirect) {
         proxy.$router.push(proxy.$route.query.redirect);
@@ -425,5 +438,12 @@ const checkCredential = async () => {
 }
 
 setInterval(checkCredential, 60000); // Check every minute
+setInterval(() => {
+  if (offline.value) {
+    store.isAdmin = Cookies.get('isAdmin') == 'true';
+    store.userID = Cookies.get('userID');
+    proxy.$router.push(proxy.$route.query.redirect);
+  }
+}, 1000)
 
 </script>

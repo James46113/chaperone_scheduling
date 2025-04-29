@@ -5,17 +5,22 @@ import cors from 'cors';
 const app = express();
 const port = 3000;
 const url = 
-`http://chaperone_scheduling_api.railway.internal:5000`;
-/*
 "http://localhost:5000" 
+/*
+`http://chaperone_scheduling_api.railway.internal:5000`;
 */
 app.use(express.json());
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'fingerprint', 'token'],
-  exposedHeaders: ['Content-Type', 'Authorization', 'fingerprint', 'token']
+  allowedHeaders: ['Content-Type', 'Authorization', 'fingerprint', 'token', 'last-updated'],
+  exposedHeaders: ['Content-Type', 'Authorization', 'fingerprint', 'token', 'last-updated']
 }));
+
+app.use('/api/ping', async (req, res) => {
+  console.log('Ping received');
+  return res.status(200).json({ error: '' })
+})
 
 app.post('/api/token', async (req, res) => {
   const { code } = req.body;
@@ -211,6 +216,7 @@ app.use('/api', async (req, res) => {
     return res.status(500).json({ error: `Internal Server Error: ${error}` });
   }
 });
+
 
 
 app.listen(port, () => {

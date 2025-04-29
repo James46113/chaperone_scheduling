@@ -1,5 +1,15 @@
 <template>
   <v-main>
+    <v-alert  v-if="offline">
+      <template #title>
+        <v-icon color="primary" class="mr-2" >mdi-alert-circle</v-icon> Offline
+      </template>
+      <template #text>
+        <span class="">
+          Your are not connected to the internet. Some features are not available and the rota may be out of date. Connect to the internet to get the latest data and update your availability.
+        </span>
+      </template>
+    </v-alert>
     <router-view />
 
     <AlertDialog />
