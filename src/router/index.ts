@@ -80,15 +80,25 @@ router.afterEach((to, from) => window.scrollTo(0, 0))
 
 router.beforeEach((to, from, next) => {
   const store = useAppStore();
-  if (!isSignedIn.value && to.path !== '/login' && to.path !== '/resetPassword') {
+  if (!isSignedIn.value && to.path !== '/login' && to.path !== '/resetPassword' && !offline.value) {
     next(`/login?redirect=${to.fullPath}`);
+    console.log(`Redirecting to login. Offline: ${!window.navigator.onLine}`);
   }
-  else if ((to.path.startsWith('/editEvent') ||
-    to.path.startsWith('/templateEvents') ||
+  else if ((to.path.endsWith('/edit') ||
+    to.path.startsWith('/templates') ||
     to.path.startsWith('/users') ||
-    to.path.startsWith('/availability')
+    to.path.startsWith('/availability') ||
+    to.path.startsWith('/chaperones')
   ) && !store.isAdmin) {
     next('/');
+  }
+  else if (to.path.endsWith('/edit') && offline.value) {
+    next('/');
+  } 
+  else if (offline.value) {
+    store.isAdmin = Cookies.get('isAdmin') == 'true';
+    store.userID = Cookies.get('userID');
+    next()
   }
   else {
     next();
