@@ -24,7 +24,7 @@ export const useAppStore = defineStore('app', () => {
   const chaperones = ref<any[]>([]);
   const chaperoneNames = computed(() => chaperones.value.map((chaperone: any) => chaperone.name).sort());
   const chaperoneSlots = ref<any[]>([]);
-  const availability = ref([]); // individual availability
+  const availability = ref<any[]>([]); // individual availability
   const allAvailability = ref<any[]>([]);
   const templates = ref<any[]>([]);
   const templateSlots = ref<any[]>([]);
@@ -49,16 +49,41 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const loadEvents = async () => {
-    const response = await fetchAPI('events', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const eventsLastUpdated = localStorage.getItem('eventsLastUpdated');
+    let data: any[] = [];
 
-    const data = await response.json();
+    if (!offline.value) {
+      console.log("fetched events")
+      const response = await fetchAPI('events', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'last-updated': eventsLastUpdated ?? '',
+        },
+      });
+      data = await response.json();
+    }
+
+    if (eventsLastUpdated) {
+      const storedEvents = localStorage.getItem('events');
+      if (storedEvents) {
+        const parsedStoredEvents = JSON.parse(storedEvents!);
+        parsedStoredEvents.forEach((storedEvent: any, index: number) => {
+          const incomingModifiedEvent = data.find((event: any) => event.id == storedEvent.id);
+          if (incomingModifiedEvent) {
+            parsedStoredEvents[index] = { ...incomingModifiedEvent };
+          }
+        });
+        data = parsedStoredEvents;
+        console.log("loaded from stored events");
+      }
+    }
+
     if (eventsLocked.value) return;
-    events.value = formatEvents(data);
+    localStorage.setItem('events', JSON.stringify(data));
+    localStorage.setItem('eventsLastUpdated', Math.floor(new Date().getTime() / 1000).toString());
+    const formattedEvents = formatEvents(data);
+    events.value = formattedEvents;
   };
 
   const loadEvent = async (id: number) => {
@@ -92,9 +117,6 @@ export const useAppStore = defineStore('app', () => {
         weekday: 'short', day: 'numeric',
         month: 'short', year: 'numeric'
       });
-      if (event.id == 126){
-        console.log(event.start)
-      }
 
       event.isPastEvent = computed(() => event.start < new Date());
       event.slots = computed(() => chaperoneSlots.value.filter((slot: any) => slot.event_id === event.id).sort((a: any, b: any) => a.start - b.start) ?? []);
@@ -137,14 +159,37 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const loadChaperones = async () => {
-    const response = await fetchAPI('chaperones', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const chaperonesLastUpdated = localStorage.getItem('chaperonesLastUpdated');
+    let data: any[] = [];
 
-    const data = await response.json();
+    if (!offline.value) {
+      const response = await fetchAPI('chaperones', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'last-updated': chaperonesLastUpdated ?? '',
+        },
+      });
+      data = await response.json();
+    }
+
+    if (chaperonesLastUpdated) {
+      const storedChaperones = localStorage.getItem('chaperones');
+      if (storedChaperones) {
+        const parsedStoredChaperones = JSON.parse(storedChaperones!);
+        parsedStoredChaperones.forEach((storedChaperone: any, index: number) => {
+          const incomingModifiedChaperone = data.find((chaperone: any) => chaperone.id == storedChaperone.id);
+          if (incomingModifiedChaperone) {
+            parsedStoredChaperones[index] = { ...incomingModifiedChaperone };
+          }
+        });
+        data = parsedStoredChaperones;
+        console.log("loaded from stored chaperones");
+      }
+    }
+
+    localStorage.setItem('chaperones', JSON.stringify(data));
+    localStorage.setItem('chaperonesLastUpdated', Math.floor(new Date().getTime() / 1000).toString());
 
     data.forEach((chaperone: any) => {
       chaperone.numEvents = computed(() => {
@@ -157,21 +202,46 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const loadChaperoneSlots = async () => {
-    const response = await fetchAPI('chaperone_slots', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const lastUpdated = localStorage.getItem('chaperoneSlotsLastUpdated');
+    let data: any[] = [];
 
-    const data = await response.json();
+    if (!offline.value) {
+      const response = await fetchAPI('chaperone_slots', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'last-updated': lastUpdated ?? '',
+        },
+      });
+
+      data = await response.json();
+    }
+
+    if (lastUpdated) {
+      const storedSlots = localStorage.getItem('chaperoneSlots');
+      if (storedSlots) {
+        const parsedStoredSlots = JSON.parse(storedSlots);
+        parsedStoredSlots.forEach((storedSlot: any, index: number) => {
+          const incomingModifiedSlot = data.find((slot: any) => slot.id == storedSlot.id);
+          if (incomingModifiedSlot) {
+            parsedStoredSlots[index] = { ...incomingModifiedSlot };
+          }
+        });
+        data = parsedStoredSlots;
+        console.log("loaded from stored slots");
+      }
+    }
+    if (eventsLocked.value) return;
+
+    localStorage.setItem('chaperoneSlots', JSON.stringify(data));
+    localStorage.setItem('chaperoneSlotsLastUpdated', Math.floor(new Date().getTime() / 1000).toString());
+
     data.forEach((slot: any) => {
       slot.start = new Date(slot.start);
       slot.end = new Date(slot.end);
       slot.chaperoneName = computed(() => chaperones.value.filter((chaperone: any) => chaperone.id === slot.chaperone).map((c: any) => c.name)[0] ?? null);
       slot.setChaperone = (id: number) => slot.chaperone = id;
     });
-    if (eventsLocked.value) return;
     chaperoneSlots.value = data;
   }
 
@@ -198,26 +268,80 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const loadAvailability = async () => {
-    const response = await fetchAPI(`chaperones/availability/${userID.value}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const lastUpdated = localStorage.getItem('availabilityLastUpdated');
 
-    const data = await response.json();
+    let data: any[] = [];
+
+    if (!offline.value) {
+
+      const response = await fetchAPI(`chaperones/availability/${userID.value}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'last-updated': lastUpdated ?? '',
+        },
+      });
+
+      data = await response.json();
+    }
+
+    if (lastUpdated) {
+      const storedAvailability = localStorage.getItem('availability');
+      if (storedAvailability) {
+        const parsedStoredAvailability = JSON.parse(storedAvailability);
+        parsedStoredAvailability.forEach((storedAvail: any, index: number) => {
+          const incomingModifiedAvail = data.find((avail: any) => avail.id == storedAvail.id);
+          if (incomingModifiedAvail) {
+            parsedStoredAvailability[index] = { ...incomingModifiedAvail };
+          }
+        });
+        data = parsedStoredAvailability;
+        console.log("loaded from stored availability");
+      }
+    }
+
+    localStorage.setItem('availability', JSON.stringify(data));
+    localStorage.setItem('availabilityLastUpdated', Math.floor(new Date().getTime() / 1000).toString());
+
     availability.value = data.filter((avail: any) => avail.chaperone_id !== 0);
   }
 
   const loadAllAvailability = async () => {
-    const response = await fetchAPI(`chaperones/availability`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const lastUpdated = localStorage.getItem('allAvailabilityLastUpdated');
 
-    const data = await response.json();
+    let data: any[] = [];
+
+    if (!offline.value) {
+
+      const response = await fetchAPI(`chaperones/availability`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'last-updated': lastUpdated ?? '',
+        },
+      });
+
+      data = await response.json();
+    }
+
+    if (lastUpdated) {
+      const storedAvailability = localStorage.getItem('allAvailability');
+      if (storedAvailability) {
+        const parsedStoredAvailability = JSON.parse(storedAvailability);
+        parsedStoredAvailability.forEach((storedAvail: any, index: number) => {
+          const incomingModifiedAvail = data.find((avail: any) => avail.id == storedAvail.id);
+          if (incomingModifiedAvail) {
+            parsedStoredAvailability[index] = { ...incomingModifiedAvail };
+          }
+        });
+        data = parsedStoredAvailability;
+        console.log("loaded from stored availability");
+      }
+    }
+
+    localStorage.setItem('allAvailability', JSON.stringify(data));
+    localStorage.setItem('allAvailabilityLastUpdated', Math.floor(new Date().getTime() / 1000).toString());
+
     data.forEach((avail: any) => {
       avail.chaperoneName = computed(() => chaperones.value.filter((chaperone: any) => chaperone.id === avail.chaperone_id).map((c: any) => c.name
       )[0] ?? null);
@@ -226,13 +350,38 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const loadTemplates = async () => {
-    const response = await fetchAPI('templates', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const data = await response.json();
+    const templatesLastUpdated = localStorage.getItem('templatesLastUpdated');
+
+    let data: any[] = [];
+    if (!offline.value) {
+
+      const response = await fetchAPI('templates', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'last-updated': templatesLastUpdated ?? '',
+        },
+      });
+      data = await response.json();
+    }
+
+    if (templatesLastUpdated) {
+      const storedTemplates = localStorage.getItem('templates');
+      if (storedTemplates) {
+        const parsedStoredTemplates = JSON.parse(storedTemplates);
+        parsedStoredTemplates.forEach((storedTemplate: any, index: number) => {
+          const incomingModifiedTemplate = data.find((template: any) => template.id == storedTemplate.id);
+          if (incomingModifiedTemplate) {
+            parsedStoredTemplates[index] = { ...incomingModifiedTemplate };
+          }
+        });
+        data = parsedStoredTemplates;
+        console.log("loaded from stored templates");
+      }
+    }
+
+    localStorage.setItem('templates', JSON.stringify(data));
+    localStorage.setItem('templatesLastUpdated', Math.floor(new Date().getTime() / 1000).toString());
 
     data.forEach((template: any) => {
       template.start = new Date(template.start);
@@ -243,13 +392,38 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const loadTemplateSlots = async () => {
-    const response = await fetchAPI('template_chaperone_slots', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const data = await response.json();
+    const lastUpdated = localStorage.getItem('templateSlotsLastUpdated');
+
+    let data: any[] = [];
+    if (!offline.value) {
+      const response = await fetchAPI('template_chaperone_slots', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'last-updated': lastUpdated ?? '',
+        },
+      });
+      data = await response.json();
+    }
+
+    if (lastUpdated) {
+      const storedSlots = localStorage.getItem('templateSlots');
+      if (storedSlots) {
+        const parsedStoredSlots = JSON.parse(storedSlots);
+        parsedStoredSlots.forEach((storedSlot: any, index: number) => {
+          const incomingModifiedSlot = data.find((slot: any) => slot.id == storedSlot.id);
+          if (incomingModifiedSlot) {
+            parsedStoredSlots[index] = { ...incomingModifiedSlot };
+          }
+        });
+        data = parsedStoredSlots;
+        console.log("loaded from stored slots");
+      }
+    }
+
+    localStorage.setItem('templateSlots', JSON.stringify(data));
+    localStorage.setItem('templateSlotsLastUpdated', Math.floor(new Date().getTime() / 1000).toString());
+
     data.forEach((slot: any) => {
       slot.start = new Date(slot.start);
       slot.end = new Date(slot.end);

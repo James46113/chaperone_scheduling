@@ -5,7 +5,7 @@
       <v-row class="pt-3 px-3">
         <v-card-title class="text-h5">Users</v-card-title>
         <v-spacer />
-        <v-btn color="primary" variant="flat" class="mt-2 mr-1" @click="showNewUserDialog = true">New User</v-btn>
+        <v-btn :disabled="offline" color="primary" variant="flat" class="mt-2 mr-1" @click="showNewUserDialog = true">New User</v-btn>
       </v-row>
 
       <v-alert type="warning" class="mt-4">
@@ -20,11 +20,11 @@
           items-per-page="-1" :headers="headers" density="compact"
           :height="loadingData ? 120 : (store.chaperones.length + 1) * 64">
           <template #item.is_admin="{ item }">
-            <v-switch :readonly="item.name === 'Choir Phone'" @click="updateAdmin(item)" class="mb-n6"
+            <v-switch :readonly="item.name === 'Choir Phone' || offline" @click="updateAdmin(item)" class="mb-n6"
               v-model="item.is_admin" color="primary" />
           </template>
           <template #item.delete="{ item }">
-            <v-btn v-if="item.name !== 'Choir Phone'" @click="deleteUser(item.id)"
+            <v-btn :disabled="offline" v-if="item.name !== 'Choir Phone'" @click="deleteUser(item.id)"
               variant="flat"><v-icon>mdi-delete</v-icon></v-btn>
           </template>
           <template #item.email="{ item }">
@@ -37,7 +37,7 @@
                   required @keyup.enter="saveEmail(item)" variant="outlined" density="compact"></v-text-field>
               </v-col>
               <v-col v-if="item.name !== 'Choir Phone'">
-                <v-btn v-if="!item.editEmail" variant="flat" class="mt-2"
+                <v-btn :disabled="offline" v-if="!item.editEmail" variant="flat" class="mt-2"
                   @click="editEmail(item)"><v-icon>mdi-pencil</v-icon></v-btn>
                 <v-btn v-if="item.editEmail" variant="flat" class="mt-2"
                   @click="saveEmail(item)"><v-icon>mdi-check</v-icon></v-btn>
@@ -208,7 +208,7 @@ const deleteUser = (user_id) => {
 }
 
 const updateAdmin = (user) => {
-  if (user.name === 'Choir Phone') {
+  if (user.name === 'Choir Phone' || offline.value) {
     return;
   }
   fetchAPI(`chaperones/${user.id}`, {

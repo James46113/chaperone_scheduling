@@ -156,7 +156,7 @@ const saveEvent = async () => {
       return;
     }
 
-    event.value.slots.forEach((slot) => {
+    for (const slot of event.value.slots) {
       const start = new Date(event.value.start);
       start.setHours(slot.startHours, slot.startMinutes, 0, 0);
 
@@ -167,15 +167,15 @@ const saveEvent = async () => {
       slot.end = end;
 
       if (slot.start >= slot.end) {
-        store.showAlert('Invalid Time', 'Chaperone end time must be after start time.')
-        return;
+      store.showAlert('Invalid Time', 'Chaperone end time must be after start time.');
+      return;
       }
 
       if (slot.end > event.value.end || slot.start < event.value.start) {
-        store.showAlert('Invalid Time', 'Chaperone times must be within event times.')
-        return;
+      store.showAlert('Invalid Time', 'Chaperone times must be within event times.');
+      return;
       }
-    });
+    }
 
     await store.saveTemplate(EVENTID.value);
 
@@ -210,7 +210,7 @@ const saveEvent = async () => {
       return;
     }
 
-    event.value.slots.forEach((slot) => {
+    for (const slot of event.value.slots) {
       const start = new Date(event.value.date);
       start.setHours(slot.startHours, slot.startMinutes, 0, 0);
 
@@ -219,22 +219,22 @@ const saveEvent = async () => {
 
       slot.start = start;
       slot.end = end;
-      if (slot.id){
-        slot.setChaperone(slot.selectedChaperoneID ?? null);
+      if (slot.id) {
+      slot.setChaperone(slot.selectedChaperoneID ?? null);
       } else {
-        slot.chaperone = slot.selectedChaperoneID ?? null;
+      slot.chaperone = slot.selectedChaperoneID ?? null;
       }
 
       if (slot.start >= slot.end) {
-        store.showAlert('Invalid Time', 'Chaperone end time must be after start time.')
-        return;
+      store.showAlert('Invalid Time', 'Chaperone end time must be after start time.');
+      return;
       }
 
       if (slot.end > event.value.end || slot.start < event.value.start) {
-        store.showAlert('Invalid Time', 'Chaperone times must be within event times.')
-        return;
+      store.showAlert('Invalid Time', 'Chaperone times must be within event times.');
+      return;
       }
-    });
+    }
 
     if (await store.saveEvent(EVENTID.value)) {
       proxy.$router.push(`/event/${EVENTID.value}`);

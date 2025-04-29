@@ -19,7 +19,7 @@
 
         <v-spacer />
 
-        <v-btn v-if="showTable" color="primary" :loading="sendingEmails" @click="sendAvailabilityEmail" class="mr-4"
+        <v-btn :disabled="offline" v-if="showTable" color="primary" :loading="sendingEmails" @click="sendAvailabilityEmail" class="mr-4"
           variant="flat">Send
           Availability Email</v-btn>
         <v-btn v-if="showTable" color="primary" @click="saveTableAsImage" class="mr-4" variant="flat">Save as
@@ -78,7 +78,7 @@
           Image</v-btn> -->
       </v-sheet>
       <v-card-text v-else>No events found in the selected range</v-card-text>
-      <v-btn v-if="isMobile" :loading="sendingEmails" class="mt-4" width="100vw" color="primary"
+      <v-btn :disabled="offline" v-if="isMobile" :loading="sendingEmails" class="mt-4" width="100vw" color="primary"
         @click="sendAvailabilityEmail" variant="flat">Send
         Availability Email</v-btn>
     </v-card>
