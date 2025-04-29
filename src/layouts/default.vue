@@ -6,7 +6,7 @@
       </template>
       <template #text>
         <span class="">
-          Your are not connected to the internet. Some features are not available and the rota may be out of date. Connect to the internet to get the latest data and update your availability.
+          You are not connected to the internet. Some features are not available and the rota may be out of date. Connect to the internet to get the latest data and update your availability.
         </span>
       </template>
     </v-alert>
