@@ -290,7 +290,7 @@ export const useAppStore = defineStore('app', () => {
       if (storedAvailability) {
         const parsedStoredAvailability = JSON.parse(storedAvailability);
         parsedStoredAvailability.forEach((storedAvail: any, index: number) => {
-          const incomingModifiedAvail = data.find((avail: any) => avail.id == storedAvail.id);
+          const incomingModifiedAvail = data.find((avail: any) => avail.event_id == storedAvail.event_id && avail.chaperone_id == storedAvail.chaperone_id);
           if (incomingModifiedAvail) {
             parsedStoredAvailability[index] = { ...incomingModifiedAvail };
           }
@@ -329,7 +329,7 @@ export const useAppStore = defineStore('app', () => {
       if (storedAvailability) {
         const parsedStoredAvailability = JSON.parse(storedAvailability);
         parsedStoredAvailability.forEach((storedAvail: any, index: number) => {
-          const incomingModifiedAvail = data.find((avail: any) => avail.id == storedAvail.id);
+          const incomingModifiedAvail = data.find((avail: any) => avail.event_id == storedAvail.eventid && avail.chaperone_id == storedAvail.chaperone_id);
           if (incomingModifiedAvail) {
             parsedStoredAvailability[index] = { ...incomingModifiedAvail };
           }
@@ -501,6 +501,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const getEventAvailability = (id: number) => {
+    console.log(availability.value.find((avail: any) => avail.event_id == id))
     return availability.value.find((avail: any) => avail.event_id == id);
   }
 
