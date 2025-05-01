@@ -5,9 +5,9 @@ import cors from 'cors';
 const app = express();
 const port = 3000;
 const url = 
-`http://chaperone_scheduling_api.railway.internal:5000`;
-/*
 "http://localhost:5000" 
+/*
+`http://chaperone_scheduling_api.railway.internal:5000`;
 */
 app.use(express.json());
 app.use(cors({
