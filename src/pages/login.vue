@@ -401,7 +401,7 @@ function onSignIn(response) {
 
 async function refreshToken() {
   try {
-    const response = await fetchAPI('/refresh-token', {
+    const response = await fetchAPI('refresh-token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
