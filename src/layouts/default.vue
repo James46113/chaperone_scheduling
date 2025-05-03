@@ -39,4 +39,21 @@ const goHome = (tab) => {
   store.tabView = tab;
   proxy.$router.push(`/?view=${tab}`)
 }
+
+const reloadData = () => {
+  if (!offline.value && store.userID) {
+    store.loadAvailability();
+    store.loadEvents();
+    store.loadChaperones();
+    store.loadChaperoneSlots();
+    
+    if (store.isAdmin) {
+      store.loadTemplateSlots();
+      store.loadTemplates()
+      store.loadAllAvailability();
+    }
+  }
+}
+
+setInterval(reloadData, 1000 * 30); // Reload data every 30s
 </script>
