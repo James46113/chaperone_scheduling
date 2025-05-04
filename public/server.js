@@ -1,6 +1,7 @@
 import express from 'express';
 import fetch from 'node-fetch';
 import cors from 'cors';
+import fs from 'fs';
 
 const app = express();
 const port = 3000;
@@ -16,6 +17,22 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'fingerprint', 'token', 'last-updated'],
   exposedHeaders: ['Content-Type', 'Authorization', 'fingerprint', 'token', 'last-updated']
 }));
+
+
+app.use(async (req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    const logMessage = `[${new Date().toISOString()}] ${req.method} ${req.originalUrl} - ${res.statusCode} - ${duration}ms\n`;
+    fs.appendFile('/home/james/webdev/chaperone_scheduling/logs/server.log', logMessage, (err) => {
+      if (err) {
+      console.error('Failed to write to log file:', err);
+      }
+    });
+  });
+  next();
+});
+
 
 app.use('/api/ping', async (req, res) => {
   console.log('Ping received');
