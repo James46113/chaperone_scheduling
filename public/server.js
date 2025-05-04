@@ -24,7 +24,7 @@ app.use(async (req, res, next) => {
   res.on('finish', () => {
     const duration = Date.now() - start;
     const logMessage = `[${new Date().toISOString()}] ${req.method} ${req.originalUrl} - ${res.statusCode} - ${duration}ms\n`;
-    fs.appendFile('/home/james/webdev/chaperone_scheduling/logs/server.log', logMessage, (err) => {
+    fs.appendFile('server.log', logMessage, (err) => {
       if (err) {
       console.error('Failed to write to log file:', err);
       }
