@@ -2,12 +2,16 @@ import { getFingerprint } from "@thumbmarkjs/thumbmarkjs";
 import Cookies from "js-cookie";
 import { getCurrentInstance } from "vue";
 
-export const fetchAPI = async (url, params) => {
+export const fetchAPI = async (url, params, redirect = true) => {
+  let authHeader = null;
+  if (usingPasswordLogin.value) {
+    authHeader = {'token' : Cookies.get('passwdAccessToken'), 'fingerprint' : fingerprint};
+  } else {
+    authHeader = {'oAuthToken' : Cookies.get('passwdAccessToken')};
+  }
   const headers = {
     ...(params.headers || {}),
-    'Authorization': `Bearer ${Cookies.get('accessToken')}`,
-    'token': Cookies.get('passwdAccessToken'),
-    'fingerprint': fingerprint,
+    ...authHeader,
   };
   // const APIURL = window.location.href.startsWith('https://chaperonescheduling-dev.up.railway.app')
   //   ? 'https://chaperone_scheduling_api.railway.internal:5000/' : import.meta.env.VITE_API_URL;
@@ -23,16 +27,16 @@ export const fetchAPI = async (url, params) => {
 
   let HOSTNAME;
   if (window.location.hostname === 'localhost') {
-    HOSTNAME = 'http://localhost:3000';
+    HOSTNAME = 'http://localhost:5000/';
   } else {
-    HOSTNAME = ''
+    HOSTNAME = 'https://chaperoneschedulingapi-production.up.railway.app/'
   }
 
-  return fetch(HOSTNAME + APIURL + url, {
+  return fetch(HOSTNAME + url, {
     ...params,
     headers
   }).then((response) => {
-    if (response.status === 401 && !offline.value) {
+    if (response.status === 401 && !offline.value && redirect) {
       Cookies.remove('credential');
       Cookies.remove('accessToken');
       Cookies.remove('refreshToken');

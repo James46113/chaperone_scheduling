@@ -197,7 +197,7 @@ const cancelSignIn = () => {
 const tokenLogin = async () => {
   signingIn.value = true;
   const token = Cookies.get('passwdAccessToken');
-  fetchAPI('public/login/token', {
+  fetchAPI('/login/token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -231,13 +231,13 @@ const passwordLogin = async () => {
   incorrectPassword.value = false;
   signingIn.value = true;
   try {
-    const response = await fetchAPI('public/login/password', {
+    const response = await fetchAPI('login/password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ email: email.value, password: password.value, fingerprint }),
-    });
+    }, false);
 
     if (response.ok) {
       const responseJson = await response.json();
@@ -281,7 +281,7 @@ const resetPassword = () => {
     return;
   }
 
-  fetchAPI('/public/forgot_password', {
+  fetchAPI('/forgot_password', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

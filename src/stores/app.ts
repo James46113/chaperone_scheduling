@@ -96,7 +96,7 @@ export const useAppStore = defineStore('app', () => {
 
     if (eventsLocked.value) return;
     localStorage.setItem('events', JSON.stringify(loadedEvents));
-    localStorage.setItem('eventsLastUpdated', Math.floor(new Date().getTime() / 1000).toString());
+    localStorage.setItem('eventsLastUpdated', Math.floor(new Date().getTime() / 1000 - 60 * 24).toString());
     const formattedEvents = formatEvents(loadedEvents);
     events.value = formattedEvents;
   };
@@ -193,7 +193,7 @@ export const useAppStore = defineStore('app', () => {
     loadedChaperones = loadedChaperones.filter((chaperone: any) => ids.includes(chaperone.id));
 
     localStorage.setItem('chaperones', JSON.stringify(loadedChaperones));
-    localStorage.setItem('chaperonesLastUpdated', Math.floor(new Date().getTime() / 1000).toString());
+    localStorage.setItem('chaperonesLastUpdated', Math.floor(new Date().getTime() / 1000 - 60 * 24).toString());
 
     loadedChaperones.forEach((chaperone: any) => {
       chaperone.numEvents = computed(() => {
@@ -249,7 +249,7 @@ export const useAppStore = defineStore('app', () => {
     loadedSlots = loadedSlots.filter((slot: any) => ids.includes(slot.id));
 
     localStorage.setItem('chaperoneSlots', JSON.stringify(loadedSlots));
-    localStorage.setItem('chaperoneSlotsLastUpdated', Math.floor(new Date().getTime() / 1000).toString());
+    localStorage.setItem('chaperoneSlotsLastUpdated', Math.floor(new Date().getTime() / 1000 - 60 * 24).toString()); // 24 hours ago
 
     loadedSlots.forEach((slot: any) => {
       slot.start = new Date(slot.start);
@@ -358,7 +358,7 @@ export const useAppStore = defineStore('app', () => {
     loadedTemplates = loadedTemplates.filter((template: any) => ids.includes(template.id));
 
     localStorage.setItem('templates', JSON.stringify(loadedTemplates));
-    localStorage.setItem('templatesLastUpdated', Math.floor(new Date().getTime() / 1000).toString());
+    localStorage.setItem('templatesLastUpdated', Math.floor(new Date().getTime() / 1000 - 60 * 24).toString());
 
     loadedTemplates.forEach((template: any) => {
       template.start = new Date(template.start);
@@ -411,7 +411,7 @@ export const useAppStore = defineStore('app', () => {
     loadedTemplateSlots = loadedTemplateSlots.filter((slot: any) => ids.includes(slot.id));
 
     localStorage.setItem('templateSlots', JSON.stringify(loadedTemplateSlots));
-    localStorage.setItem('templateSlotsLastUpdated', Math.floor(new Date().getTime() / 1000).toString());
+    localStorage.setItem('templateSlotsLastUpdated', Math.floor(new Date().getTime() / 1000 - 60 * 24).toString());
 
     loadedTemplateSlots.forEach((slot: any) => {
       slot.start = new Date(slot.start);
