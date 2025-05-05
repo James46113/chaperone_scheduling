@@ -327,6 +327,7 @@ const customLogin = () => {
   })
 }
 
+
 function onCodeReceived(response) {
   // Exchange the authorization code for tokens
   fetchAPI('/token', {
@@ -361,7 +362,7 @@ function onSignIn(response) {
 
   fetchAPI(`login/${store.userEmail}`, {
     method: 'GET',
-  })
+  }, false)
     .then((response) => {
       if (response.ok) {
         return response.json();
