@@ -318,7 +318,7 @@ const customLogin = () => {
   signingIn.value = true;
   googleSdkLoaded(google => {
     google.accounts.oauth2.initCodeClient({
-      client_id: "898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com",
+      client_id: "1055714484946t144r6afo5g999l8malkjesavh4s95eq.apps.googleusercontent.com",
       scope: 'openid email profile',
       redirect_uri: 'https://chaperonescheduling-dev.up.railway.app',//'https://' + window.location.host,
       accessType: 'offline',
