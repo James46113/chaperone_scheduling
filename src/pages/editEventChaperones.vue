@@ -99,26 +99,19 @@ const currentEvent = computed(() => store.getEvent(currentEventID.value))
 
 onMounted(async () => {
   loadingData.value = true
-  if (false && window.location.hostname === 'localhost') {
-    store.loadDevAvailability()
-    store.loadDevChaperoneSlots();
-    store.loadDevChaperones();
-    store.loadDevEvents();
-  } else {
     if (!store.eventsLoaded || !store.allAvailabilityLoaded || !store.chaperoneSlotsLoaded || !store.chaperonesLoaded) {
       await Promise.all([
         store.loadEvents(),
         store.loadAllAvailability(),
         store.loadChaperoneSlots(),
         store.loadChaperones()
-      ])
+      ])  
     } else {
       store.loadEvents()
       store.loadAllAvailability()
       store.loadChaperoneSlots()
       store.loadChaperones()
     }
-  }
   loadingData.value = false
 })
 
