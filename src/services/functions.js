@@ -7,7 +7,7 @@ export const fetchAPI = async (url, params, redirect = true) => {
   if (usingPasswordLogin.value) {
     authHeader = {'token' : Cookies.get('passwdAccessToken'), 'fingerprint' : fingerprint};
   } else {
-    authHeader = {'oAuthToken' : Cookies.get('passwdAccessToken')};
+    authHeader = {'oAuthToken' : Cookies.get('accessToken')};
   }
   const headers = {
     ...(params.headers || {}),
