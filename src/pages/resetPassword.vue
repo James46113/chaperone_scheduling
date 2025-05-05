@@ -91,7 +91,7 @@ const resetPassword = () => {
     return
   }
 
-  fetchAPI(`public/reset_password`, {
+  fetchAPI(`reset_password`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -115,7 +115,7 @@ const resetPassword = () => {
     })
 }
 
-fetchAPI(`public/check_token/${proxy.$route.query.token}`, {
+fetchAPI(`check_token/${proxy.$route.query.token}`, {
   method: 'GET',
   headers: {
     'Content-Type': 'application/json',
