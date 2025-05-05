@@ -320,7 +320,7 @@ const customLogin = () => {
     google.accounts.oauth2.initCodeClient({
       client_id: "898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com",
       scope: 'openid email profile',
-      redirect_uri: 'https://dev-chaperones-steelcitychoristers.up.railway.app',//'https://' + window.location.host,
+      redirect_uri: 'chaperones.steelcitychoristers.org.uk',
       accessType: 'offline',
       callback: onCodeReceived
     }).requestCode();
@@ -330,7 +330,7 @@ const customLogin = () => {
 
 function onCodeReceived(response) {
   // Exchange the authorization code for tokens
-  fetchAPI('/token', {
+  fetchAPI('token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -393,7 +393,7 @@ function onSignIn(response) {
         store.userEmail = '';
         store.isAdmin = false;
         store.userID = null
-        store.showAlert('Unauthorised', "You are not authorised to access the chaperones' rota. If you believe this is in error, please contact the chaperoning team.");
+        store.showAlert('Unauthorised', "You are not authorised to access the chaperones' rota. If you believe this is in error, please contact the chaperoning team by emailing chaperones@steelcitychoristers.org.uk.");
       }
       console.error('Error:', error)
       signingIn.value = false;
