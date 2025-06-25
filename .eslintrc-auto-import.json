@@ -88,6 +88,7 @@
     "usingPasswordLogin": true,
     "reloadData": true,
     "fingerprint": true,
-    "offline": true
+    "offline": true,
+    "serviceworker": true
   }
 }
