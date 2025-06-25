@@ -32,6 +32,7 @@ declare global {
   const loadingData: typeof import('@/services/functions')['loadingData']
   const markRaw: typeof import('vue')['markRaw']
   const nextTick: typeof import('vue')['nextTick']
+  const offline: typeof import('@/services/functions')['offline']
   const onActivated: typeof import('vue')['onActivated']
   const onBeforeMount: typeof import('vue')['onBeforeMount']
   const onBeforeRouteLeave: typeof import('vue-router')['onBeforeRouteLeave']
@@ -119,6 +120,7 @@ declare module 'vue' {
     readonly loadingData: UnwrapRef<typeof import('@/services/functions')['loadingData']>
     readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
     readonly nextTick: UnwrapRef<typeof import('vue')['nextTick']>
+    readonly offline: UnwrapRef<typeof import('@/services/functions')['offline']>
     readonly onActivated: UnwrapRef<typeof import('vue')['onActivated']>
     readonly onBeforeMount: UnwrapRef<typeof import('vue')['onBeforeMount']>
     readonly onBeforeUnmount: UnwrapRef<typeof import('vue')['onBeforeUnmount']>

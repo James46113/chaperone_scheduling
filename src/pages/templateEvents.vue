@@ -5,7 +5,7 @@
       <v-row>
         <v-card-title class="text-h5 ml-3 mt-3">Event Templates</v-card-title>
         <v-spacer />
-        <v-btn variant="flat" color="primary" class="mt-6 mr-6" @click="proxy.$router.push('/templates/new')">New
+        <v-btn :disabled="offline" variant="flat" color="primary" class="mt-6 mr-6" @click="proxy.$router.push('/templates/new')">New
           Template</v-btn>
       </v-row>
       <v-card-text>Click on an event template below to edit it</v-card-text>
@@ -45,6 +45,7 @@ onMounted(async () => {
 })
 
 const editTemplate = (value, row) => {
+  if (offline.value) return;
   proxy.$router.push(`/templates/${row.item.id}/edit`)
 }
 

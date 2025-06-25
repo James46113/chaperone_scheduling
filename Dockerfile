@@ -13,7 +13,6 @@ WORKDIR /app
 COPY package*.json ./
 COPY .env ./
 RUN npm install
-COPY public/server.js ./server.js
 COPY --from=build-stage /app/dist /app/dist
 
 # Install Apache
@@ -26,18 +25,13 @@ RUN a2enmod rewrite proxy proxy_http
 RUN sed -i '/LoadModule rewrite_module/s/^#//g' /etc/apache2/apache2.conf && \
 sed -i 's#AllowOverride [Nn]one#AllowOverride All#' /etc/apache2/apache2.conf
 
-
 RUN echo 'ServerName chaperones.steelcitychoristers.org.uk' >> /etc/apache2/apache2.conf
 
 RUN echo 'Listen 8080' >> /etc/apache2/apache2.conf
 
-# Add reverse proxy configuration
-RUN echo 'ProxyPass /api http://localhost:3000/api' >> /etc/apache2/apache2.conf && \
-    echo 'ProxyPassReverse /api http://localhost:3000/api' >> /etc/apache2/apache2.conf
-
-EXPOSE 3000 8080
+EXPOSE 8080
 
 # Start both servers
-CMD ["sh", "-c", "node server.js & apache2ctl -D FOREGROUND"]
+CMD ["apache2ctl", "-D", "FOREGROUND"]
 
 COPY --from=build-stage /app/dist /var/www/html/

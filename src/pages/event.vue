@@ -6,7 +6,7 @@
         <v-card-title class="text-h4 mb-n5" style="white-space: pre-wrap;">{{ event.title
         }}</v-card-title>
 
-        <v-btn v-if="!isMobile && store.isAdmin && !event.isPastEvent"
+        <v-btn :disabled="offline" v-if="!isMobile && store.isAdmin && !event.isPastEvent"
           @click="proxy.$router.push(`/event/${proxy.$route.params.id}/edit`)" color="primary"
           style="position: absolute; right: 32px;">Edit Event</v-btn>
 
@@ -27,7 +27,7 @@
       </div>
     </v-row>
 
-    <v-btn v-if="isMobile && store.isAdmin && !event.isPastEvent"
+    <v-btn :disabled="offline" v-if="isMobile && store.isAdmin && !event.isPastEvent"
       @click="proxy.$router.push(`/event/${proxy.$route.params.id}/edit`)" color="primary" class="mt-10"
       width="100vw">Edit</v-btn>
 
@@ -37,7 +37,7 @@
     <v-row>
       <v-card-title>Chaperones</v-card-title>
       <v-spacer />
-      <v-btn flat color="primary" class="my-1" v-if="store.isAdmin && !isMobile && !event.isPastEvent"
+      <v-btn :disabled="offline" flat color="primary" class="my-1" v-if="store.isAdmin && !isMobile && !event.isPastEvent"
         @click="proxy.$router.push(`/event/${eventID}/edit/chaperones`)">Edit Chaperones</v-btn>
     </v-row>
 
