@@ -67,6 +67,7 @@
 import { VCalendar } from 'vuetify/labs/VCalendar'
 import { ref, onMounted, getCurrentInstance } from 'vue'
 import { useAppStore } from '@/stores/app'
+import { notificationsSubscribe } from '@/services/functions.js'
 
 
 const { proxy } = getCurrentInstance()
@@ -75,6 +76,17 @@ const store = useAppStore();
 
 
 document.title = "Chaperones' Calendar - Steel City Choristers"
+
+document.addEventListener('click', handleUserInteraction);
+document.addEventListener('touchend', handleUserInteraction);
+
+function handleUserInteraction() {
+  if (isSignedIn.value && serviceworker.value) {
+    notificationsSubscribe(store.userID)
+  }
+  document.removeEventListener('click', handleUserInteraction);
+  document.removeEventListener('touchend', handleUserInteraction);
+}
 
 onMounted(async () => {
   if (proxy.$route.query.view) {

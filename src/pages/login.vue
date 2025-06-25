@@ -212,7 +212,7 @@ const tokenLogin = async () => {
     store.userID = data.id;
     Cookies.set('isAdmin', data.is_admin, { expires: 365, secure: true, sameSite: 'strict' });
     Cookies.set('userID', data.id, { expires: 365, secure: true, sameSite: 'strict' });
-    notificationsSubscribe(store.userID);
+    // notificationsSubscribe(store.userID);
     store.isAdmin = data.is_admin;
     store.userEmail = data.email;
     isSignedIn.value = true;
@@ -246,7 +246,7 @@ const passwordLogin = async () => {
       store.userID = responseJson.id;
       Cookies.set('isAdmin', responseJson.is_admin, { expires: 365, secure: true, sameSite: 'strict' });
       Cookies.set('userID', responseJson.id, { expires: 365, secure: true, sameSite: 'strict' });
-      notificationsSubscribe(store.userID);
+      // notificationsSubscribe(store.userID);
       store.isAdmin = responseJson.is_admin;
       store.userEmail = responseJson.email;
       usingPasswordLogin.value = true;
@@ -378,7 +378,7 @@ function onSignIn(response) {
       store.userID = data.id;
       Cookies.set('isAdmin', data.is_admin, { expires: 365, secure: true, sameSite: 'strict' });
       Cookies.set('userID', data.id, { expires: 365, secure: true, sameSite: 'strict' });
-      notificationsSubscribe(store.userID);
+      // notificationsSubscribe(store.userID);
       isSignedIn.value = true;
       if (proxy.$route.query.redirect) {
         proxy.$router.push(proxy.$route.query.redirect);
