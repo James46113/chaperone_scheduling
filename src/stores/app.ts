@@ -24,7 +24,7 @@ export const useAppStore = defineStore('app', () => {
   const chaperones = ref<any[]>([]);
   const chaperoneNames = computed(() => chaperones.value.map((chaperone: any) => chaperone.name).sort());
   const chaperoneSlots = ref<any[]>([]);
-  const availability = ref([]); // individual availability
+  const availability = ref<any[]>([]); // individual availability
   const allAvailability = ref<any[]>([]);
   const templates = ref<any[]>([]);
   const templateSlots = ref<any[]>([]);
@@ -49,39 +49,57 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const loadEvents = async () => {
-    const response = await fetchAPI('events', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const eventsLastUpdated = localStorage.getItem('eventsLastUpdated');
+    let loadedEvents: any[] = [];
+    let ids: number[] = [];
 
-    const data = await response.json();
-    if (eventsLocked.value) return;
-    events.value = formatEvents(data);
-  };
-
-  const loadEvent = async (id: number) => {
-    const response = await fetchAPI(`events/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const data = await response.json();
-    const event = formatEvents([data])[0];
-    if (eventsLocked.value) return;
-
-    const index = events.value.findIndex((e: any) => e.id === event.id);
-
-    if (index === -1) {
-      console.log("not found")
-      events.value.push(event);
+    if (!offline.value) {
+      console.log("fetched events")
+      const response = await fetchAPI('events', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'last-updated': eventsLastUpdated ?? '',
+        },
+      });
+      const data = await response.json();
+      loadedEvents = data.events;
+      ids = data.event_ids;
     }
-    else events.value[index] = event;
 
-  }
+    if (eventsLastUpdated) {
+      const storedEvents = localStorage.getItem('events');
+      if (storedEvents) {
+        const parsedStoredEvents = JSON.parse(storedEvents!);
+        parsedStoredEvents.forEach((storedEvent: any, index: number) => {
+          const incomingModifiedEvent = loadedEvents.find((event: any) => event.id == storedEvent.id);
+          if (incomingModifiedEvent) {
+            parsedStoredEvents[index] = { ...incomingModifiedEvent };
+          }
+        });
+        loadedEvents.forEach((event: any) => {
+          if (!parsedStoredEvents.map((e: any) => e.id).includes(event.id)) {
+            parsedStoredEvents.push(event);
+          }
+        });
+        loadedEvents = parsedStoredEvents;
+        console.log("loaded from stored events");
+      }
+    }
+    
+    // console.log(ids)
+    // console.log(loadedEvents.map((event: any) => event.id))
+    if (ids.length !== 0)
+    loadedEvents = loadedEvents.filter((event: any) => ids.includes(event.id));
+    // console.log(ids)
+    // console.log(loadedEvents.map((event: any) => event.id))
+
+    if (eventsLocked.value) return;
+    localStorage.setItem('events', JSON.stringify(loadedEvents));
+    localStorage.setItem('eventsLastUpdated', Math.floor(new Date().getTime() / 1000 - 60 * 24).toString());
+    const formattedEvents = formatEvents(loadedEvents);
+    events.value = formattedEvents;
+  };
 
   const formatEvents = (data: any) => {
     data.forEach((event: any) => {
@@ -134,87 +152,161 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const loadChaperones = async () => {
-    const response = await fetchAPI('chaperones', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const chaperonesLastUpdated = localStorage.getItem('chaperonesLastUpdated');
+    let loadedChaperones: any[] = [];
+    let ids: number[] = [];
 
-    const data = await response.json();
+    if (!offline.value) {
+      const response = await fetchAPI('chaperones', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'last-updated': chaperonesLastUpdated ?? '',
+        },
+      });
+      const data = await response.json();
+      loadedChaperones = data.chaperones;
+      ids = data.chaperone_ids;
+    }
 
-    data.forEach((chaperone: any) => {
+    if (chaperonesLastUpdated) {
+      const storedChaperones = localStorage.getItem('chaperones');
+      if (storedChaperones) {
+        const parsedStoredChaperones = JSON.parse(storedChaperones!);
+        parsedStoredChaperones.forEach((storedChaperone: any, index: number) => {
+          const incomingModifiedChaperone = loadedChaperones.find((chaperone: any) => chaperone.id == storedChaperone.id);
+          if (incomingModifiedChaperone) {
+            parsedStoredChaperones[index] = { ...incomingModifiedChaperone };
+          }
+        });
+        loadedChaperones.forEach((event: any) => {
+          if (!parsedStoredChaperones.map((e: any) => e.id).includes(event.id)) {
+            parsedStoredChaperones.push(event);
+          }
+        });
+        loadedChaperones = parsedStoredChaperones;
+        console.log("loaded from stored chaperones");
+      }
+    }
+
+    if (ids.length !== 0)
+    loadedChaperones = loadedChaperones.filter((chaperone: any) => ids.includes(chaperone.id));
+
+    localStorage.setItem('chaperones', JSON.stringify(loadedChaperones));
+    localStorage.setItem('chaperonesLastUpdated', Math.floor(new Date().getTime() / 1000 - 60 * 24).toString());
+
+    loadedChaperones.forEach((chaperone: any) => {
       chaperone.numEvents = computed(() => {
         const uniqueEventIDs = [...new Set(chaperoneSlots.value.filter((slot: any) => slot.chaperone === chaperone.id).map((slot: any) => slot.event_id))];
         return uniqueEventIDs.filter((eventID: any) => getEvent(eventID).start > new Date()).length;
       });
     });
 
-    chaperones.value = data.sort((a: any, b: any) => a.name.localeCompare(b.name)).filter((chaperone: any) => chaperone.name !== 'Choir Phone');
+    chaperones.value = loadedChaperones.sort((a: any, b: any) => a.name.localeCompare(b.name)).filter((chaperone: any) => chaperone.name !== 'Choir Phone');
   }
 
   const loadChaperoneSlots = async () => {
-    const response = await fetchAPI('chaperone_slots', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const lastUpdated = localStorage.getItem('chaperoneSlotsLastUpdated');
+    let loadedSlots: any[] = [];
+    let ids: number[] = [];
 
-    const data = await response.json();
-    data.forEach((slot: any) => {
+    if (!offline.value) {
+      const response = await fetchAPI('chaperone_slots', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'last-updated': lastUpdated ?? '',
+        },
+      });
+
+      const data = await response.json();
+      loadedSlots = data.slots;
+      ids = data.slot_ids;
+    }
+
+    if (lastUpdated) {
+      const storedSlots = localStorage.getItem('chaperoneSlots');
+      if (storedSlots) {
+        const parsedStoredSlots = JSON.parse(storedSlots);
+        parsedStoredSlots.forEach((storedSlot: any, index: number) => {
+          const incomingModifiedSlot = loadedSlots.find((slot: any) => slot.id == storedSlot.id);
+          if (incomingModifiedSlot) {
+            parsedStoredSlots[index] = { ...incomingModifiedSlot };
+          }
+        });
+        loadedSlots.forEach((slot: any) => {
+          if (!parsedStoredSlots.map((e: any) => e.id).includes(slot.id)) {
+            parsedStoredSlots.push(slot);
+          }
+        });
+        loadedSlots = parsedStoredSlots;
+        console.log("loaded from stored slots");
+      }
+    }
+    if (eventsLocked.value) return;
+
+    if (ids.length !== 0)
+    loadedSlots = loadedSlots.filter((slot: any) => ids.includes(slot.id));
+
+    localStorage.setItem('chaperoneSlots', JSON.stringify(loadedSlots));
+    localStorage.setItem('chaperoneSlotsLastUpdated', Math.floor(new Date().getTime() / 1000 - 60 * 24).toString()); // 24 hours ago
+
+    loadedSlots.forEach((slot: any) => {
       slot.start = new Date(slot.start);
       slot.end = new Date(slot.end);
       slot.chaperoneName = computed(() => chaperones.value.filter((chaperone: any) => chaperone.id === slot.chaperone).map((c: any) => c.name)[0] ?? null);
       slot.setChaperone = (id: number) => slot.chaperone = id;
     });
-    if (eventsLocked.value) return;
-    chaperoneSlots.value = data;
-  }
-
-  const loadEventChaperoneSlots = async (eventID: number) => {
-    const response = await fetchAPI(`chaperone_slots/${eventID}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const data = await response.json();
-    data.forEach((slot: any) => {
-      slot.start = new Date(slot.start);
-      slot.end = new Date(slot.end);
-      slot.chaperoneName = computed(() => chaperones.value.filter((chaperone: any) => chaperone.id === slot.chaperone).map((c: any) => c.name)[0] ?? null);
-    });
-    if (eventsLocked.value) return;
-
-    data.forEach((slot: any) => {
-      const index = chaperoneSlots.value.findIndex((s: any) => s.id === slot.id);
-      if (index === -1) chaperoneSlots.value.push(slot);
-      else chaperoneSlots.value[index] = slot;
-    })
+    chaperoneSlots.value = loadedSlots;
   }
 
   const loadAvailability = async () => {
-    const response = await fetchAPI(`chaperones/availability/${userID.value}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    let data: any[] = [];
 
-    const data = await response.json();
+    if (!offline.value) {
+
+      const response = await fetchAPI(`chaperones/availability/${userID.value}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      data = await response.json();
+    }
+    else {
+      const storedAvailability = localStorage.getItem('availability');
+      if (storedAvailability) {
+        data = JSON.parse(storedAvailability);
+      }
+    }
+
+    localStorage.setItem('availability', JSON.stringify(data));
     availability.value = data.filter((avail: any) => avail.chaperone_id !== 0);
   }
 
   const loadAllAvailability = async () => {
-    const response = await fetchAPI(`chaperones/availability`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    let data: any[] = [];
 
-    const data = await response.json();
+    if (!offline.value) {
+
+      const response = await fetchAPI(`chaperones/availability`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      data = await response.json();
+    } else {
+      const storedAvailability = localStorage.getItem('allAvailability');
+      if (storedAvailability) {
+        data = JSON.parse(storedAvailability);
+      }
+    }
+
+    localStorage.setItem('allAvailability', JSON.stringify(data));
+
     data.forEach((avail: any) => {
       avail.chaperoneName = computed(() => chaperones.value.filter((chaperone: any) => chaperone.id === avail.chaperone_id).map((c: any) => c.name
       )[0] ?? null);
@@ -223,35 +315,109 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const loadTemplates = async () => {
-    const response = await fetchAPI('templates', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const data = await response.json();
+    const templatesLastUpdated = localStorage.getItem('templatesLastUpdated');
 
-    data.forEach((template: any) => {
+    let loadedTemplates: any[] = [];
+    let ids: number[] = [];
+    
+    if (!offline.value) {
+
+      const response = await fetchAPI('templates', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'last-updated': templatesLastUpdated ?? '',
+        },
+      });
+      const data = await response.json();
+      loadedTemplates = data.templates;
+      ids = data.template_ids;
+    }
+
+    if (templatesLastUpdated) {
+      const storedTemplates = localStorage.getItem('templates');
+      if (storedTemplates) {
+        const parsedStoredTemplates = JSON.parse(storedTemplates);
+        parsedStoredTemplates.forEach((storedTemplate: any, index: number) => {
+          const incomingModifiedTemplate = loadedTemplates.find((template: any) => template.id == storedTemplate.id);
+          if (incomingModifiedTemplate) {
+            parsedStoredTemplates[index] = { ...incomingModifiedTemplate };
+          }
+        });
+        loadedTemplates.forEach((template: any) => {
+          if (!parsedStoredTemplates.map((e: any) => e.id).includes(template.id)) {
+            parsedStoredTemplates.push(template);
+          }
+        });
+        loadedTemplates = parsedStoredTemplates;
+        console.log("loaded from stored templates");
+      }
+    }
+
+    if (ids.length !== 0)
+    loadedTemplates = loadedTemplates.filter((template: any) => ids.includes(template.id));
+
+    localStorage.setItem('templates', JSON.stringify(loadedTemplates));
+    localStorage.setItem('templatesLastUpdated', Math.floor(new Date().getTime() / 1000 - 60 * 24).toString());
+
+    loadedTemplates.forEach((template: any) => {
       template.start = new Date(template.start);
       template.end = new Date(template.end);
       template.slots = computed(() => templateSlots.value.filter((slot: any) => slot.template_id === template.id));
     });
-    templates.value = data;
+    templates.value = loadedTemplates;
   }
 
   const loadTemplateSlots = async () => {
-    const response = await fetchAPI('template_chaperone_slots', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const data = await response.json();
-    data.forEach((slot: any) => {
+    const lastUpdated = localStorage.getItem('templateSlotsLastUpdated');
+
+    let loadedTemplateSlots: any[] = [];
+    let ids: number[] = [];
+
+    if (!offline.value) {
+      const response = await fetchAPI('template_chaperone_slots', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'last-updated': lastUpdated ?? '',
+        },
+      });
+      const data = await response.json();
+      loadedTemplateSlots = data.template_slots;
+      ids = data.template_slot_ids;
+    }
+
+    if (lastUpdated) {
+      const storedSlots = localStorage.getItem('templateSlots');
+      if (storedSlots) {
+        const parsedStoredSlots = JSON.parse(storedSlots);
+        parsedStoredSlots.forEach((storedSlot: any, index: number) => {
+          const incomingModifiedSlot = loadedTemplateSlots.find((slot: any) => slot.id == storedSlot.id);
+          if (incomingModifiedSlot) {
+            parsedStoredSlots[index] = { ...incomingModifiedSlot };
+          }
+        });
+        loadedTemplateSlots.forEach((slot: any) => {
+          if (!parsedStoredSlots.map((e: any) => e.id).includes(slot.id)) {
+            parsedStoredSlots.push(slot);
+          }
+        });
+        loadedTemplateSlots = parsedStoredSlots;
+        console.log("loaded from stored slots");
+      }
+    }
+
+    if (ids.length !== 0)
+    loadedTemplateSlots = loadedTemplateSlots.filter((slot: any) => ids.includes(slot.id));
+
+    localStorage.setItem('templateSlots', JSON.stringify(loadedTemplateSlots));
+    localStorage.setItem('templateSlotsLastUpdated', Math.floor(new Date().getTime() / 1000 - 60 * 24).toString());
+
+    loadedTemplateSlots.forEach((slot: any) => {
       slot.start = new Date(slot.start);
       slot.end = new Date(slot.end);
     });
-    templateSlots.value = data;
+    templateSlots.value = loadedTemplateSlots;
   }
 
   const getTemplate = (id: number) => {
@@ -324,12 +490,13 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const getEventAvailability = (id: number) => {
+    console.log(availability.value.find((avail: any) => avail.event_id == id))
     return availability.value.find((avail: any) => avail.event_id == id);
   }
 
   const getEventsByChaperone = (chaperoneID: number) => {
-    const slots = chaperoneSlots.value.filter((slot: any) => slot.chaperone == chaperoneID && slot.start > new Date());
-    const uniqueEvents = [... new Set(slots.map((slot: any) => getEvent(slot.event_id)))].sort((a: any, b: any) => a.start - b.start);
+    const slots = chaperoneSlots.value.filter((slot: any) => slot.chaperone == chaperoneID);
+    const uniqueEvents = [... new Set(slots.map((slot: any) => getEvent(slot.event_id)))].sort((a: any, b: any) => a.start - b.start).filter((event: any) => event.end > new Date());
     return uniqueEvents;
   }
 
@@ -473,8 +640,8 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const saveChaperoneSlot = async (slot: any) => {
-    slot.chaperone = slot.selectedChaperoneID;
     if (slot.id) {
+      slot.chaperone = slot.selectedChaperoneID ?? null;
       const response = await fetchAPI(`chaperone_slots/${slot.id}`, {
         method: 'PATCH',
         headers: {
@@ -487,6 +654,7 @@ export const useAppStore = defineStore('app', () => {
         return false;
       }
     } else {
+      slot.chaperone = getChaperoneIDByName(slot.selectedChaperoneName);
       const response = await fetchAPI('chaperone_slots', {
         method: 'PUT',
         headers: {
@@ -595,8 +763,6 @@ export const useAppStore = defineStore('app', () => {
     templatesLoaded,
     templateSlotsLoaded,
     loadEvents,
-    loadEvent,
-    loadEventChaperoneSlots,
     loadChaperones,
     loadChaperoneSlots,
     loadAvailability,

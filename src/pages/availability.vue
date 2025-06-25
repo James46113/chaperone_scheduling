@@ -9,52 +9,17 @@
     <v-card elevation="0" :width="isMobile ? '100vw' : '80vw'">
       <v-card-title class="text-h5 mb-3">Chaperone Availability</v-card-title>
 
-      <v-row class="mt-6" v-if="!isMobile">
-        <v-card-text class="mr-n9">From</v-card-text>
+      <v-row class="mt-6 pl-5" v-if="!isMobile">
 
-        <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
-          @click="showStartMenu = true">
-          {{ start.toLocaleDateString('en-GB') }}
+        <date-picker label="Start" totalWidth="240px" :date="start.toISOString().split('T')[0]"
+          @update:date="start = new Date($event)"></date-picker>
 
-          <v-menu activator="parent" :close-on-content-click="false" v-model="showStartMenu">
-            <v-confirm-edit v-model="start">
-              <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
-                <v-date-picker v-model="proxyModel.value" :max="end">
-                  <template v-slot:actions>
-                    <!-- <component :is="actions"></component> -->
-                    <v-btn text @click="() => { cancel(); showStartMenu = false; }">Cancel</v-btn>
-                    <v-btn text color="primary" @click="() => { save(); showStartMenu = false; }">Ok</v-btn>
-                  </template>
-                </v-date-picker>
-              </template>
-            </v-confirm-edit>
-          </v-menu>
-
-        </v-text-field>
-
-        <v-card-text class="mr-n9">To</v-card-text>
-
-        <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
-          @click="showEndMenu = true">
-          {{ end.toLocaleDateString('en-GB') }}
-          <v-menu activator="parent" :close-on-content-click="false" v-model="showEndMenu">
-            <v-confirm-edit v-model="end">
-              <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
-                <v-date-picker v-model="proxyModel.value" :min="start">
-                  <template v-slot:actions>
-                    <!-- <component :is="actions"></component> -->
-                    <v-btn text @click="() => { cancel(); showEndMenu = false; }">Cancel</v-btn>
-                    <v-btn text color="primary" @click="() => { save(); showEndMenu = false; }">Ok</v-btn>
-                  </template>
-                </v-date-picker>
-              </template>
-            </v-confirm-edit>
-          </v-menu>
-        </v-text-field>
+        <date-picker label="End" totalWidth="240px" :date="end.toISOString().split('T')[0]"
+          @update:date="end = new Date($event)" class="ml-6"></date-picker>
 
         <v-spacer />
 
-        <v-btn v-if="showTable" color="primary" :loading="sendingEmails" @click="sendAvailabilityEmail" class="mr-4"
+        <v-btn :disabled="offline" v-if="showTable" color="primary" :loading="sendingEmails" @click="sendAvailabilityEmail" class="mr-4"
           variant="flat">Send
           Availability Email</v-btn>
         <v-btn v-if="showTable" color="primary" @click="saveTableAsImage" class="mr-4" variant="flat">Save as
@@ -63,43 +28,11 @@
       </v-row>
 
       <v-div v-else>
-        <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
-          @click="showStartMenu = true">
-          {{ start.toLocaleDateString('en-GB') }}
+        <date-picker label="Start" totalWidth="240px" :date="start.toISOString().split('T')[0]"
+          @update:date="start = new Date($event)" class="ml-6"></date-picker>
 
-          <v-menu activator="parent" :close-on-content-click="false" v-model="showStartMenu">
-            <v-confirm-edit v-model="start">
-              <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
-                <v-date-picker v-model="proxyModel.value" :max="end">
-                  <template v-slot:actions>
-                    <!-- <component :is="actions"></component> -->
-                    <v-btn text @click="() => { cancel(); showStartMenu = false; }">Cancel</v-btn>
-                    <v-btn text color="primary" @click="() => { save(); showStartMenu = false; }">Ok</v-btn>
-                  </template>
-                </v-date-picker>
-              </template>
-            </v-confirm-edit>
-          </v-menu>
-
-        </v-text-field>
-        <v-card-text class="mt-n4" width="100%" style="text-align: center;">To</v-card-text>
-        <v-text-field type="text" readonly variant="outlined" class="px-3" max-width="300" prepend-icon="mdi-calendar"
-          @click="showEndMenu = true">
-          {{ end.toLocaleDateString('en-GB') }}
-          <v-menu activator="parent" :close-on-content-click="false" v-model="showEndMenu">
-            <v-confirm-edit v-model="end">
-              <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
-                <v-date-picker v-model="proxyModel.value" :min="start">
-                  <template v-slot:actions>
-                    <!-- <component :is="actions"></component> -->
-                    <v-btn text @click="() => { cancel(); showEndMenu = false; }">Cancel</v-btn>
-                    <v-btn text color="primary" @click="() => { save(); showEndMenu = false; }">Ok</v-btn>
-                  </template>
-                </v-date-picker>
-              </template>
-            </v-confirm-edit>
-          </v-menu>
-        </v-text-field>
+        <date-picker label="End" totalWidth="240px" :date="end.toISOString().split('T')[0]"
+          @update:date="end = new Date($event)" class="ml-6"></date-picker>
       </v-div>
 
       <div v-if="loadingData" class="d-flex justify-center align-center" style="height: 40vh;">
@@ -110,10 +43,10 @@
           <table class="my-6">
             <tr>
               <th></th>
-              <th v-for="event in eventsInRange">
-                <div class="vertical-text rotate">
+              <th v-for="event in eventsInRange" class="pa-1">
+                <span class="vertical-text rotate">
                   {{ event.start.toLocaleDateString('en-GB') }}
-                </div>
+                </span>
               </th>
             </tr>
 
@@ -145,7 +78,7 @@
           Image</v-btn> -->
       </v-sheet>
       <v-card-text v-else>No events found in the selected range</v-card-text>
-      <v-btn v-if="isMobile" :loading="sendingEmails" class="mt-4" width="100vw" color="primary"
+      <v-btn :disabled="offline" v-if="isMobile" :loading="sendingEmails" class="mt-4" width="100vw" color="primary"
         @click="sendAvailabilityEmail" variant="flat">Send
         Availability Email</v-btn>
     </v-card>
@@ -158,7 +91,7 @@ import { useAppStore } from '@/stores/app';
 
 const store = useAppStore();
 const eventsInRange = computed(() => store.events.filter(event => event.start >= start.value && event.end <= end.value))
-const showTable = computed(() => eventsInRange.value.length > 0)
+const showTable = computed(() => eventsInRange.value.length > 0 && start.value < end.value)
 
 const sendingEmails = ref(false)
 

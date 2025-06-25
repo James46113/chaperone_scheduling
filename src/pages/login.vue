@@ -169,7 +169,7 @@ onMounted(async () => {
       store.isAdmin = Cookies.get('isAdmin') == 'true';
       store.userID = Cookies.get('userID');
       proxy.$router.push(proxy.$route.query.redirect);
-    
+
   })
   if (Cookies.get('refreshToken') && Cookies.get('credential') && Cookies.get('accessToken')) {
     signingIn.value = true;
@@ -197,7 +197,7 @@ const cancelSignIn = () => {
 const tokenLogin = async () => {
   signingIn.value = true;
   const token = Cookies.get('passwdAccessToken');
-  fetchAPI('public/login/token', {
+  fetchAPI('/login/token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -232,13 +232,13 @@ const passwordLogin = async () => {
   incorrectPassword.value = false;
   signingIn.value = true;
   try {
-    const response = await fetchAPI('/public/login/password', {
+    const response = await fetchAPI('login/password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ email: email.value, password: password.value, fingerprint }),
-    });
+    }, false);
 
     if (response.ok) {
       const responseJson = await response.json();
@@ -283,7 +283,7 @@ const resetPassword = () => {
     return;
   }
 
-  fetchAPI('/public/forgot_password', {
+  fetchAPI('/forgot_password', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -322,16 +322,17 @@ const customLogin = () => {
     google.accounts.oauth2.initCodeClient({
       client_id: "898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com",
       scope: 'openid email profile',
-      redirect_uri: window.location.href,
+      redirect_uri: 'chaperones.steelcitychoristers.org.uk',
       accessType: 'offline',
       callback: onCodeReceived
     }).requestCode();
   })
 }
 
+
 function onCodeReceived(response) {
   // Exchange the authorization code for tokens
-  fetchAPI('/token', {
+  fetchAPI('token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -363,7 +364,7 @@ function onSignIn(response) {
 
   fetchAPI(`login/${store.userEmail}`, {
     method: 'GET',
-  })
+  }, false)
     .then((response) => {
       if (response.ok) {
         return response.json();
@@ -395,7 +396,7 @@ function onSignIn(response) {
         store.userEmail = '';
         store.isAdmin = false;
         store.userID = null
-        store.showAlert('Unauthorised', "You are not authorised to access the chaperones' rota. If you believe this is in error, please contact the chaperoning team.");
+        store.showAlert('Unauthorised', "You are not authorised to access the chaperones' rota. If you believe this is in error, please contact the chaperoning team by emailing chaperones@steelcitychoristers.org.uk.");
       }
       console.error('Error:', error)
       signingIn.value = false;
@@ -404,7 +405,7 @@ function onSignIn(response) {
 
 async function refreshToken() {
   try {
-    const response = await fetchAPI('/refresh-token', {
+    const response = await fetchAPI('refresh-token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -441,5 +442,12 @@ const checkCredential = async () => {
 }
 
 setInterval(checkCredential, 60000); // Check every minute
+setInterval(() => {
+  if (offline.value) {
+    store.isAdmin = Cookies.get('isAdmin') == 'true';
+    store.userID = Cookies.get('userID');
+    proxy.$router.push(proxy.$route.query.redirect);
+  }
+}, 1000)
 
 </script>

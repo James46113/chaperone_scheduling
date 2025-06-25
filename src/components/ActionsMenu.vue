@@ -1,6 +1,6 @@
 <template>
-  <v-btn v-if="!label" icon variant="flat" :id="activatorID"><v-icon>mdi-menu</v-icon></v-btn>
-  <v-btn v-else variant="flat" color="primary" :id="activatorID + label">{{ label }}<v-icon
+  <v-btn :disabled="offline" v-if="!label" icon variant="flat" :id="activatorID"><v-icon>mdi-menu</v-icon></v-btn>
+  <v-btn :disabled="offline" v-else variant="flat" color="primary" :id="activatorID + label">{{ label }}<v-icon
       class="ml-3">mdi-menu</v-icon></v-btn>
 
   <v-menu :activator="'#' + activatorID + label">

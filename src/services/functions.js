@@ -1,12 +1,17 @@
 import { getFingerprint } from "@thumbmarkjs/thumbmarkjs";
 import Cookies from "js-cookie";
+import { getCurrentInstance } from "vue";
 
-export const fetchAPI = async (url, params) => {
+export const fetchAPI = async (url, params, redirect = true) => {
+  let authHeader = null;
+  if (usingPasswordLogin.value) {
+    authHeader = {'token' : Cookies.get('passwdAccessToken'), 'fingerprint' : fingerprint};
+  } else {
+    authHeader = {'oAuthToken' : Cookies.get('accessToken')};
+  }
   const headers = {
     ...(params.headers || {}),
-    'Authorization': `Bearer ${Cookies.get('accessToken')}`,
-    'token': Cookies.get('passwdAccessToken'),
-    'fingerprint': fingerprint,
+    ...authHeader,
   };
   // const APIURL = window.location.href.startsWith('https://chaperonescheduling-dev.up.railway.app')
   //   ? 'https://chaperone_scheduling_api.railway.internal:5000/' : import.meta.env.VITE_API_URL;
@@ -22,16 +27,16 @@ export const fetchAPI = async (url, params) => {
 
   let HOSTNAME;
   if (window.location.hostname === 'localhost') {
-    HOSTNAME = 'https://chaperones.steelcitychoristers.org.uk';
+    HOSTNAME = 'http://localhost:5000/';
   } else {
-    HOSTNAME = ''
+    HOSTNAME = 'https://api.chaperones.steelcitychoristers.org.uk/'
   }
 
-  return fetch(HOSTNAME + APIURL + url, {
+  return fetch(HOSTNAME + url, {
     ...params,
     headers
   }).then((response) => {
-    if (response.status === 401) {
+    if (response.status === 401 && !offline.value && redirect) {
       Cookies.remove('credential');
       Cookies.remove('accessToken');
       Cookies.remove('refreshToken');
@@ -42,7 +47,8 @@ export const fetchAPI = async (url, params) => {
     return response;
   })
     .catch((e) => {
-      console.error(e);
+      offline.value = true;
+      console.error('Error fetching API:', e);
     })
 };
 
@@ -69,6 +75,7 @@ export const isSignedIn = ref(false);
 export const usingPasswordLogin = ref(false);
 export const serviceworker = ref(null);
 
+
 export const offline = ref(window.navigator.onLine === false);
 window.addEventListener('online', () => { offline.value = false });
 window.addEventListener('offline', () => { 
@@ -78,7 +85,6 @@ window.addEventListener('offline', () => {
     window.location.href = '/';
   }
 });
-
 
 export const notificationsSubscribe = async (userID) => {
       const subscription = await serviceworker.value.pushManager.subscribe({
