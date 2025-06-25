@@ -67,3 +67,29 @@ export const isDev = computed(() => import.meta.env.VITE_DEV == 1);
 export const isPWA = computed(() => window.matchMedia('(display-mode: standalone)').matches)
 export const isSignedIn = ref(false);
 export const usingPasswordLogin = ref(false);
+export const serviceworker = ref(null);
+
+export const offline = ref(window.navigator.onLine === false);
+window.addEventListener('online', () => { offline.value = false });
+window.addEventListener('offline', () => { 
+  offline.value = true;
+  const currentPath = window.location.pathname;
+  if (currentPath.startsWith('/login')) {
+    window.location.href = '/';
+  }
+});
+
+
+export const notificationsSubscribe = async (userID) => {
+      const subscription = await serviceworker.value.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: 'BDxiXIhjftxcAEVif8XED2Qah1j6FFZUO8iN2GFDK_aadrb2ad23Z_i85whgM2TIJ3uKGXntjTbc0m8C-4r4pjc'
+      });
+
+      await fetchAPI(`notifications/subscribe/${userID}`, {
+        method: 'POST',
+        body: JSON.stringify(subscription),
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+}
