@@ -16,3 +16,24 @@ workbox.routing.registerRoute(
     cacheName: CACHE
   })
 );
+
+self.addEventListener('push', event => {
+  const data = event.data?.json() || {};
+  event.waitUntil(
+    self.registration.showNotification(data.title || "Notification", {
+      body: data.body || "Default body",
+      icon: "/favicon.png",
+      data: data,
+      requireInteraction: true,
+      actions: data.actions || [],
+      tag: data.tag || undefined,
+      renotify: data.renotify || false,
+      silent: data.silent || false,
+      badge: data.badge || undefined,
+      image: data.image || undefined,
+      vibrate: data.vibrate || undefined,
+      timestamp: data.timestamp || Date.now(),
+      url: data.url || "/"
+    })
+  );
+});

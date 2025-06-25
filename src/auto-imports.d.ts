@@ -55,6 +55,7 @@ declare global {
   const ref: typeof import('vue')['ref']
   const reloadData: typeof import('@/services/functions')['reloadData']
   const resolveComponent: typeof import('vue')['resolveComponent']
+  const serviceworker: typeof import('@/services/functions')['serviceworker']
   const shallowReactive: typeof import('vue')['shallowReactive']
   const shallowReadonly: typeof import('vue')['shallowReadonly']
   const shallowRef: typeof import('vue')['shallowRef']
@@ -139,6 +140,7 @@ declare module 'vue' {
     readonly readonly: UnwrapRef<typeof import('vue')['readonly']>
     readonly ref: UnwrapRef<typeof import('vue')['ref']>
     readonly resolveComponent: UnwrapRef<typeof import('vue')['resolveComponent']>
+    readonly serviceworker: UnwrapRef<typeof import('@/services/functions')['serviceworker']>
     readonly shallowReactive: UnwrapRef<typeof import('vue')['shallowReactive']>
     readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>

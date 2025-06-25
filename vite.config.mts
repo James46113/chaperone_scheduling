@@ -25,7 +25,7 @@ export default defineConfig({
           'vue-router/auto': ['useRoute', 'useRouter'],
         },
         {
-          '@/services/functions': ['fetchAPI', 'isMobile', 'isSignedIn', 'loadingData', 'loadingAvailability', 'isDev', 'isPWA', 'usingPasswordLogin', 'fingerprint', 'offline'],
+          '@/services/functions': ['fetchAPI', 'isMobile', 'isSignedIn', 'loadingData', 'loadingAvailability', 'isDev', 'isPWA', 'usingPasswordLogin', 'fingerprint', 'offline', 'serviceworker'],
         },
         {
           'js-cookie': [['default', 'Cookies']],
@@ -75,8 +75,8 @@ export default defineConfig({
     ],
   },
   server: {
+    host: true,
     port: 3001,
-    allowedHosts: true,
   },
   css: {
     preprocessorOptions: {

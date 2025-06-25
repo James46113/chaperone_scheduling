@@ -20,7 +20,6 @@
 </template>
 
 <script lang="js" setup>
-import { defineProps, defineEmits } from 'vue'
 
 const props = defineProps({
   hours: String,

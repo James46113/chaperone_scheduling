@@ -147,6 +147,7 @@ import { useAppStore } from '@/stores/app';
 import { GoogleLogin, decodeCredential, googleSdkLoaded } from 'vue3-google-login';
 import { getCurrentInstance } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
+import { notificationsSubscribe } from '@/services/functions.js'
 
 const store = useAppStore();
 const { proxy } = getCurrentInstance();
@@ -164,12 +165,11 @@ const resetTimeout = ref(0);
 setInterval(() => { if (resetTimeout.value > 0) resetTimeout.value -= 1 }, 1000)
 
 onMounted(async () => {
-  fetchAPI('ping', { method: 'GET' }).then(() => {
-    if (offline.value){
+  fetchAPI('ping', { method: 'GET' }).catch(() => {
       store.isAdmin = Cookies.get('isAdmin') == 'true';
       store.userID = Cookies.get('userID');
       proxy.$router.push(proxy.$route.query.redirect);
-    }
+
   })
   if (Cookies.get('refreshToken') && Cookies.get('credential') && Cookies.get('accessToken')) {
     signingIn.value = true;
@@ -212,6 +212,7 @@ const tokenLogin = async () => {
     store.userID = data.id;
     Cookies.set('isAdmin', data.is_admin, { expires: 365, secure: true, sameSite: 'strict' });
     Cookies.set('userID', data.id, { expires: 365, secure: true, sameSite: 'strict' });
+    notificationsSubscribe(store.userID);
     store.isAdmin = data.is_admin;
     store.userEmail = data.email;
     isSignedIn.value = true;
@@ -245,6 +246,7 @@ const passwordLogin = async () => {
       store.userID = responseJson.id;
       Cookies.set('isAdmin', responseJson.is_admin, { expires: 365, secure: true, sameSite: 'strict' });
       Cookies.set('userID', responseJson.id, { expires: 365, secure: true, sameSite: 'strict' });
+      notificationsSubscribe(store.userID);
       store.isAdmin = responseJson.is_admin;
       store.userEmail = responseJson.email;
       usingPasswordLogin.value = true;
@@ -376,6 +378,7 @@ function onSignIn(response) {
       store.userID = data.id;
       Cookies.set('isAdmin', data.is_admin, { expires: 365, secure: true, sameSite: 'strict' });
       Cookies.set('userID', data.id, { expires: 365, secure: true, sameSite: 'strict' });
+      notificationsSubscribe(store.userID);
       isSignedIn.value = true;
       if (proxy.$route.query.redirect) {
         proxy.$router.push(proxy.$route.query.redirect);

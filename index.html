@@ -24,8 +24,8 @@
 
 </html>
 
-<script>
-  if (typeof navigator.serviceWorker !== 'undefined') {
-    navigator.serviceWorker.register('/sw2.js')
-  }
+<script type="module">
+import { serviceworker } from '@/services/functions.js';
+
+serviceworker.value = await navigator.serviceWorker.register('/sw2.js');
 </script>
