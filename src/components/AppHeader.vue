@@ -4,10 +4,11 @@
     <v-card-title class="text-h5 mt-4 ml-4" v-if="!isMobile">Chaperones</v-card-title>
     <v-spacer />
 
-    <v-btn href="mailto:jamescaroe@gmail.com?subject=SCC%20Chaperone%20System%20Bug%20Report" color="primary"
+    <v-card-title class="text-h5 mt-4 mr-4" v-if="isMobile">Chaperones</v-card-title>
+    <!-- <v-btn href="mailto:jamescaroe@gmail.com?subject=SCC%20Chaperone%20System%20Bug%20Report" color="primary"
       class="mt-4">
       Report Error
-    </v-btn>
+    </v-btn> -->
 
     <v-btn v-if="store.isAdmin && !isMobile" class="mt-4 mr-3" @click="proxy.$router.push('/templates')">
       <v-icon size="25">mdi-note-text</v-icon>

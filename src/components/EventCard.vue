@@ -1,6 +1,6 @@
 <template>
-  <v-sheet elevation="2" class="ma-2" variant="outlined" color="primary" style="padding: 1px;" rounded>
-    <v-card class="pa-1">
+  <!-- <v-sheet elevation="2" class="ma-2" variant="outlined" color="primary" style="padding: 1px;" rounded> -->
+    <v-card class="ma-2 eventcard">
       <div @click="goToEvent" style="cursor: pointer;">
         <div v-if="isMobile">
           <v-icon color="primary" size="25" class="mt-2 mr-3"
@@ -60,7 +60,7 @@
       </div>
       <availability-selector :event="event.id" small class="mt-n3" />
     </v-card>
-  </v-sheet>
+  <!-- </v-sheet> -->
 </template>
 
 <script setup>
@@ -84,3 +84,9 @@ const goToEvent = (value) => {
 }
 
 </script>
+
+<style lang="scss" scoped>
+  .eventcard {
+    border: 1px solid rgb(var(--v-theme-primary));
+  }
+</style>

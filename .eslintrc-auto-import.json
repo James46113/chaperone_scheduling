@@ -87,6 +87,8 @@
     "isSignedI": true,
     "usingPasswordLogin": true,
     "reloadData": true,
-    "fingerprint": true
+    "fingerprint": true,
+    "offline": true,
+    "serviceworker": true
   }
 }
