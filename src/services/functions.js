@@ -104,7 +104,7 @@ function urlBase64ToUint8Array(base64String) {
 export const notificationsSubscribe = async (userID) => {
       const permission = await Notification.requestPermission();
       if (permission !== 'granted') {
-        alert('Notifications are not enabled.');
+        // alert('Notifications are not enabled.');
         return;
       }
 
