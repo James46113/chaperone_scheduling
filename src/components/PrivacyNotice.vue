@@ -21,12 +21,17 @@
                     For more information about how we handle your data, please contact enquiries@steelcitychoristers.org.uk.
                 </p>
             </v-card-text>
-            <v-card-actions>
+            <v-card-actions v-if="!isMobile">
                 <v-spacer />
                 <v-btn color="primary" variant="flat" @click="agree" size="large">
                     I Agree
                 </v-btn>
             </v-card-actions>
+            <div v-else class="d-flex justify-center">
+                <v-btn width="80%" color="primary" class="mb-4" variant="flat" @click="agree" size="large">
+                    I Agree
+                </v-btn>
+            </div>
         </v-card>
     </v-bottom-sheet>
 </template>
