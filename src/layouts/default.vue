@@ -23,6 +23,7 @@
 
     <PWAInstallDialog />
     <CreateTermDialog />
+    <PrivacyNotice />
   </v-main>
 
   <AppFooter v-if="!isMobile" />
