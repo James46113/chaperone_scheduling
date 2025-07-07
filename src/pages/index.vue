@@ -14,7 +14,7 @@
         </div>
 
         <v-progress-linear v-if="loadingData" indeterminate color="primary" />
-        <v-calendar class="pa-0" :events="store.events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" hide-week-number>
+        <v-calendar class="pa-0" :events="store.events" :weekdays="[0, 1, 2, 3, 4, 5, 6]" hide-week-number v-model="store.calendarDate">
           <template #event="{ event }" v-if="!isMobile" :interval-height="20">
             <event-card :event="event" small />
           </template>
@@ -48,6 +48,9 @@
         <div v-else class="d-flex justify-center align-center" style="height: 23vh;">
           <v-progress-circular color="primary" indeterminate size="40" />
         </div>
+        <v-card-text v-if="store.upcomingEvents.length === 0 && !loadingData" class="mt-n6">
+          <i>No upcoming events scheduled</i>
+        </v-card-text>
       </v-tabs-window-item>
 
       <v-tabs-window-item value="chaperones">
