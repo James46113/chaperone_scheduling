@@ -17,6 +17,7 @@ declare module 'vue' {
     DatePicker: typeof import('./components/DatePicker.vue')['default']
     EditPage: typeof import('./components/EditPage.vue')['default']
     EventCard: typeof import('./components/EventCard.vue')['default']
+    PrivacyNotice: typeof import('./components/PrivacyNotice.vue')['default']
     PWAInstallDialog: typeof import('./components/PWAInstallDialog.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
