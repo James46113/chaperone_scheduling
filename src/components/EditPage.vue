@@ -98,8 +98,10 @@
       </div>
 
       <v-textarea class="mt-6" v-model="event.details" label="Event Details (Optional)" variant="outlined" auto-grow
-        rows="2" />
-
+      rows="2" />
+      
+      <v-checkbox label="Juniors Present" v-model="event.juniors_present" color="primary" />
+      
       <v-divider class="mt-4"></v-divider>
 
       <v-row class="my-3">
@@ -428,6 +430,7 @@ const loadTemplate = () => {
   event.value.title = template.title;
   event.value.location = template.location;
   event.value.details = template.details;
+  event.value.juniors_present = template.juniors_present
 
 
   const tempChaperoneSlots = store.templateSlots.filter(slot => slot.template_id === template.id);

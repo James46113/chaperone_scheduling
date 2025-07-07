@@ -20,8 +20,12 @@
           items-per-page="-1" :headers="headers" density="compact"
           :height="loadingData ? 120 : (store.chaperones.length + 1) * 64">
           <template #item.is_admin="{ item }">
-            <v-switch :readonly="item.name === 'Choir Phone' || offline" @click="updateAdmin(item)" class="mb-n6"
+            <v-switch :readonly="offline" @click="updateAdmin(item)" class="mb-n6"
               v-model="item.is_admin" color="primary" />
+          </template>
+          <template #item.is_singing_chaperone="{ item }">
+            <v-switch :readonly="offline" @click="updateSinging(item)" class="mb-n6"
+              v-model="item.is_singing_chaperone" color="primary" />
           </template>
           <template #item.delete="{ item }">
             <v-btn :disabled="offline" v-if="item.name !== 'Choir Phone'" @click="deleteUser(item.id)"
@@ -88,6 +92,7 @@ const required = (value) => !!value || 'This field is required.'
 const headers = computed(() => [
   { title: 'Name', key: 'name', mobile: true },
   { title: 'Email', key: 'email', mobile: false },
+  { title: 'Singing', key: 'is_singing_chaperone', mobile: false },
   { title: 'Admin', key: 'is_admin', mobile: true },
   { title: 'Delete', key: 'delete', mobile: true },
 ].filter(header => !isMobile.value || header.mobile))
@@ -221,9 +226,28 @@ const updateAdmin = (user) => {
     .then((response) => {
       if (!response.ok) {
         return Promise.reject(response);
-      } else {
-        store.loadChaperoneSlots();
-        store.loadChaperones();
+      }
+    })
+    .catch((response) => {
+      store.showAlert('Error', 'An error occurred while updating the user')
+    });
+}
+
+const updateSinging = (user) => {
+  if (user.name === 'Choir Phone' || offline.value) {
+    return;
+  }
+
+  fetchAPI(`chaperones/${user.id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ is_singing_chaperone: !user.is_singing_chaperone })
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return Promise.reject(response);
       }
     })
     .catch((response) => {
