@@ -731,6 +731,9 @@ export const useAppStore = defineStore('app', () => {
     return true;
   }
 
+  const isSingingChaperoneFromName = (name: string) => {
+    return chaperones.value.find(chaperone => chaperone.name === name)?.is_singing_chaperone
+  }
 
   return {
     // GENERAL
@@ -796,5 +799,6 @@ export const useAppStore = defineStore('app', () => {
     unlockEvents,
     createNewEvent,
     createNewTemplate,
+    isSingingChaperoneFromName,
   }
 });
