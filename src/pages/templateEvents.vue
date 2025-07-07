@@ -37,9 +37,12 @@ const headers = [
 onMounted(async () => {
   loadingData.value = true;
   if (!store.templatesLoaded) {
-    await store.loadTemplates();
+    await Promise.all(
+    store.loadTemplates(),
+    store.loadTemplateSlots)
   } else {
     store.loadTemplates();
+    store.loadTemplateSlots();
   }
   loadingData.value = false;
 })
