@@ -41,6 +41,7 @@ const newSlot = () => {
       endHours: event.value.endHours,
       endMinutes: event.value.endMinutes,
       template_id: event.value.id,
+      title: 'Choristers',
     });
   } else {
     store.newChaperoneSlot({
@@ -51,6 +52,7 @@ const newSlot = () => {
       endHours: event.value.endHours,
       endMinutes: event.value.endMinutes,
       event_id: event.value.id,
+      title: 'Choristers',
     });
   }
 };
