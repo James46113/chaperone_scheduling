@@ -47,7 +47,13 @@
         <v-card-text class="pl-0">
           <span v-for="chaperone in sortedChaperones">
             <v-card-text v-if="chaperone" class="py-0">
-              {{ chaperone }}<br>
+              <i class="text-primary" v-if="store.isSingingChaperoneFromName(chaperone)">
+                {{ chaperone }}
+              </i>
+              <span v-else>
+                {{ chaperone }}
+              </span>
+              <br>
             </v-card-text>
           </span>
           <v-alert v-if="missingChaperones && store.isAdmin && !event.isPastEvent" density="compact" type="warning"

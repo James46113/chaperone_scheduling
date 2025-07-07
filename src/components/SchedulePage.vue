@@ -5,6 +5,10 @@
         "'"
         : "'s" }} Schedule</v-card-title>
 
+      <v-card-text>
+        Chaperone names in <i class="text-primary">red itallics</i> are singing chaperones.
+      </v-card-text>
+
       <v-sheet v-for="event in events" elevation="2" class="my-2" variant="outlined" color="primary"
         style="padding: 1px; cursor: pointer;" rounded @click="proxy.$router.push(`/event/${event.id}`)">
         <v-card class="pa-1">
