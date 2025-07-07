@@ -11,23 +11,24 @@
     </v-btn> -->
 
     <v-btn v-if="store.isAdmin && !isMobile" class="mt-4 mr-3" @click="proxy.$router.push('/templates')">
-      <v-icon size="25">mdi-note-text</v-icon>
+      <v-icon size="25" class="mr-2">mdi-note-text</v-icon> Templates
     </v-btn>
 
     <v-btn v-if="!isMobile" class="mt-4 mr-3" @click="proxy.$router.push(`/chaperones/${store.userID}`)">
-      <v-icon size="25">mdi-account</v-icon>
+      <v-icon size="25" class="mr-2">mdi-account</v-icon> Schedule
     </v-btn>
 
     <v-btn v-if="!isMobile && store.isAdmin" class="mt-4 mr-3" @click="proxy.$router.push('/chaperones')">
-      <v-icon size="25">mdi-account-multiple</v-icon>
+      <v-icon size="25" class="mr-2">mdi-account-multiple</v-icon> Chaperones
     </v-btn>
 
     <v-btn v-if="!isMobile" class="mt-4 mr-3" @click="proxy.$router.push('/')">
-      <v-icon size="25">mdi-calendar</v-icon>
+      <v-icon size="25" class="mr-2">mdi-calendar</v-icon> Calendar
     </v-btn>
 
-    <v-btn v-if="store.userEmail && !isMobile" class="mt-4 mr-3" @click="logout">
-      <v-icon size="25">mdi-logout</v-icon>
+    <v-btn v-if="store.userEmail && !isMobile" class="mt-4 mr-3" @click="logout" color="primary">
+      <v-icon size="25" class="mr-2">mdi-logout</v-icon> Logout
+          <v-tooltip text="Logout" location="bottom" activator="parent" />
     </v-btn>
   </v-app-bar>
 </template>
