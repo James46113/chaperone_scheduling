@@ -41,6 +41,8 @@
         @click="proxy.$router.push(`/event/${eventID}/edit/chaperones`)">Edit Chaperones</v-btn>
     </v-row>
 
+    <v-alert class="mb-3 mt-6" density="compact" type="info" color="primary" v-if="event.juniors_present">Junior choristers are present at this event</v-alert>
+
     <v-card-text v-if="false">Lead Chaperone: {{ event.lead_chaperone }}</v-card-text>
 
     <v-data-table :headers="tableHeaders" :items="event.slots" hide-default-footer v-if="!isMobile">
@@ -70,7 +72,7 @@
       </template>
     </v-data-table>
 
-    <v-card v-else v-for="slot in event.slots" class="mb-4">
+    <v-card v-else v-for="slot in event.slots" class="mb-4 mt-4">
       <v-card-title v-if="slot.chaperone">{{store.chaperones.find(chaperone => chaperone.id === slot.chaperone)?.name
       }}</v-card-title>
       <v-alert v-else type="warning" class="mb-6">No Chaperone</v-alert>
