@@ -10,6 +10,7 @@ export const useAppStore = defineStore('app', () => {
   const userID = ref();
   const tabView = ref(isMobile.value ? 'schedule' : 'calendar');
   const showCreateTermDialog = ref(false);
+  const calendarDate = ref(new Date())
 
   const showAlert = (title: string, message: string) => {
     alertTitle.value = title;
@@ -141,9 +142,9 @@ export const useAppStore = defineStore('app', () => {
       })
 
       event.availability = computed(() => {
-        const available = event.rawAvailability.value.filter((avail: any) => avail.available === true).sort((a: any, b: any) => a.chaperoneName.localeCompare(b.chaperoneName));
-        const unavailable = event.rawAvailability.value.filter((avail: any) => avail.available === false).sort((a: any, b: any) => a.chaperoneName.localeCompare(b.chaperoneName));
-        const unanswered = event.rawAvailability.value.filter((avail: any) => avail.available === null).sort((a: any, b: any) => a.chaperoneName.localeCompare(b.chaperoneName));
+        const available = event.rawAvailability.value.filter((avail: any) => avail.available === true).sort((a: any, b: any) => a.chaperoneName?.localeCompare(b.chaperoneName));
+        const unavailable = event.rawAvailability.value.filter((avail: any) => avail.available === false).sort((a: any, b: any) => a.chaperoneName?.localeCompare(b.chaperoneName));
+        const unanswered = event.rawAvailability.value.filter((avail: any) => avail.available === null).sort((a: any, b: any) => a.chaperoneName?.localeCompare(b.chaperoneName));
         return [...available, ...unavailable, ...unanswered];
       })
     });
@@ -202,7 +203,7 @@ export const useAppStore = defineStore('app', () => {
       });
     });
 
-    chaperones.value = loadedChaperones.sort((a: any, b: any) => a.name.localeCompare(b.name)).filter((chaperone: any) => chaperone.name !== 'Choir Phone');
+    chaperones.value = loadedChaperones.sort((a: any, b: any) => a.name.localeCompare(b.name)).filter((chaperone: any) => chaperone.name !== 'Choir Phone' && chaperone.name !== "Eleanor");
   }
 
   const loadChaperoneSlots = async () => {
@@ -742,6 +743,7 @@ export const useAppStore = defineStore('app', () => {
     userID,
     tabView,
     showCreateTermDialog,
+    calendarDate,
 
     // DATABASE
 
