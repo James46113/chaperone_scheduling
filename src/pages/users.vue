@@ -142,10 +142,6 @@ const saveEmail = (user) => {
     },
     body: JSON.stringify({ email: user.email })
   })
-    .then((response) => {
-      store.loadChaperones();
-      store.loadChaperoneSlots();
-    })
     .catch(() => {
       store.showAlert('Error', 'An error occurred while updating the user')
     });
@@ -204,12 +200,12 @@ const deleteUser = (user_id) => {
       return response.json()
     })
     .then((data) => {
-      store.loadChaperones();
       store.loadChaperoneSlots();
     })
     .catch((response) => {
       store.showAlert('Error', 'An error occurred while deleting the user')
-    });
+    })
+    .finally(() => store.loadChaperones());
 }
 
 const updateAdmin = (user) => {

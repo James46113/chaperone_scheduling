@@ -37,3 +37,30 @@ self.addEventListener('push', event => {
     })
   );
 });
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  
+  const urlToOpen = event.notification.data?.url || event.notification.url || '/';
+  
+  event.waitUntil(
+    clients.matchAll({
+      type: 'window',
+      includeUncontrolled: true
+    }).then(clientList => {
+      // Check if there's already a window/tab open
+      for (let client of clientList) {
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
+          // Focus existing window and navigate to the URL
+          client.focus();
+          return client.navigate(urlToOpen);
+        }
+      }
+      
+      // If no existing window, open a new one
+      if (clients.openWindow) {
+        return clients.openWindow(urlToOpen);
+      }
+    })
+  );
+});
