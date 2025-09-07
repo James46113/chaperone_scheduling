@@ -56,5 +56,5 @@ const reloadData = () => {
   }
 }
 
-setInterval(reloadData, 1000 * 30); // Reload data every 30s
+// setInterval(reloadData, 1000 * 30); // Reload data every 30s
 </script>
