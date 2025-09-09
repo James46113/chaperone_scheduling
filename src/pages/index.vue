@@ -39,7 +39,7 @@
 
         <v-card-text>
           To give your availability, press on the tick or the cross on each event.<br>
-          Chaperone names in <i class="text-primary">red itallics</i> are singing chaperones.
+          Chaperone names in <i class="text-primary">red italics</i> are singing chaperones.
         </v-card-text>
 
         <v-divider v-if="store.isAdmin" class="mt-3" />
