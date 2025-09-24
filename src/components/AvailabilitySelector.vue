@@ -1,15 +1,40 @@
 <template>
-  <div v-if="!loadingAvailability && !eventRef?.isPastEvent"
-    :style="small ? '' : 'border: 1px solid #ccc; border-radius: 5px;'">
-    <v-card-text v-if="small">Available:</v-card-text>
-    <v-card-title v-else class="mb-3">Available:</v-card-title>
+  <div
+    v-if="!loadingAvailability && !eventRef?.isPastEvent"
+    :style="small ? '' : 'border: 1px solid #ccc; border-radius: 5px;'"
+  >
+    <v-card-text v-if="small">
+      Available:
+    </v-card-text>
+    <v-card-title
+      v-else
+      class="mb-3"
+    >
+      Available:
+    </v-card-title>
     <v-row class="mx-2 mb-3">
-      <v-btn :disabled="offline" variant="flat" max-width="100px" width="50%"
-        :color="eventRef?.available === null ? '' : eventRef?.available ? '#198754' : ''" @click="updateAvailable(true)"
-        :ripple="false">✓</v-btn>
-      <v-btn :disabled="offline" variant="flat" max-width="100px" width="50%"
+      <v-btn
+        :disabled="offline"
+        variant="flat"
+        max-width="100px"
+        width="50%"
+        :color="eventRef?.available === null ? '' : eventRef?.available ? '#198754' : ''"
+        :ripple="false"
+        @click="updateAvailable(true)"
+      >
+        ✓
+      </v-btn>
+      <v-btn
+        :disabled="offline"
+        variant="flat"
+        max-width="100px"
+        width="50%"
         :color="eventRef?.available === null ? '' : eventRef?.available ? '' : 'primary'"
-        @click="updateAvailable(false)" :ripple="false">⨯</v-btn>
+        :ripple="false"
+        @click="updateAvailable(false)"
+      >
+        ⨯
+      </v-btn>
     </v-row>
   </div>
 </template>

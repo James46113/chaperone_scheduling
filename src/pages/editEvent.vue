@@ -1,6 +1,14 @@
 <template>
-  <edit-page :event="event" :deleteEvent="deleteEvent" :saveEvent="saveEvent" :newSlot="newSlot"
-    :removeSlot="removeSlot" :isTemplate="isTemplate" :isNewEvent="false" :notFound="notFound" />
+  <edit-page
+    :event="event"
+    :delete-event="deleteEvent"
+    :save-event="saveEvent"
+    :new-slot="newSlot"
+    :remove-slot="removeSlot"
+    :is-template="isTemplate"
+    :is-new-event="false"
+    :not-found="notFound"
+  />
 </template>
 
 <script setup>
