@@ -1,8 +1,13 @@
 <template>
   <v-main>
-    <v-alert  v-if="offline">
+    <v-alert v-if="offline">
       <template #title>
-        <v-icon color="primary" class="mr-2" >mdi-alert-circle</v-icon> Offline
+        <v-icon
+          color="primary"
+          class="mr-2"
+        >
+          mdi-alert-circle
+        </v-icon> Offline
       </template>
       <template #text>
         <span class="">
@@ -14,11 +19,26 @@
 
     <AlertDialog />
 
-    <v-bottom-navigation v-if="isMobile && showNavigationBar" grow color="primary">
-      <v-btn @click="goHome('calendar')"><v-icon>mdi-calendar</v-icon></v-btn>
-      <v-btn @click="goHome('list')"><v-icon>mdi-format-list-bulleted</v-icon></v-btn>
-      <v-btn v-if="store.isAdmin" @click="goHome('chaperones')"><v-icon>mdi-account-multiple</v-icon></v-btn>
-      <v-btn @click="goHome('schedule')"><v-icon>mdi-account</v-icon></v-btn>
+    <v-bottom-navigation
+      v-if="isMobile && showNavigationBar"
+      grow
+      color="primary"
+    >
+      <v-btn @click="goHome('calendar')">
+        <v-icon>mdi-calendar</v-icon>
+      </v-btn>
+      <v-btn @click="goHome('list')">
+        <v-icon>mdi-format-list-bulleted</v-icon>
+      </v-btn>
+      <v-btn
+        v-if="store.isAdmin"
+        @click="goHome('chaperones')"
+      >
+        <v-icon>mdi-account-multiple</v-icon>
+      </v-btn>
+      <v-btn @click="goHome('schedule')">
+        <v-icon>mdi-account</v-icon>
+      </v-btn>
     </v-bottom-navigation>
 
     <PWAInstallDialog />

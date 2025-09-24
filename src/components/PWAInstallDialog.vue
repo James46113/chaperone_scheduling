@@ -1,7 +1,13 @@
 <template>
-  <v-dialog v-model="showPWAinstall" :width="isMobile ? '100vw' : '40vw'">
+  <v-dialog
+    v-model="showPWAinstall"
+    :width="isMobile ? '100vw' : '40vw'"
+  >
     <v-card class="pa-3">
-      <v-img src="/Steel-City-Choristers.png" max-width="200" />
+      <v-img
+        src="/Steel-City-Choristers.png"
+        max-width="200"
+      />
       <v-card-title class="ml-2">
         Install App
       </v-card-title>
@@ -17,7 +23,10 @@
           </li>
           <li>
             Press the "share" icon:
-            <img src="/ios-share.svg" width="20px" />
+            <img
+              src="/ios-share.svg"
+              width="20px"
+            >
           </li>
           <li>
             Scroll down until you see "Add to Home Screen"
@@ -27,17 +36,32 @@
           </li>
         </ol>
       </v-card-text>
-      <v-checkbox class="ml-7" v-model="dontShowAgain" label="Don't show this again" />
+      <v-checkbox
+        v-model="dontShowAgain"
+        class="ml-7"
+        label="Don't show this again"
+      />
       <v-card-actions v-if="!isIOS">
-        <v-btn text @click="close" class="text-disabled">
+        <v-btn
+          text
+          class="text-disabled"
+          @click="close"
+        >
           Cancel
         </v-btn>
-        <v-btn color="primary" text @click="install">
+        <v-btn
+          color="primary"
+          text
+          @click="install"
+        >
           Install
         </v-btn>
       </v-card-actions>
       <v-card-actions v-else>
-        <v-btn text @click="close">
+        <v-btn
+          text
+          @click="close"
+        >
           Close
         </v-btn>
       </v-card-actions>

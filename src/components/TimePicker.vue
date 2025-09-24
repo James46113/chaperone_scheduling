@@ -6,14 +6,20 @@
       density="compact" class="mb-1" variant="outlined" width="90px" @update:model-value="updateMinutes" /> -->
   <!-- <v-row> -->
   <div style="display: flex;">
-
     <span class="mt-2 mr-4">{{ label }}</span>
-    <v-text-field type="time" variant="outlined" density="compact" class="mb-1" max-width="120px"
-      :model-value="`${hours}:${minutes}`" @update:model-value="(value) => {
+    <v-text-field
+      type="time"
+      variant="outlined"
+      density="compact"
+      class="mb-1"
+      max-width="120px"
+      :model-value="`${hours}:${minutes}`"
+      @update:model-value="(value) => {
         const [h, m] = value.split(':')
         updateHours(h)
         updateMinutes(m)
-      }" />
+      }"
+    />
   </div>
   <!-- </v-row> -->
   <!-- </div> -->

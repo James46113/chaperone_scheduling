@@ -1,23 +1,57 @@
 <template>
-  <v-dialog v-model="store.showCreateTermDialog" :width="isMobile ? '100vw' : '27vw'">
-
-    <v-card class="pa-2 pl-8" elevation="0">
-      <v-card-title class="text-h5 mb-3 ml-n3">Create Term</v-card-title>
+  <v-dialog
+    v-model="store.showCreateTermDialog"
+    :width="isMobile ? '100vw' : '27vw'"
+  >
+    <v-card
+      class="pa-2 pl-8"
+      elevation="0"
+    >
+      <v-card-title class="text-h5 mb-3 ml-n3">
+        Create Term
+      </v-card-title>
 
       <div class="ml-7">
-        <date-picker label="Term Start" totalWidth="17vw" :date="start.toISOString().split('T')[0]"
-          @update:date="start = new Date($event)" class="mt-4"></date-picker>
+        <date-picker
+          label="Term Start"
+          total-width="17vw"
+          :date="start.toISOString().split('T')[0]"
+          class="mt-4"
+          @update:date="start = new Date($event)"
+        />
 
-        <date-picker label="Term End" totalWidth="17vw" :date="end.toISOString().split('T')[0]"
-          @update:date="end = new Date($event)" class="my-4"></date-picker>
+        <date-picker
+          label="Term End"
+          total-width="17vw"
+          :date="end.toISOString().split('T')[0]"
+          class="my-4"
+          @update:date="end = new Date($event)"
+        />
       </div>
 
-      <v-card-text class="text-primary" v-if="start > end">Term start date must be after the term end
-        date.</v-card-text>
+      <v-card-text
+        v-if="start > end"
+        class="text-primary"
+      >
+        Term start date must be after the term end
+        date.
+      </v-card-text>
 
       <v-card-actions>
-        <v-btn text @click="store.showCreateTermDialog = false">Cancel</v-btn>
-        <v-btn :disabled="start > end" color="primary" variant="flat" @click="createTerm">Create</v-btn>
+        <v-btn
+          text
+          @click="store.showCreateTermDialog = false"
+        >
+          Cancel
+        </v-btn>
+        <v-btn
+          :disabled="start > end"
+          color="primary"
+          variant="flat"
+          @click="createTerm"
+        >
+          Create
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

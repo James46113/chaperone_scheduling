@@ -1,90 +1,184 @@
 <template>
   <app-header />
-  <v-card elevation="0" class="pa-6" v-if="!loadingData">
+  <v-card
+    v-if="!loadingData"
+    elevation="0"
+    class="pa-6"
+  >
     <v-row>
       <div>
-        <v-card-title class="text-h5">Assign Chaperones</v-card-title>
-        <v-card-text>Click and drag the chaperones onto the the slots for each event. <br />
-          The chaperone slots will save automatically.<br />
-          Use the "Previous" and "Next" buttons to cycle through upcoming events.</v-card-text>
+        <v-card-title class="text-h5">
+          Assign Chaperones
+        </v-card-title>
+        <v-card-text>
+          Click and drag the chaperones onto the the slots for each event. <br>
+          The chaperone slots will save automatically.<br>
+          Use the "Previous" and "Next" buttons to cycle through upcoming events.
+        </v-card-text>
       </div>
       <v-spacer />
-      <div style="border: 1px solid #e0e0e0; padding: 10px; border-radius: 5px;" class="mr-5 mb-4">
+      <div
+        style="border: 1px solid #e0e0e0; padding: 10px; border-radius: 5px;"
+        class="mr-5 mb-4"
+      >
         <span class="text-h6">Key</span>
         <v-spacer />
         Colours:
-        <v-chip variant="outlined" class="mr-1" color="success">Availabile</v-chip>
-        <v-chip variant="outlined" class="mr-1" color="orange">Unknown</v-chip>
-        <v-chip variant="outlined" class="mr-1" color="error">Unavailabile</v-chip>
+        <v-chip
+          variant="outlined"
+          class="mr-1"
+          color="success"
+        >
+          Availabile
+        </v-chip>
+        <v-chip
+          variant="outlined"
+          class="mr-1"
+          color="orange"
+        >
+          Unknown
+        </v-chip>
+        <v-chip
+          variant="outlined"
+          class="mr-1"
+          color="error"
+        >
+          Unavailabile
+        </v-chip>
         <v-spacer class="my-2" />
         Format:
-        <v-chip variant="outlined" color="success">Name: Assigned Events</v-chip>
+        <v-chip
+          variant="outlined"
+          color="success"
+        >
+          Name: Assigned Events
+        </v-chip>
       </div>
     </v-row>
 
     <v-divider class="my-3" />
 
-    <v-chip variant="outlined" v-for="chaperone in sortedChaperones" :class="'ma-1 ' + chipColor(chaperone)"
-      :draggable="chipColor(chaperone) !== 'error'" :color="chipColor(chaperone)"
-      @dragstart="dragStart($event, chaperone)">{{
+    <v-chip
+      v-for="chaperone in sortedChaperones"
+      variant="outlined"
+      :class="'ma-1 ' + chipColor(chaperone)"
+      :draggable="chipColor(chaperone) !== 'error'"
+      :color="chipColor(chaperone)"
+      @dragstart="dragStart($event, chaperone)"
+    >
+      {{
         chaperone.name + ': ' + chaperone.numEvents
-      }}</v-chip>
+      }}
+    </v-chip>
 
     <v-divider class="my-4" />
 
     <v-card>
       <v-row class="pa-5">
-        <v-btn flat color="primary" @click="previousEvent"><v-icon>mdi-chevron-left</v-icon>
-          Previous</v-btn>
+        <v-btn
+          flat
+          color="primary"
+          @click="previousEvent"
+        >
+          <v-icon>mdi-chevron-left</v-icon>
+          Previous
+        </v-btn>
         <v-spacer />
-        <v-btn flat color="primary" @click="nextEvent">Next
-          <v-icon>mdi-chevron-right</v-icon></v-btn>
+        <v-btn
+          flat
+          color="primary"
+          @click="nextEvent"
+        >
+          Next
+          <v-icon>mdi-chevron-right</v-icon>
+        </v-btn>
       </v-row>
       <v-row>
         <div class="pa-3">
           <v-card-title>{{ currentEvent?.title }}</v-card-title>
-          <v-card-subtitle class="mt-n2">{{ currentEvent?.dateString }}, {{ currentEvent?.start.toLocaleTimeString([],
-            {
-              hour:
-                '2-digit', minute: '2-digit', hour12: false
-            }) }}
+          <v-card-subtitle class="mt-n2">
+            {{ currentEvent?.dateString }}, {{ currentEvent?.start.toLocaleTimeString([],
+                                                                                      {
+                                                                                        hour:
+                                                                                          '2-digit', minute: '2-digit', hour12: false
+                                                                                      }) }}
             - {{ currentEvent?.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
             }}
           </v-card-subtitle>
           <v-card-subtitle>{{ currentEvent?.location }}</v-card-subtitle>
         </div>
         <v-spacer />
-        <v-btn class="mt-7 mr-7" flat color="primary" @click="proxy.$router.push(`/event/${currentEventID}/edit`)">Edit
-          Event</v-btn>
+        <v-btn
+          class="mt-7 mr-7"
+          flat
+          color="primary"
+          @click="proxy.$router.push(`/event/${currentEventID}/edit`)"
+        >
+          Edit
+          Event
+        </v-btn>
       </v-row>
 
       <div style="display: flex; flex-wrap: wrap;">
-        <v-sheet v-for="slot in currentEvent?.slots" class="ma-3" variant="outlined" color="primary"
-          style="padding: 1px" rounded>
-          <v-card elevation="0" height="100%">
+        <v-sheet
+          v-for="slot in currentEvent?.slots"
+          class="ma-3"
+          variant="outlined"
+          color="primary"
+          style="padding: 1px"
+          rounded
+        >
+          <v-card
+            elevation="0"
+            height="100%"
+          >
             <v-card-text>{{ slot.title }}</v-card-text>
-            <v-card-subtitle class="mt-n4">{{ slot.start.toLocaleTimeString([], {
-              hour: '2-digit', minute: '2-digit',
-              hour12: false
-            })
+            <v-card-subtitle class="mt-n4">
+              {{ slot.start.toLocaleTimeString([], {
+                hour: '2-digit', minute: '2-digit',
+                hour12: false
+              })
               }} - {{ slot.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
             </v-card-subtitle>
             <v-card-text>{{ slot.details }}</v-card-text>
-            <v-text-field readonly variant="outlined" class="mx-2 mt-n5" width="10vw" density="compact"
-              @dragover="allowDrop" @drop="drop($event, slot)">
-              <v-chip variant="outlined" v-if="slot.chaperone" append-icon="mdi-close"
-                :color="chipColor(store.getChaperone(slot.chaperone))" @click="removeChaperone(slot)">{{
-                  store.getChaperone(slot.chaperone).name }}</v-chip>
+            <v-text-field
+              readonly
+              variant="outlined"
+              class="mx-2 mt-n5"
+              width="10vw"
+              density="compact"
+              @dragover="allowDrop"
+              @drop="drop($event, slot)"
+            >
+              <v-chip
+                v-if="slot.chaperone"
+                variant="outlined"
+                append-icon="mdi-close"
+                :color="chipColor(store.getChaperone(slot.chaperone))"
+                @click="removeChaperone(slot)"
+              >
+                {{
+                  store.getChaperone(slot.chaperone).name }}
+              </v-chip>
             </v-text-field>
           </v-card>
         </v-sheet>
-        <v-card-text v-if="currentEvent?.slots.length === 0"><i>No Chaperone Slots</i></v-card-text>
+        <v-card-text v-if="currentEvent?.slots.length === 0">
+          <i>No Chaperone Slots</i>
+        </v-card-text>
       </div>
-
     </v-card>
   </v-card>
-  <div v-else class="d-flex justify-center align-center" style="height: 70vh;">
-    <v-progress-circular color="primary" indeterminate size="40" />
+  <div
+    v-else
+    class="d-flex justify-center align-center"
+    style="height: 70vh;"
+  >
+    <v-progress-circular
+      color="primary"
+      indeterminate
+      size="40"
+    />
   </div>
 </template>
 

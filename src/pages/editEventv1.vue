@@ -1,100 +1,236 @@
 <template>
   <app-header />
-  <div class="pa-6" v-if="!loadingData">
-    <v-card class="pa-3" elevation="0">
-      <v-card-title class="text-h5 ml-n6 mb-4" v-if="newEvent">New {{ isTemplate ? 'Template' : 'Event'
-      }}</v-card-title>
-      <v-card-title class="text-h5 ml-n6 mb-4" v-else>Edit {{ isTemplate ? 'Template' : 'Event' }}</v-card-title>
+  <div
+    v-if="!loadingData"
+    class="pa-6"
+  >
+    <v-card
+      class="pa-3"
+      elevation="0"
+    >
+      <v-card-title
+        v-if="newEvent"
+        class="text-h5 ml-n6 mb-4"
+      >
+        New {{ isTemplate ? 'Template' : 'Event'
+        }}
+      </v-card-title>
+      <v-card-title
+        v-else
+        class="text-h5 ml-n6 mb-4"
+      >
+        Edit {{ isTemplate ? 'Template' : 'Event' }}
+      </v-card-title>
       <v-row v-if="!isMobile">
         <v-col>
-          <v-text-field v-if="isTemplate" width="65vw" :rules="[required]" v-model="event.template_name"
-            label="Template Name" variant="outlined" class="mb-1" />
+          <v-text-field
+            v-if="isTemplate"
+            v-model="event.template_name"
+            width="65vw"
+            :rules="[required]"
+            label="Template Name"
+            variant="outlined"
+            class="mb-1"
+          />
 
-          <v-text-field width="65vw" :rules="[required]" v-model="event.title" label="Event Title" variant="outlined"
-            class="mb-1" />
+          <v-text-field
+            v-model="event.title"
+            width="65vw"
+            :rules="[required]"
+            label="Event Title"
+            variant="outlined"
+            class="mb-1"
+          />
 
-          <v-text-field width="65vw" :rules="[required]" v-model="event.location" label="Location" variant="outlined"
-            class="mb-1" />
+          <v-text-field
+            v-model="event.location"
+            width="65vw"
+            :rules="[required]"
+            label="Location"
+            variant="outlined"
+            class="mb-1"
+          />
         </v-col>
         <v-col>
           <div class="d-flex justify-end">
-            <v-select v-if="!isTemplate && newEvent" :items="templateNames" v-model="selectedTemplate"
-              variant="outlined" class="mx-6" @update:model-value="loadTemplate" placeholder="Load Template" />
+            <v-select
+              v-if="!isTemplate && newEvent"
+              v-model="selectedTemplate"
+              :items="templateNames"
+              variant="outlined"
+              class="mx-6"
+              placeholder="Load Template"
+              @update:model-value="loadTemplate"
+            />
 
-            <v-btn v-if="!newEvent && !isDefaultTemplate && !isPastEvent" color="primary" class="mt-2 mr-4"
-              variant="outlined" @click="showConfirmDeleteDialog = true">
-              Delete {{ isTemplate ? 'Template' : 'Event' }}</v-btn>
-            <v-btn color="primary" class="mt-2" @click="saveEvent" :loading="saving">Save</v-btn>
+            <v-btn
+              v-if="!newEvent && !isDefaultTemplate && !isPastEvent"
+              color="primary"
+              class="mt-2 mr-4"
+              variant="outlined"
+              @click="showConfirmDeleteDialog = true"
+            >
+              Delete {{ isTemplate ? 'Template' : 'Event' }}
+            </v-btn>
+            <v-btn
+              color="primary"
+              class="mt-2"
+              :loading="saving"
+              @click="saveEvent"
+            >
+              Save
+            </v-btn>
           </div>
         </v-col>
       </v-row>
       <div v-else>
-        <v-select v-if="!isTemplate && newEvent" :items="templateNames" v-model="selectedTemplate" variant="outlined"
-          @update:model-value="loadTemplate" placeholder="Load Template" width="80vw" />
+        <v-select
+          v-if="!isTemplate && newEvent"
+          v-model="selectedTemplate"
+          :items="templateNames"
+          variant="outlined"
+          placeholder="Load Template"
+          width="80vw"
+          @update:model-value="loadTemplate"
+        />
 
-        <v-text-field v-if="isTemplate" width="80vw" :rules="[required]" v-model="event.template_name"
-          label="Template Name" variant="outlined" class="mb-1" />
+        <v-text-field
+          v-if="isTemplate"
+          v-model="event.template_name"
+          width="80vw"
+          :rules="[required]"
+          label="Template Name"
+          variant="outlined"
+          class="mb-1"
+        />
 
-        <v-text-field width="80vw" :rules="[required]" v-model="event.title" label="Event Title" variant="outlined"
-          class="mb-1" />
+        <v-text-field
+          v-model="event.title"
+          width="80vw"
+          :rules="[required]"
+          label="Event Title"
+          variant="outlined"
+          class="mb-1"
+        />
 
-        <v-text-field width="80vw" :rules="[required]" v-model="event.location" label="Location" variant="outlined"
-          class="mb-1" />
+        <v-text-field
+          v-model="event.location"
+          width="80vw"
+          :rules="[required]"
+          label="Location"
+          variant="outlined"
+          class="mb-1"
+        />
       </div>
 
-      <v-row class="mb-1" v-if="!isMobile">
+      <v-row
+        v-if="!isMobile"
+        class="mb-1"
+      >
         <v-col v-if="!isTemplate">
-
-          <v-text-field type="text" readonly variant="outlined" class="mt-3" max-width="300" prepend-icon="mdi-calendar"
-            @click="showDateMenu = true">
+          <v-text-field
+            type="text"
+            readonly
+            variant="outlined"
+            class="mt-3"
+            max-width="300"
+            prepend-icon="mdi-calendar"
+            @click="showDateMenu = true"
+          >
             {{ event.date?.toLocaleDateString('en-GB') }}
-            <v-menu activator="parent" :close-on-content-click="false" v-model="showDateMenu">
+            <v-menu
+              v-model="showDateMenu"
+              activator="parent"
+              :close-on-content-click="false"
+            >
               <v-confirm-edit v-model="event.date">
-                <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
+                <template #default="{ model: proxyModel, actions, save, cancel, isPristine }">
                   <v-date-picker v-model="proxyModel.value">
-                    <template v-slot:actions>
+                    <template #actions>
                       <!-- <component :is="actions"></component> -->
-                      <v-btn text @click="() => { cancel(); showDateMenu = false; }">Cancel</v-btn>
-                      <v-btn text color="primary" @click="() => { save(); showDateMenu = false; }">Ok</v-btn>
+                      <v-btn
+                        text
+                        @click="() => { cancel(); showDateMenu = false; }"
+                      >
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="() => { save(); showDateMenu = false; }"
+                      >
+                        Ok
+                      </v-btn>
                     </template>
                   </v-date-picker>
                 </template>
               </v-confirm-edit>
             </v-menu>
           </v-text-field>
-
-
         </v-col>
         <v-col>
           <v-row class="my-2">
             <span class="ml-4 mt-5 mr-3">Start</span>
-            <time-picker :hours="event.startHours" :minutes="event.startMinutes" @update:hours="updateEventStartHours"
-              @update:minutes="updateEventStartMinutes" />
+            <time-picker
+              :hours="event.startHours"
+              :minutes="event.startMinutes"
+              @update:hours="updateEventStartHours"
+              @update:minutes="updateEventStartMinutes"
+            />
           </v-row>
         </v-col>
         <v-col>
           <v-row class="my-2">
             <span class="ml-4 mt-5 mr-5">End</span>
-            <time-picker :hours="event.endHours" :minutes="event.endMinutes" @update:hours="updateEventEndHours"
-              @update:minutes="updateEventEndMinutes" />
+            <time-picker
+              :hours="event.endHours"
+              :minutes="event.endMinutes"
+              @update:hours="updateEventEndHours"
+              @update:minutes="updateEventEndMinutes"
+            />
           </v-row>
         </v-col>
         <v-col><v-spacer /></v-col>
-        <v-col v-if="isTemplate"><v-spacer /></v-col>
+        <v-col v-if="isTemplate">
+          <v-spacer />
+        </v-col>
       </v-row>
 
       <div v-else>
-        <v-text-field v-if="!isTemplate" type="text" readonly variant="outlined" class="mt-3" max-width="300"
-          prepend-icon="mdi-calendar" @click="showDateMenu = true">
+        <v-text-field
+          v-if="!isTemplate"
+          type="text"
+          readonly
+          variant="outlined"
+          class="mt-3"
+          max-width="300"
+          prepend-icon="mdi-calendar"
+          @click="showDateMenu = true"
+        >
           {{ event.date?.toLocaleDateString('en-GB') }}
-          <v-menu activator="parent" :close-on-content-click="false" v-model="showDateMenu">
+          <v-menu
+            v-model="showDateMenu"
+            activator="parent"
+            :close-on-content-click="false"
+          >
             <v-confirm-edit v-model="event.date">
-              <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
+              <template #default="{ model: proxyModel, actions, save, cancel, isPristine }">
                 <v-date-picker v-model="proxyModel.value">
-                  <template v-slot:actions>
+                  <template #actions>
                     <!-- <component :is="actions"></component> -->
-                    <v-btn text @click="() => { cancel(); showDateMenu = false; }">Cancel</v-btn>
-                    <v-btn text color="primary" @click="() => { save(); showDateMenu = false; }">Ok</v-btn>
+                    <v-btn
+                      text
+                      @click="() => { cancel(); showDateMenu = false; }"
+                    >
+                      Cancel
+                    </v-btn>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="() => { save(); showDateMenu = false; }"
+                    >
+                      Ok
+                    </v-btn>
                   </template>
                 </v-date-picker>
               </template>
@@ -105,45 +241,93 @@
         <v-row class="px-3">
           <span class="ml-4 mt-5 mr-3">Start</span>
           <v-spacer />
-          <time-picker :hours="event.startHours" :minutes="event.startMinutes" @update:hours="updateEventStartHours"
-            @update:minutes="updateEventStartMinutes" />
+          <time-picker
+            :hours="event.startHours"
+            :minutes="event.startMinutes"
+            @update:hours="updateEventStartHours"
+            @update:minutes="updateEventStartMinutes"
+          />
         </v-row>
 
         <v-row class="px-3">
           <span class="ml-4 mt-5 mr-5">End</span>
           <v-spacer />
-          <time-picker :hours="event.endHours" :minutes="event.endMinutes" @update:hours="updateEventEndHours"
-            @update:minutes="updateEventEndMinutes" />
+          <time-picker
+            :hours="event.endHours"
+            :minutes="event.endMinutes"
+            @update:hours="updateEventEndHours"
+            @update:minutes="updateEventEndMinutes"
+          />
         </v-row>
-
       </div>
 
-      <v-textarea class="mt-6" v-model="event.details" label="Event Details" variant="outlined" auto-grow rows="2" />
+      <v-textarea
+        v-model="event.details"
+        class="mt-6"
+        label="Event Details"
+        variant="outlined"
+        auto-grow
+        rows="2"
+      />
 
-      <v-divider class="mt-4"></v-divider>
+      <v-divider class="mt-4" />
 
       <v-row class="my-3">
-        <v-card-title class="mt-4">Chaperones</v-card-title>
+        <v-card-title class="mt-4">
+          Chaperones
+        </v-card-title>
         <!-- <v-select v-if="!isTemplate && !isMobile" :items="assignedChaperones" v-model="event.lead_chaperone"
           label="Lead Chaperone" variant="outlined" class="mt-3 ml-7" hide-no-data max-width="300" /> -->
         <v-spacer />
-        <v-btn v-if="!isMobile" color="primary" variant="outlined" class="mt-6 mr-6" @click="newSlot">Add
-          Chaperone</v-btn>
+        <v-btn
+          v-if="!isMobile"
+          color="primary"
+          variant="outlined"
+          class="mt-6 mr-6"
+          @click="newSlot"
+        >
+          Add
+          Chaperone
+        </v-btn>
       </v-row>
       <!-- <v-select v-if="!isTemplate && isMobile" :items="assignedChaperones" v-model="event.lead_chaperone"
         label="Lead Chaperone" variant="outlined" hide-no-data /> -->
       <v-spacer />
 
-      <v-data-table :height="chaperoneSlots.length > 0 ? (chaperoneSlots.length + 1) * 76 : undefined"
-        :items="chaperoneSlots" :headers="tableHeaders" items-per-page="-1" hide-default-footer v-if="!isMobile">
-        <template v-slot:item.chaperone="{ item }">
-          <v-select clearable :items="availability" item-title="name" label="Chaperone" v-model="item.chaperone"
-            variant="outlined" density="compact" class="mt-3 mb-1" auto-select-first>
-            <template v-slot:item="{ props, item }">
-              <v-list-item v-bind="props" :disabled="item.raw.available === false">
+      <v-data-table
+        v-if="!isMobile"
+        :height="chaperoneSlots.length > 0 ? (chaperoneSlots.length + 1) * 76 : undefined"
+        :items="chaperoneSlots"
+        :headers="tableHeaders"
+        items-per-page="-1"
+        hide-default-footer
+      >
+        <template #item.chaperone="{ item }">
+          <v-select
+            v-model="item.chaperone"
+            clearable
+            :items="availability"
+            item-title="name"
+            label="Chaperone"
+            variant="outlined"
+            density="compact"
+            class="mt-3 mb-1"
+            auto-select-first
+          >
+            <template #item="{ props, item }">
+              <v-list-item
+                v-bind="props"
+                :disabled="item.raw.available === false"
+              >
                 <v-list-item-subtitle>
-                  <v-chip variant="outlined" width="100px" height="100%" density="compact" size="small"
-                    :color="item.raw.available ? 'green' : item.raw.available === false ? 'error' : 'orange'">
+                  <v-chip
+                    variant="outlined"
+                    width="100px"
+                    height="100%"
+                    density="compact"
+                    size="small"
+                    :color="item.raw.available ? 'green' : item.raw.available === false ? 'error' : 'orange'"
+                  >
                     {{ item.raw.available ? 'Available' : item.raw.available === false ? 'Unavailable' : 'Not Answered'
                     }}
                   </v-chip>
@@ -152,29 +336,58 @@
             </template>
           </v-select>
         </template>
-        <template v-slot:item.startTime="{ item }">
-          <time-picker :hours="item.startHours" :minutes="item.startMinutes" @update:hours="item.startHours = $event"
-            @update:minutes="item.startMinutes = $event" />
+        <template #item.startTime="{ item }">
+          <time-picker
+            :hours="item.startHours"
+            :minutes="item.startMinutes"
+            @update:hours="item.startHours = $event"
+            @update:minutes="item.startMinutes = $event"
+          />
         </template>
-        <template v-slot:item.endTime="{ item }">
-          <time-picker :hours="item.endHours" :minutes="item.endMinutes" @update:hours="item.endHours = $event"
-            @update:minutes="item.endMinutes = $event" />
+        <template #item.endTime="{ item }">
+          <time-picker
+            :hours="item.endHours"
+            :minutes="item.endMinutes"
+            @update:hours="item.endHours = $event"
+            @update:minutes="item.endMinutes = $event"
+          />
         </template>
-        <template v-slot:item.details="{ item }">
-          <v-textarea v-model="item.details" label="Details" variant="outlined" density="compact" class="mt-3 mb-1"
-            auto-grow rows="1" />
+        <template #item.details="{ item }">
+          <v-textarea
+            v-model="item.details"
+            label="Details"
+            variant="outlined"
+            density="compact"
+            class="mt-3 mb-1"
+            auto-grow
+            rows="1"
+          />
         </template>
-        <template v-slot:item.title="{ item }">
-          <v-text-field v-model="item.title" label="Group" variant="outlined" density="compact" class="mt-3 mb-1"
-            :rules="[required]" />
+        <template #item.title="{ item }">
+          <v-text-field
+            v-model="item.title"
+            label="Group"
+            variant="outlined"
+            density="compact"
+            class="mt-3 mb-1"
+            :rules="[required]"
+          />
         </template>
-        <template v-slot:item.remove="{ item }">
-          <v-btn variant="flat" class="mt-n3" icon @click="chaperoneSlots.splice(chaperoneSlots.indexOf(item), 1)">
+        <template #item.remove="{ item }">
+          <v-btn
+            variant="flat"
+            class="mt-n3"
+            icon
+            @click="chaperoneSlots.splice(chaperoneSlots.indexOf(item), 1)"
+          >
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </template>
-        <template v-slot:no-data>
-          <v-alert type="warning" class="mt-3">
+        <template #no-data>
+          <v-alert
+            type="warning"
+            class="mt-3"
+          >
             No chaperones assigned
           </v-alert>
         </template>
@@ -184,34 +397,54 @@
 
       <!-- <v-sheet v-if="!isMobile && !isTemplate && isDev && !loadingData" color="primary" class="my-4" rounded
         style="padding: 1px;" elevation="2"> -->
-      <v-card elevation="0" v-if="!isMobile && !isTemplate && !newEvent">
-        <v-card-title class="text-h5 mt-4 mb-n4">Availability</v-card-title>
+      <v-card
+        v-if="!isMobile && !isTemplate && !newEvent"
+        elevation="0"
+      >
+        <v-card-title class="text-h5 mt-4 mb-n4">
+          Availability
+        </v-card-title>
         <v-row class="mt-n3 mb-4">
           <v-col class="pl-7 pt-7">
             <v-card-title>Available</v-card-title>
             <v-card-text>
-              <span class="ml-2" v-if="availableChaperones.length === 0"><i>None available</i></span>
+              <span
+                v-if="availableChaperones.length === 0"
+                class="ml-2"
+              ><i>None available</i></span>
               <ul class="ml-7">
-                <li v-for="chaperone in availableChaperones">{{ chaperone.name }}</li>
+                <li v-for="chaperone in availableChaperones">
+                  {{ chaperone.name }}
+                </li>
               </ul>
             </v-card-text>
           </v-col>
           <v-col class="pl-7 pt-7">
             <v-card-title>Not Available</v-card-title>
             <v-card-text>
-              <span class="ml-2" v-if="unavailableChaperones.length === 0"><i>None unavailable</i></span>
+              <span
+                v-if="unavailableChaperones.length === 0"
+                class="ml-2"
+              ><i>None unavailable</i></span>
               <ul class="ml-7">
-                <li v-for="chaperone in unavailableChaperones">{{ chaperone.name }}</li>
+                <li v-for="chaperone in unavailableChaperones">
+                  {{ chaperone.name }}
+                </li>
               </ul>
             </v-card-text>
           </v-col>
           <v-col class="pl-7 pt-7">
             <v-card-title>Not Answered</v-card-title>
             <v-card-text>
-              <span v-if="unansweredChaperones.length === 0" class="ml-2"><i>All chaperones have
-                  responded</i></span>
+              <span
+                v-if="unansweredChaperones.length === 0"
+                class="ml-2"
+              ><i>All chaperones have
+                responded</i></span>
               <ul class="ml-7">
-                <li v-for="chaperone in unansweredChaperones">{{ chaperone.name }}</li>
+                <li v-for="chaperone in unansweredChaperones">
+                  {{ chaperone.name }}
+                </li>
               </ul>
             </v-card-text>
           </v-col>
@@ -225,7 +458,9 @@
           <v-card-text>
             <span v-if="availableChaperones.length === 0"><i>None available</i></span>
             <ul class="ml-5">
-              <li v-for="chaperone in availableChaperones">{{ chaperone.name }}</li>
+              <li v-for="chaperone in availableChaperones">
+                {{ chaperone.name }}
+              </li>
             </ul>
           </v-card-text>
         </v-card>
@@ -234,7 +469,9 @@
           <v-card-text>
             <span v-if="unavailableChaperones.length === 0"><i>None unavailable</i></span>
             <ul class="ml-5">
-              <li v-for="chaperone in unavailableChaperones">{{ chaperone.name }}</li>
+              <li v-for="chaperone in unavailableChaperones">
+                {{ chaperone.name }}
+              </li>
             </ul>
           </v-card-text>
         </v-card>
@@ -243,7 +480,9 @@
           <v-card-text>
             <span v-if="unansweredChaperones.length === 0"><i>All chaperones have responded</i></span>
             <ul class="ml-5">
-              <li v-for="chaperone in unansweredChaperones">{{ chaperone.name }}</li>
+              <li v-for="chaperone in unansweredChaperones">
+                {{ chaperone.name }}
+              </li>
             </ul>
           </v-card-text>
         </v-card>
@@ -251,20 +490,57 @@
 
       <v-divider class="my-4" />
 
-      <v-sheet color="primary" v-for="slot in chaperoneSlots" v-if="isMobile" class="my-4" rounded
-        style="padding: 1px;">
+      <v-sheet
+        v-for="slot in chaperoneSlots"
+        v-if="isMobile"
+        color="primary"
+        class="my-4"
+        rounded
+        style="padding: 1px;"
+      >
         <v-card class="pa-2">
-          <v-text-field v-model="slot.title" label="Group" variant="outlined" density="compact" class="mt-3"
-            :rules="[required]" />
-          <v-textarea v-model="slot.details" label="Details" variant="outlined" density="compact" auto-grow rows="2"
-            class="mt-n2" />
-          <v-select clearable :items="availability" item-title="name" label="Chaperone" v-model="slot.chaperone"
-            variant="outlined" density="compact" auto-select-first class="mt-n2">
-            <template v-slot:item="{ props, item }">
-              <v-list-item v-bind="props" :disabled="item.raw.available === false">
+          <v-text-field
+            v-model="slot.title"
+            label="Group"
+            variant="outlined"
+            density="compact"
+            class="mt-3"
+            :rules="[required]"
+          />
+          <v-textarea
+            v-model="slot.details"
+            label="Details"
+            variant="outlined"
+            density="compact"
+            auto-grow
+            rows="2"
+            class="mt-n2"
+          />
+          <v-select
+            v-model="slot.chaperone"
+            clearable
+            :items="availability"
+            item-title="name"
+            label="Chaperone"
+            variant="outlined"
+            density="compact"
+            auto-select-first
+            class="mt-n2"
+          >
+            <template #item="{ props, item }">
+              <v-list-item
+                v-bind="props"
+                :disabled="item.raw.available === false"
+              >
                 <v-list-item-subtitle>
-                  <v-chip variant="outlined" width="100px" height="100%" density="compact" size="small"
-                    :color="item.raw.available ? 'green' : item.raw.available === false ? 'error' : 'orange'">
+                  <v-chip
+                    variant="outlined"
+                    width="100px"
+                    height="100%"
+                    density="compact"
+                    size="small"
+                    :color="item.raw.available ? 'green' : item.raw.available === false ? 'error' : 'orange'"
+                  >
                     {{ item.raw.available ? 'Available' : item.raw.available === false ? 'Unavailable' : 'Not Answered'
                     }}
                   </v-chip>
@@ -276,48 +552,112 @@
           <v-row>
             <span class="mt-4 ml-7">Start</span>
             <v-spacer />
-            <time-picker :hours="slot.startHours" :minutes="slot.startMinutes" @update:hours="slot.startHours = $event"
-              @update:minutes="slot.startMinutes = $event" class="mr-3" />
+            <time-picker
+              :hours="slot.startHours"
+              :minutes="slot.startMinutes"
+              class="mr-3"
+              @update:hours="slot.startHours = $event"
+              @update:minutes="slot.startMinutes = $event"
+            />
           </v-row>
 
           <v-row class="mt-n7">
             <span class="mt-4 ml-7">End</span>
             <v-spacer />
-            <time-picker :hours="slot.endHours" :minutes="slot.endMinutes" @update:hours="slot.endHours = $event"
-              @update:minutes="slot.endMinutes = $event" class="mr-3" />
+            <time-picker
+              :hours="slot.endHours"
+              :minutes="slot.endMinutes"
+              class="mr-3"
+              @update:hours="slot.endHours = $event"
+              @update:minutes="slot.endMinutes = $event"
+            />
           </v-row>
 
-          <v-btn variant="outlined" width="100%" color="primary"
-            @click="chaperoneSlots.splice(chaperoneSlots.indexOf(slot), 1)">Remove Chaperone</v-btn>
+          <v-btn
+            variant="outlined"
+            width="100%"
+            color="primary"
+            @click="chaperoneSlots.splice(chaperoneSlots.indexOf(slot), 1)"
+          >
+            Remove Chaperone
+          </v-btn>
         </v-card>
       </v-sheet>
 
       <div v-if="isMobile">
-        <v-btn color="primary" variant="outlined" width="100vw" class="mt-6 mr-6" @click="newSlot">Add
-          Chaperone</v-btn>
+        <v-btn
+          color="primary"
+          variant="outlined"
+          width="100vw"
+          class="mt-6 mr-6"
+          @click="newSlot"
+        >
+          Add
+          Chaperone
+        </v-btn>
 
         <v-divider class="my-6" />
 
-        <v-btn v-if="!newEvent && !isDefaultTemplate && !isPastEvent" color="primary" class="mt-2 mr-4"
-          variant="outlined" width="100vw" @click="showConfirmDeleteDialog = true">
-          Delete {{ isTemplate ? 'Template' : 'Event' }}</v-btn>
+        <v-btn
+          v-if="!newEvent && !isDefaultTemplate && !isPastEvent"
+          color="primary"
+          class="mt-2 mr-4"
+          variant="outlined"
+          width="100vw"
+          @click="showConfirmDeleteDialog = true"
+        >
+          Delete {{ isTemplate ? 'Template' : 'Event' }}
+        </v-btn>
 
-        <v-btn color="primary" class="mt-4" @click="saveEvent" :loading="saving" width="100vw">Save</v-btn>
+        <v-btn
+          color="primary"
+          class="mt-4"
+          :loading="saving"
+          width="100vw"
+          @click="saveEvent"
+        >
+          Save
+        </v-btn>
       </div>
-
     </v-card>
   </div>
-  <div v-else class="d-flex justify-center align-center" style="height: 70vh;">
-    <v-progress-circular color="primary" indeterminate size="40" />
+  <div
+    v-else
+    class="d-flex justify-center align-center"
+    style="height: 70vh;"
+  >
+    <v-progress-circular
+      color="primary"
+      indeterminate
+      size="40"
+    />
   </div>
 
-  <v-dialog v-model="showConfirmDeleteDialog" :width="isMobile ? '100vw' : '30vw'">
+  <v-dialog
+    v-model="showConfirmDeleteDialog"
+    :width="isMobile ? '100vw' : '30vw'"
+  >
     <v-card @keyup.enter="deleteEvent">
       <v-card-title>Confirm Delete</v-card-title>
-      <v-card-text class="mt-3 mb-n2">Are you sure you want to delete this event?</v-card-text>
+      <v-card-text class="mt-3 mb-n2">
+        Are you sure you want to delete this event?
+      </v-card-text>
       <v-card-actions>
-        <v-btn @click="showConfirmDeleteDialog = false" color="primary" variant="text">Cancel</v-btn>
-        <v-btn @click="deleteEvent" :loading="deleting" color="primary" variant="flat">Delete</v-btn>
+        <v-btn
+          color="primary"
+          variant="text"
+          @click="showConfirmDeleteDialog = false"
+        >
+          Cancel
+        </v-btn>
+        <v-btn
+          :loading="deleting"
+          color="primary"
+          variant="flat"
+          @click="deleteEvent"
+        >
+          Delete
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

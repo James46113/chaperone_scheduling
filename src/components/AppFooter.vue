@@ -1,15 +1,31 @@
 <template>
-  <v-footer border app absolute>
+  <v-footer
+    border
+    app
+    absolute
+  >
     <v-row>
       <v-col>
-        <a href="https://github.com/James46113" class="d-inline-block mx-2 social-link" title="James46113 - Github"
-          rel="noopener noreferrer" target="_blank">
-          <v-icon icon="mdi-github" size="16" />
+        <a
+          href="https://github.com/James46113"
+          class="d-inline-block mx-2 social-link"
+          title="James46113 - Github"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          <v-icon
+            icon="mdi-github"
+            size="16"
+          />
         </a>
       </v-col>
       <v-col class="text-center text-caption text-disabled">
-        <a class="text-disabled" rel="noopener noreferrer" target="_blank"
-          href="https://steelcitychoristers.org.uk">Steel City Choristers</a> - Registered
+        <a
+          class="text-disabled"
+          rel="noopener noreferrer"
+          target="_blank"
+          href="https://steelcitychoristers.org.uk"
+        >Steel City Choristers</a> - Registered
         Charity Number 1195909
       </v-col>
       <v-col class="text-right">
