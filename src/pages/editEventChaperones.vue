@@ -29,7 +29,7 @@
           class="mr-1"
           color="success"
         >
-          Availabile
+          Available
         </v-chip>
         <v-chip
           variant="outlined"
@@ -55,7 +55,7 @@
         </v-chip>
       </div>
     </v-row>
-
+    
     <v-divider class="my-3" />
 
     <v-chip
@@ -119,9 +119,35 @@
         </v-btn>
       </v-row>
 
+      <v-card style="border: 1px solid rgb(var(--v-theme-primary));" elevation="0" class="ma-3" width="190">
+        
+        <v-card-text class="mb-n5">
+          Lead Chaperone
+        </v-card-text>
+        <v-text-field
+        readonly
+        variant="outlined"
+        density="compact"
+        width="150"
+        class="ml-4 mt-2"
+        @dragover="allowDrop"
+        @drop="dropChaperoneOnLeadChaperone"
+        >
+        <v-chip 
+        v-if="currentEvent?.lead_chaperone"
+          append-icon="mdi-close"
+          @click="() => {currentEvent.lead_chaperone = null; store.updateEvent(currentEvent.id)}"
+          variant="outlined"
+          :color="chipColor(store.getChaperone(parseInt(currentEvent?.lead_chaperone)))"
+          >
+          {{ store.getChaperone(parseInt(currentEvent?.lead_chaperone))?.name }}
+        </v-chip>
+      </v-text-field>
+    </v-card>
+      
       <div style="display: flex; flex-wrap: wrap;">
         <v-sheet
-          v-for="slot in currentEvent?.slots"
+        v-for="slot in currentEvent?.slots"
           class="ma-3"
           variant="outlined"
           color="primary"
@@ -148,7 +174,7 @@
               width="10vw"
               density="compact"
               @dragover="allowDrop"
-              @drop="drop($event, slot)"
+              @drop="dropChaperoneOnSlot($event, slot)"
             >
               <v-chip
                 v-if="slot.chaperone"
@@ -229,11 +255,17 @@ const allowDrop = (e) => {
   e.preventDefault();
 }
 
-const drop = (e, slot) => {
+const dropChaperoneOnSlot = (e, slot) => {
   e.preventDefault();
   const chaperoneID = e.dataTransfer.getData('chaperoneID')
   slot.chaperone = parseInt(chaperoneID)
   store.updateChaperoneSlot(slot)
+}
+
+const dropChaperoneOnLeadChaperone = (e) => {
+  e.preventDefault();
+  currentEvent.value.lead_chaperone = e.dataTransfer.getData('chaperoneID')
+  store.updateEvent(currentEventID.value)
 }
 
 const dragStart = (e, chaperone) => {

@@ -47,18 +47,18 @@
           New Password
         </div>
         <v-text-field
+          v-model="password"
           density="compact"
           prepend-inner-icon="mdi-lock-outline"
           :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
-          v-model="password"
           variant="outlined"
           color="primary"
           placeholder="New Password"
           :type="passwordVisible ? 'text' : 'password'"
           class="mt-2"
           autocomplete="new-password"
-          @click:append-inner="passwordVisible = !passwordVisible"
           width="100%"
+          @click:append-inner="passwordVisible = !passwordVisible"
           @keyup.enter="resetPassword"
         />
 
@@ -66,8 +66,8 @@
           Confirm Password
         </div>
         <v-text-field
-          density="compact"
           v-model="confirmPassword"
+          density="compact"
           prepend-inner-icon="mdi-lock-outline"
           variant="outlined"
           color="primary"
@@ -76,8 +76,8 @@
           class="mt-2"
           autocomplete="new-password"
           width="100%"
-          @click:append-inner="passwordVisible = !passwordVisible"
           :rules="[passwordsMatch]"
+          @click:append-inner="passwordVisible = !passwordVisible"
           @keyup.enter="resetPassword"
         />
 

@@ -84,10 +84,10 @@
               </div>
 
               <v-text-field
+                v-model="password"
                 density="compact"
                 prepend-inner-icon="mdi-lock-outline"
                 :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
-                v-model="password"
                 variant="outlined"
                 color="primary"
                 placeholder="Your Password"
@@ -250,11 +250,11 @@
               </div>
 
               <v-text-field
+                v-model="password"
                 density="compact"
                 prepend-inner-icon="mdi-lock-outline"
                 autocomplete="current-password"
                 :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
-                v-model="password"
                 variant="outlined"
                 color="primary"
                 placeholder="Your Password"

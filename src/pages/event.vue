@@ -18,6 +18,7 @@
           v-if="!isMobile && store.isAdmin && !event.isPastEvent"
           :disabled="offline"
           color="primary"
+          variant="flat"
           style="position: absolute; right: 32px;"
           @click="proxy.$router.push(`/event/${proxy.$route.params.id}/edit`)"
         >
@@ -66,6 +67,19 @@
     <v-divider class="mb-4 mt-10" />
     <v-row>
       <v-card-title>Chaperones</v-card-title>
+      <v-card-text
+        v-if="event.lead_chaperone"
+        class="mt-4"
+      >
+        <span
+          style="border: 1px solid rgb(var(--v-theme-primary)); border-radius: 4px;"
+          class="pa-2"
+        >
+          <b>
+            Lead Chaperone: {{ store.getChaperone(event.lead_chaperone)?.name }}
+          </b>
+        </span>
+      </v-card-text>
       <v-spacer />
       <v-btn
         v-if="store.isAdmin && !isMobile && !event.isPastEvent"
@@ -78,6 +92,15 @@
         Edit Chaperones
       </v-btn>
     </v-row>
+    <v-card-text v-if="!event.lead_chaperone">
+      <v-alert
+        density="compact"
+        type="warning"
+        max-width="300"
+      >
+        No Lead Chaperone
+      </v-alert>
+    </v-card-text>
 
     <v-alert
       v-if="event.juniors_present"
