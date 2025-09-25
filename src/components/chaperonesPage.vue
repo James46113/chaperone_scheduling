@@ -1,20 +1,52 @@
 <template>
-  <div class="pa-4 d-flex justify-center" v-if="!loadingData">
-    <v-card elevation="0" :width="isMobile ? '100vw' : '80vw'">
+  <div
+    v-if="!loadingData"
+    class="pa-4 d-flex justify-center"
+  >
+    <v-card
+      elevation="0"
+      :width="isMobile ? '100vw' : '80vw'"
+    >
       <v-row>
-        <v-card-title class="text-h5 mt-3 ml-3">Chaperones' Schedules</v-card-title>
+        <v-card-title class="text-h5 mt-3 ml-3">
+          Chaperones' Schedules
+        </v-card-title>
         <v-spacer />
-        <v-btn v-if="!isMobile" variant="flat" class="mt-6 mr-6" color="primary"
-          @click="proxy.$router.push('/availability')">Availability</v-btn>
-        <v-btn v-if="!isMobile" variant="flat" class="mt-6 mr-6" color="primary"
-          @click="proxy.$router.push('/users')">Manage Users</v-btn>
+        <v-btn
+          v-if="!isMobile"
+          variant="flat"
+          class="mt-6 mr-6"
+          color="primary"
+          @click="proxy.$router.push('/availability')"
+        >
+          Availability
+        </v-btn>
+        <v-btn
+          v-if="!isMobile"
+          variant="flat"
+          class="mt-6 mr-6"
+          color="primary"
+          @click="proxy.$router.push('/users')"
+        >
+          Manage Users
+        </v-btn>
       </v-row>
       <v-card-text>Click on a chaperone below to view their schedule</v-card-text>
 
-      <v-data-table :items="store.chaperones" :headers="headers" hide-default-footer items-per-page="-1"
-        @click:row="showSchedule">
-        <template v-slot:no-data>
-          <v-progress-circular v-if="loadingData" color="primary" indeterminate size="40" />
+      <v-data-table
+        :items="store.chaperones"
+        :headers="headers"
+        hide-default-footer
+        items-per-page="-1"
+        @click:row="showSchedule"
+      >
+        <template #no-data>
+          <v-progress-circular
+            v-if="loadingData"
+            color="primary"
+            indeterminate
+            size="40"
+          />
           <v-card-text v-else>
             No chaperones found
           </v-card-text>
@@ -22,18 +54,40 @@
       </v-data-table>
 
       <div v-if="isMobile">
-        <v-btn variant="flat" class="mt-6 mr-6" color="primary" width="100vw"
-          @click="proxy.$router.push('/availability')">Availability</v-btn>
-        <v-btn variant="flat" color="primary" @click="proxy.$router.push('/users')" width="100vw" class="mt-4">Manage
-          Users</v-btn>
+        <v-btn
+          variant="flat"
+          class="mt-6 mr-6"
+          color="primary"
+          width="100vw"
+          @click="proxy.$router.push('/availability')"
+        >
+          Availability
+        </v-btn>
+        <v-btn
+          variant="flat"
+          color="primary"
+          width="100vw"
+          class="mt-4"
+          @click="proxy.$router.push('/users')"
+        >
+          Manage
+          Users
+        </v-btn>
       </div>
     </v-card>
   </div>
 
-  <div v-else class="d-flex justify-center align-center" style="height: 70vh;">
-    <v-progress-circular color="primary" indeterminate size="40" />
+  <div
+    v-else
+    class="d-flex justify-center align-center"
+    style="height: 70vh;"
+  >
+    <v-progress-circular
+      color="primary"
+      indeterminate
+      size="40"
+    />
   </div>
-
 </template>
 
 

@@ -1,51 +1,127 @@
 <template>
   <app-header />
-  <v-card :class="isMobile ? 'pa-4' : 'pa-10'" v-if="!loadingData && !notFound">
+  <v-card
+    v-if="!loadingData && !notFound"
+    :class="isMobile ? 'pa-4' : 'pa-10'"
+  >
     <v-row>
       <div>
-        <v-card-title class="text-h4 mb-n5" style="white-space: pre-wrap;">{{ event.title
-        }}</v-card-title>
+        <v-card-title
+          class="text-h4 mb-n5"
+          style="white-space: pre-wrap;"
+        >
+          {{ event.title
+          }}
+        </v-card-title>
 
-        <v-btn :disabled="offline" v-if="!isMobile && store.isAdmin && !event.isPastEvent"
-          @click="proxy.$router.push(`/event/${proxy.$route.params.id}/edit`)" color="primary"
-          style="position: absolute; right: 32px;">Edit Event</v-btn>
+        <v-btn
+          v-if="!isMobile && store.isAdmin && !event.isPastEvent"
+          :disabled="offline"
+          color="primary"
+          variant="flat"
+          style="position: absolute; right: 32px;"
+          @click="proxy.$router.push(`/event/${proxy.$route.params.id}/edit`)"
+        >
+          Edit Event
+        </v-btn>
 
-        <v-card-title v-if="!loadingData">{{ event.dateString }}, {{ event.start?.toLocaleTimeString([], {
-          hour:
-            '2-digit', minute: '2-digit', hour12: false
-        }) }}
+        <v-card-title v-if="!loadingData">
+          {{ event.dateString }}, {{ event.start?.toLocaleTimeString([], {
+            hour:
+              '2-digit', minute: '2-digit', hour12: false
+          }) }}
           - {{ event.end?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
-          }}</v-card-title>
+          }}
+        </v-card-title>
         <v-card-subtitle>
           {{ event.location }}
         </v-card-subtitle>
       </div>
 
       <!-- <v-divider class="my-4"></v-divider> -->
-      <div :class="isMobile ? '' : 'ml-6 mt-4'" v-if="!loadingData && !isMobile">
+      <div
+        v-if="!loadingData && !isMobile"
+        :class="isMobile ? '' : 'ml-6 mt-4'"
+      >
         <availability-selector :event="event.id" />
       </div>
     </v-row>
 
-    <v-btn :disabled="offline" v-if="isMobile && store.isAdmin && !event.isPastEvent"
-      @click="proxy.$router.push(`/event/${proxy.$route.params.id}/edit`)" color="primary" class="mt-10"
-      width="100vw">Edit</v-btn>
+    <v-btn
+      v-if="isMobile && store.isAdmin && !event.isPastEvent"
+      :disabled="offline"
+      color="primary"
+      class="mt-10"
+      width="100vw"
+      @click="proxy.$router.push(`/event/${proxy.$route.params.id}/edit`)"
+    >
+      Edit
+    </v-btn>
 
-    <availability-selector :event="event.id" v-if="isMobile" class="mt-8" />
+    <availability-selector
+      v-if="isMobile"
+      :event="event.id"
+      class="mt-8"
+    />
 
-    <v-divider class="mb-4 mt-10"></v-divider>
+    <v-divider class="mb-4 mt-10" />
     <v-row>
       <v-card-title>Chaperones</v-card-title>
+      <v-card-text
+        v-if="event.lead_chaperone"
+        class="mt-4"
+      >
+        <span
+          style="border: 1px solid rgb(var(--v-theme-primary)); border-radius: 4px;"
+          class="pa-2"
+        >
+          <b>
+            Lead Chaperone: {{ store.getChaperone(event.lead_chaperone)?.name }}
+          </b>
+        </span>
+      </v-card-text>
       <v-spacer />
-      <v-btn :disabled="offline" flat color="primary" class="my-1" v-if="store.isAdmin && !isMobile && !event.isPastEvent"
-        @click="proxy.$router.push(`/event/${eventID}/edit/chaperones`)">Edit Chaperones</v-btn>
+      <v-btn
+        v-if="store.isAdmin && !isMobile && !event.isPastEvent"
+        :disabled="offline"
+        flat
+        color="primary"
+        class="my-1"
+        @click="proxy.$router.push(`/event/${eventID}/edit/chaperones`)"
+      >
+        Edit Chaperones
+      </v-btn>
     </v-row>
+    <v-card-text v-if="!event.lead_chaperone">
+      <v-alert
+        density="compact"
+        type="warning"
+        max-width="300"
+      >
+        No Lead Chaperone
+      </v-alert>
+    </v-card-text>
 
-    <v-alert class="mb-3 mt-6" density="compact" type="info" color="primary" v-if="event.juniors_present">Junior choristers are present at this event</v-alert>
+    <v-alert
+      v-if="event.juniors_present"
+      class="mb-3 mt-6"
+      density="compact"
+      type="info"
+      color="primary"
+    >
+      Junior choristers are present at this event
+    </v-alert>
 
-    <v-card-text v-if="false">Lead Chaperone: {{ event.lead_chaperone }}</v-card-text>
+    <v-card-text v-if="false">
+      Lead Chaperone: {{ event.lead_chaperone }}
+    </v-card-text>
 
-    <v-data-table :headers="tableHeaders" :items="event.slots" hide-default-footer v-if="!isMobile">
+    <v-data-table
+      v-if="!isMobile"
+      :headers="tableHeaders"
+      :items="event.slots"
+      hide-default-footer
+    >
       <template #item.startTime="{ item }">
         {{ item.start?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
       </template>
@@ -54,7 +130,11 @@
       </template>
       <template #item.chaperoneName="{ item }">
         <span v-if="item.chaperoneName">{{ item.chaperoneName }}</span>
-        <v-alert v-else type="warning" class="pa-2">
+        <v-alert
+          v-else
+          type="warning"
+          class="pa-2"
+        >
           <span>No chaperone</span>
         </v-alert>
       </template>
@@ -64,53 +144,99 @@
         </span>
         <i v-else>No details available</i>
       </template>
-      <template v-slot:no-data>
-        <v-card-text v-if="loadingData">Loading...</v-card-text>
-        <v-alert v-else type="warning" class="mt-3">
+      <template #no-data>
+        <v-card-text v-if="loadingData">
+          Loading...
+        </v-card-text>
+        <v-alert
+          v-else
+          type="warning"
+          class="mt-3"
+        >
           No chaperones assigned
         </v-alert>
       </template>
     </v-data-table>
 
-    <v-card v-else v-for="slot in event.slots" class="mb-4 mt-4">
-      <v-card-title v-if="slot.chaperone">{{store.chaperones.find(chaperone => chaperone.id === slot.chaperone)?.name
-      }}</v-card-title>
-      <v-alert v-else type="warning" class="mb-6">No Chaperone</v-alert>
-      <v-card-subtitle class="mt-n2">{{ slot.title }}</v-card-subtitle>
-      <v-card-subtitle>{{ slot.start?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} -
-        {{ slot.end?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}</v-card-subtitle>
+    <v-card
+      v-for="slot in event.slots"
+      v-else
+      class="mb-4 mt-4"
+    >
+      <v-card-title v-if="slot.chaperone">
+        {{ store.chaperones.find(chaperone => chaperone.id === slot.chaperone)?.name
+        }}
+      </v-card-title>
+      <v-alert
+        v-else
+        type="warning"
+        class="mb-6"
+      >
+        No Chaperone
+      </v-alert>
+      <v-card-subtitle class="mt-n2">
+        {{ slot.title }}
+      </v-card-subtitle>
+      <v-card-subtitle>
+        {{ slot.start?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} -
+        {{ slot.end?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
+      </v-card-subtitle>
       <v-card-text>
         <span v-if="slot.details?.length > 0">
           {{ slot.details }}
         </span>
         <i v-else>No details available</i>
       </v-card-text>
-
     </v-card>
     <v-divider />
-    <v-card-title class="my-3">Details</v-card-title>
+    <v-card-title class="my-3">
+      Details
+    </v-card-title>
     <v-card-text>
       <span style="white-space: pre-wrap;">
         {{ event.details?.length > 0 ? event.details : 'No details available' }}
       </span>
     </v-card-text>
   </v-card>
-  <div v-else-if="notFound" class="d-flex justify-center mt-10">
-    <v-card class="ma-4 pa-4" :width="isMobile ? '100vw' : '40vw'">
-
-      <v-img src="/Steel-City-Choristers.png" width="15vw"></v-img>
+  <div
+    v-else-if="notFound"
+    class="d-flex justify-center mt-10"
+  >
+    <v-card
+      class="ma-4 pa-4"
+      :width="isMobile ? '100vw' : '40vw'"
+    >
+      <v-img
+        src="/Steel-City-Choristers.png"
+        width="15vw"
+      />
       <v-card-title>Event Not Found</v-card-title>
       <v-card-text>
         The event you are looking for does not exist. It may have been deleted. Please check the URL and try again.
       </v-card-text>
 
       <div class="d-flex justify-center">
-        <v-btn @click="proxy.$router.push('/')" variant="flat" width="20%" color="primary">Events</v-btn>
+        <v-btn
+          variant="flat"
+          width="20%"
+          color="primary"
+          @click="proxy.$router.push('/')"
+        >
+          Events
+        </v-btn>
       </div>
     </v-card>
   </div>
-  <div v-else class="d-flex justify-center align-center" style="height: 70vh;">
-    <v-progress-circular color="primary" indeterminate size="40" />
+  <div
+    v-else
+    class="d-flex justify-center align-center"
+    style="height: 70vh;"
+  >
+    <v-progress-circular
+      color="primary"
+      indeterminate
+      size="40"
+    />
   </div>
 </template>
 

@@ -1,6 +1,12 @@
 <template>
-  <edit-page :event="event" :removeSlot="removeSlot" :newSlot="newSlot" :saveEvent="saveEvent" :isTemplate="isTemplate"
-    :isNewEvent="true" />
+  <edit-page
+    :event="event"
+    :remove-slot="removeSlot"
+    :new-slot="newSlot"
+    :save-event="saveEvent"
+    :is-template="isTemplate"
+    :is-new-event="true"
+  />
 </template>
 
 <script setup>

@@ -1,58 +1,145 @@
 <template>
-  <v-app-bar height="100" class="d-flex justify-space-between align-center">
-    <img class="ml-4 mb-4" src="/Steel-City-Choristers.png" width="130px" contain @click="proxy.$router.push('/')" />
-    <v-card-title class="text-h5 mt-4 ml-4" v-if="!isMobile">Chaperones</v-card-title>
+  <v-app-bar
+    height="100"
+    class="d-flex justify-space-between align-center"
+  >
+    <img
+      class="ml-4 mb-4"
+      src="/Steel-City-Choristers.png"
+      width="130px"
+      contain
+      @click="proxy.$router.push('/')"
+    >
+    <v-card-title
+      v-if="!isMobile"
+      class="text-h5 mt-4 ml-4"
+    >
+      Chaperones
+    </v-card-title>
     <v-spacer />
   </v-app-bar>
 
-  <div v-if="validToken" style="display: flex; justify-content: center;">
-    <v-card class="mx-auto mt-8 pa-4" :width="isMobile ? '100vw' : '40vw'" elevation="0">
-      <v-card-title class="text-h5">Reset Password</v-card-title>
-      <v-card-text>Resetting your password will sign you out on all devices. You will have to sign in again with your
-        new password.</v-card-text>
+  <div
+    v-if="validToken"
+    style="display: flex; justify-content: center;"
+  >
+    <v-card
+      class="mx-auto mt-8 pa-4"
+      :width="isMobile ? '100vw' : '40vw'"
+      elevation="0"
+    >
+      <v-card-title class="text-h5">
+        Reset Password
+      </v-card-title>
+      <v-card-text>
+        Resetting your password will sign you out on all devices. You will have to sign in again with your
+        new password.
+      </v-card-text>
       <v-form width="100vw">
-        <v-text-field v-show="false" label="Username" autocomplete="username"></v-text-field>
+        <v-text-field
+          v-show="false"
+          label="Username"
+          autocomplete="username"
+        />
         <!-- Hidden field to prevent autofill -->
 
-        <div class="text-subtitle-1 text-medium-emphasis mt-2 mb-1">New Password</div>
-        <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
+        <div class="text-subtitle-1 text-medium-emphasis mt-2 mb-1">
+          New Password
+        </div>
+        <v-text-field
+          v-model="password"
+          density="compact"
+          prepend-inner-icon="mdi-lock-outline"
+          :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+          variant="outlined"
+          color="primary"
+          placeholder="New Password"
+          :type="passwordVisible ? 'text' : 'password'"
+          class="mt-2"
+          autocomplete="new-password"
+          width="100%"
           @click:append-inner="passwordVisible = !passwordVisible"
-          :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'" variant="outlined" color="primary"
-          placeholder="New Password" v-model="password" :type="passwordVisible ? 'text' : 'password'" class="mt-2"
-          @keyup.enter="resetPassword" autocomplete="new-password" width="100%" />
+          @keyup.enter="resetPassword"
+        />
 
-        <div class="text-subtitle-1 text-medium-emphasis mb-1">Confirm Password</div>
-        <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
-          @click:append-inner="passwordVisible = !passwordVisible" variant="outlined" color="primary"
-          placeholder="Confirm Password" v-model="confirmPassword" :type="passwordVisible ? 'text' : 'password'"
-          class="mt-2" @keyup.enter="resetPassword" autocomplete="new-password" width="100%"
-          :rules="[passwordsMatch]" />
+        <div class="text-subtitle-1 text-medium-emphasis mb-1">
+          Confirm Password
+        </div>
+        <v-text-field
+          v-model="confirmPassword"
+          density="compact"
+          prepend-inner-icon="mdi-lock-outline"
+          variant="outlined"
+          color="primary"
+          placeholder="Confirm Password"
+          :type="passwordVisible ? 'text' : 'password'"
+          class="mt-2"
+          autocomplete="new-password"
+          width="100%"
+          :rules="[passwordsMatch]"
+          @click:append-inner="passwordVisible = !passwordVisible"
+          @keyup.enter="resetPassword"
+        />
 
-        <v-card-text class="mt-n4" style="font-size: small;">New password must have:</v-card-text>
-        <v-card-text class="pt-0 mt-n2 ml-7" style="font-size: small;">
+        <v-card-text
+          class="mt-n4"
+          style="font-size: small;"
+        >
+          New password must have:
+        </v-card-text>
+        <v-card-text
+          class="pt-0 mt-n2 ml-7"
+          style="font-size: small;"
+        >
           <ul>
-            <li :class="hasLowercase ? '' : 'text-primary'">Lowercase Character (a-z)</li>
-            <li :class="hasUppercase ? '' : 'text-primary'">Uppercase Character (A-Z)</li>
-            <li :class="hasNumber ? '' : 'text-primary'">Number (0-9)</li>
-            <li :class="hasSpecial ? '' : 'text-primary'">Special Character (!@&...)</li>
-            <li :class="isLongEnough ? '' : 'text-primary'">At least 8 characters</li>
+            <li :class="hasLowercase ? '' : 'text-primary'">
+              Lowercase Character (a-z)
+            </li>
+            <li :class="hasUppercase ? '' : 'text-primary'">
+              Uppercase Character (A-Z)
+            </li>
+            <li :class="hasNumber ? '' : 'text-primary'">
+              Number (0-9)
+            </li>
+            <li :class="hasSpecial ? '' : 'text-primary'">
+              Special Character (!@&...)
+            </li>
+            <li :class="isLongEnough ? '' : 'text-primary'">
+              At least 8 characters
+            </li>
           </ul>
         </v-card-text>
 
-        <v-btn color="primary" variant="flat" class="mt-4" @click="resetPassword" width="100vw">Reset Password</v-btn>
+        <v-btn
+          color="primary"
+          variant="flat"
+          class="mt-4"
+          width="100vw"
+          @click="resetPassword"
+        >
+          Reset Password
+        </v-btn>
       </v-form>
     </v-card>
   </div>
-  <div v-else-if="validToken === false" style="display: flex; justify-content: center;">
-    <v-card class="mx-auto mt-8 pa-4" :width="isMobile ? '100vw' : '40vw'" elevation="0">
-      <v-card-title class="text-h5">Invalid Token</v-card-title>
+  <div
+    v-else-if="validToken === false"
+    style="display: flex; justify-content: center;"
+  >
+    <v-card
+      class="mx-auto mt-8 pa-4"
+      :width="isMobile ? '100vw' : '40vw'"
+      elevation="0"
+    >
+      <v-card-title class="text-h5">
+        Invalid Token
+      </v-card-title>
       <v-card-text>
         The link you are using to reset your password is invalid. Please request a new link from the password reset
         page.
       </v-card-text>
     </v-card>
   </div>
-
 </template>
 
 <script setup>

@@ -1,66 +1,168 @@
 <template>
   <div v-if="isMobile">
-    <div style="display: flex; justify-content: center;" class="pa-6">
-      <v-card width="100vw" class="pa-4" elevation="0" style="position: absolute; top: 14vh">
-        <v-img src="/Steel-City-Choristers.png" max-width="200" />
-        <v-card-title class="text-h5">Welcome!</v-card-title>
-        <v-card-text v-if="signingIn" class="mt-4">Signing you in...</v-card-text>
-        <v-btn v-if="signingIn" color="primary" class="ml-4 mb-2" @click="cancelSignIn">Cancel</v-btn>
+    <div
+      style="display: flex; justify-content: center;"
+      class="pa-6"
+    >
+      <v-card
+        width="100vw"
+        class="pa-4"
+        elevation="0"
+        style="position: absolute; top: 14vh"
+      >
+        <v-img
+          src="/Steel-City-Choristers.png"
+          max-width="200"
+        />
+        <v-card-title class="text-h5">
+          Welcome!
+        </v-card-title>
+        <v-card-text
+          v-if="signingIn"
+          class="mt-4"
+        >
+          Signing you in...
+        </v-card-text>
+        <v-btn
+          v-if="signingIn"
+          color="primary"
+          class="ml-4 mb-2"
+          @click="cancelSignIn"
+        >
+          Cancel
+        </v-btn>
         <div v-else-if="googleLogin">
-          <v-card-text>Please sign in with Google to access the chaperone
-            rota.</v-card-text>
-          <v-btn variant="outlined" @click="customLogin" class="text-body-2 ml-4">
-            <img src="/Google__G__logo.svg" class="mr-2" />
+          <v-card-text>
+            Please sign in with Google to access the chaperone
+            rota.
+          </v-card-text>
+          <v-btn
+            variant="outlined"
+            class="text-body-2 ml-4"
+            @click="customLogin"
+          >
+            <img
+              src="/Google__G__logo.svg"
+              class="mr-2"
+            >
             Sign in with Google
           </v-btn>
-          <v-card-text class="text-caption text-disabled" @click="googleLogin = false">Sign in with
-            password</v-card-text>
+          <v-card-text
+            class="text-caption text-disabled"
+            @click="googleLogin = false"
+          >
+            Sign in with
+            password
+          </v-card-text>
         </div>
         <div v-else>
           <v-form>
-
-            <div class="text-subtitle-1 text-medium-emphasis mt-2 mb-1">Email</div>
-            <v-text-field density="compact" prepend-inner-icon="mdi-email-outline" variant="outlined" color="primary"
-              placeholder="Your Email" v-model="email" type="email" autocomplete="email" />
+            <div class="text-subtitle-1 text-medium-emphasis mt-2 mb-1">
+              Email
+            </div>
+            <v-text-field
+              v-model="email"
+              density="compact"
+              prepend-inner-icon="mdi-email-outline"
+              variant="outlined"
+              color="primary"
+              placeholder="Your Email"
+              type="email"
+              autocomplete="email"
+            />
 
             <div v-if="!resettingPassword">
               <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between mb-n1">
                 Password
-                <span tabindex="-1" style="cursor: pointer;" class="text-caption text-decoration-none text-primary"
-                  @click="resettingPassword = true">
+                <span
+                  tabindex="-1"
+                  style="cursor: pointer;"
+                  class="text-caption text-decoration-none text-primary"
+                  @click="resettingPassword = true"
+                >
                   Forgot password?</span>
               </div>
 
-              <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
+              <v-text-field
+                v-model="password"
+                density="compact"
+                prepend-inner-icon="mdi-lock-outline"
+                :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                variant="outlined"
+                color="primary"
+                placeholder="Your Password"
+                :type="passwordVisible ? 'text' : 'password'"
+                class="mt-2"
+                autocomplete="current-password"
                 @click:append-inner="passwordVisible = !passwordVisible"
-                :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'" variant="outlined" color="primary"
-                placeholder="Your Password" v-model="password" :type="passwordVisible ? 'text' : 'password'"
-                class="mt-2" @keyup.enter="passwordLogin" autocomplete="current-password" />
+                @keyup.enter="passwordLogin"
+              />
 
-              <v-card-text class="text-primary my-n3" style="text-align: center;" v-if="incorrectPassword">Incorrect
+              <v-card-text
+                v-if="incorrectPassword"
+                class="text-primary my-n3"
+                style="text-align: center;"
+              >
+                Incorrect
                 email
                 or
-                password</v-card-text>
+                password
+              </v-card-text>
 
-              <v-btn @click="passwordLogin" :loading="signingIn" color="primary" class="mt-4" width="100%">Sign
-                In</v-btn>
+              <v-btn
+                :loading="signingIn"
+                color="primary"
+                class="mt-4"
+                width="100%"
+                @click="passwordLogin"
+              >
+                Sign
+                In
+              </v-btn>
 
-              <v-btn variant="outlined" :disabled="signingIn" width="100%" @click="customLogin"
-                class="text-body-2 mt-4">
-                <img src="/Google__G__logo.svg" class="mr-2" />
+              <v-btn
+                variant="outlined"
+                :disabled="signingIn"
+                width="100%"
+                class="text-body-2 mt-4"
+                @click="customLogin"
+              >
+                <img
+                  src="/Google__G__logo.svg"
+                  class="mr-2"
+                >
                 Sign in with Google
               </v-btn>
             </div>
             <div v-else>
-              <v-btn color="primary" :disabled="resetTimeout > 0" width="100%" :loading="awaitingPasswordReset"
-                @click="resetPassword" class="mt-4">Reset Password</v-btn>
-              <v-card-text v-if="resetTimeout > 0" class="text-primary mt-0 mb-n6" style="text-align: center;">Please
+              <v-btn
+                color="primary"
+                :disabled="resetTimeout > 0"
+                width="100%"
+                :loading="awaitingPasswordReset"
+                class="mt-4"
+                @click="resetPassword"
+              >
+                Reset Password
+              </v-btn>
+              <v-card-text
+                v-if="resetTimeout > 0"
+                class="text-primary mt-0 mb-n6"
+                style="text-align: center;"
+              >
+                Please
                 wait
                 {{
-                  resetTimeout }} seconds before trying again.</v-card-text>
-              <v-card-text @click="resettingPassword = false" class="text-primary mt-2"
-                style="text-align: center; cursor: pointer;">Back to Sign
-                in</v-card-text>
+                  resetTimeout }} seconds before trying again.
+              </v-card-text>
+              <v-card-text
+                class="text-primary mt-2"
+                style="text-align: center; cursor: pointer;"
+                @click="resettingPassword = false"
+              >
+                Back to Sign
+                in
+              </v-card-text>
             </div>
           </v-form>
         </div>
@@ -68,72 +170,167 @@
     </div>
   </div>
   <div v-else>
-    <div style="display: flex; justify-content: center;" class="pa-6">
-      <v-card width="30vw" class="pa-4" style="position: absolute; top: 14vh">
-        <v-img src="/Steel-City-Choristers.png" max-width="200" />
+    <div
+      style="display: flex; justify-content: center;"
+      class="pa-6"
+    >
+      <v-card
+        width="30vw"
+        class="pa-4"
+        style="position: absolute; top: 14vh"
+      >
+        <v-img
+          src="/Steel-City-Choristers.png"
+          max-width="200"
+        />
         <v-card-title>Welcome!</v-card-title>
-        <v-card-text v-if="signingIn">Signing you in...</v-card-text>
-        <v-btn v-if="signingIn" color="primary" class="ml-4 mb-2" @click="cancelSignIn">Cancel</v-btn>
+        <v-card-text v-if="signingIn">
+          Signing you in...
+        </v-card-text>
+        <v-btn
+          v-if="signingIn"
+          color="primary"
+          class="ml-4 mb-2"
+          @click="cancelSignIn"
+        >
+          Cancel
+        </v-btn>
         <div v-else-if="googleLogin">
           <v-card-text>Please sign in with Google to access the chaperone rota.</v-card-text>
           <div style="display: flex; justify-content: center;">
             <div>
-              <v-btn variant="outlined" @click="customLogin" class="text-body-2 mt-4">
-                <img src="/Google__G__logo.svg" class="mr-2" />
+              <v-btn
+                variant="outlined"
+                class="text-body-2 mt-4"
+                @click="customLogin"
+              >
+                <img
+                  src="/Google__G__logo.svg"
+                  class="mr-2"
+                >
                 Sign in with Google
               </v-btn>
-              <v-card-text @click="googleLogin = false" class="text-caption text-disabled"
-                style="text-align: center; cursor: pointer;">Sign in with
-                password</v-card-text>
+              <v-card-text
+                class="text-caption text-disabled"
+                style="text-align: center; cursor: pointer;"
+                @click="googleLogin = false"
+              >
+                Sign in with
+                password
+              </v-card-text>
             </div>
           </div>
         </div>
         <div v-else>
-          <div class="text-subtitle-1 text-medium-emphasis mt-2 mb-1">Email</div>
+          <div class="text-subtitle-1 text-medium-emphasis mt-2 mb-1">
+            Email
+          </div>
           <v-form>
-            <v-text-field density="compact" prepend-inner-icon="mdi-email-outline" variant="outlined" color="primary"
-              placeholder="Your Email" v-model="email" type="email" autocomplete="email" />
+            <v-text-field
+              v-model="email"
+              density="compact"
+              prepend-inner-icon="mdi-email-outline"
+              variant="outlined"
+              color="primary"
+              placeholder="Your Email"
+              type="email"
+              autocomplete="email"
+            />
 
             <div v-if="!resettingPassword">
               <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between mb-n1">
                 Password
-                <span tabindex="-1" style="cursor: pointer;" class="text-caption text-decoration-none text-primary"
-                  @click="resettingPassword = true">
+                <span
+                  tabindex="-1"
+                  style="cursor: pointer;"
+                  class="text-caption text-decoration-none text-primary"
+                  @click="resettingPassword = true"
+                >
                   Forgot password?</span>
               </div>
 
-              <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline" autocomplete="current-password"
+              <v-text-field
+                v-model="password"
+                density="compact"
+                prepend-inner-icon="mdi-lock-outline"
+                autocomplete="current-password"
+                :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                variant="outlined"
+                color="primary"
+                placeholder="Your Password"
+                :type="passwordVisible ? 'text' : 'password'"
+                class="mt-2"
                 @click:append-inner="passwordVisible = !passwordVisible"
-                :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'" variant="outlined" color="primary"
-                placeholder="Your Password" v-model="password" :type="passwordVisible ? 'text' : 'password'"
-                class="mt-2" @keyup.enter="passwordLogin" />
+                @keyup.enter="passwordLogin"
+              />
 
-              <v-card-text class="text-primary my-n3" style="text-align: center;" v-if="incorrectPassword">Incorrect
+              <v-card-text
+                v-if="incorrectPassword"
+                class="text-primary my-n3"
+                style="text-align: center;"
+              >
+                Incorrect
                 email
                 or
-                password</v-card-text>
+                password
+              </v-card-text>
 
-              <v-btn @click="passwordLogin" :loading="signingIn" color="primary" class="mt-4" width="100%">Sign
-                In</v-btn>
+              <v-btn
+                :loading="signingIn"
+                color="primary"
+                class="mt-4"
+                width="100%"
+                @click="passwordLogin"
+              >
+                Sign
+                In
+              </v-btn>
 
-              <v-btn variant="outlined" :disabled="signingIn" width="100%" @click="customLogin"
-                class="text-body-2 mt-4">
-                <img src="/Google__G__logo.svg" class="mr-2" />
+              <v-btn
+                variant="outlined"
+                :disabled="signingIn"
+                width="100%"
+                class="text-body-2 mt-4"
+                @click="customLogin"
+              >
+                <img
+                  src="/Google__G__logo.svg"
+                  class="mr-2"
+                >
                 Sign in with Google
               </v-btn>
             </div>
             <div v-else>
-              <v-btn color="primary" width="100%" :loading="awaitingPasswordReset" @click="resetPassword" class="mt-4"
-                :disabled="resetTimeout > 0">Reset Password</v-btn>
+              <v-btn
+                color="primary"
+                width="100%"
+                :loading="awaitingPasswordReset"
+                class="mt-4"
+                :disabled="resetTimeout > 0"
+                @click="resetPassword"
+              >
+                Reset Password
+              </v-btn>
 
-              <v-card-text v-if="resetTimeout > 0" class="text-primary mt-2 mb-n6" style="text-align: center;">Please
+              <v-card-text
+                v-if="resetTimeout > 0"
+                class="text-primary mt-2 mb-n6"
+                style="text-align: center;"
+              >
+                Please
                 wait
                 {{
-                  resetTimeout }} seconds before trying again.</v-card-text>
+                  resetTimeout }} seconds before trying again.
+              </v-card-text>
 
-              <v-card-text @click="resettingPassword = false" class="text-primary mt-2"
-                style="text-align: center; cursor: pointer;">Back to Sign
-                in</v-card-text>
+              <v-card-text
+                class="text-primary mt-2"
+                style="text-align: center; cursor: pointer;"
+                @click="resettingPassword = false"
+              >
+                Back to Sign
+                in
+              </v-card-text>
             </div>
           </v-form>
         </div>

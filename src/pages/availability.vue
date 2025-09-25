@@ -6,67 +6,142 @@
   </table> -->
   <app-header />
   <div class="pa-4 d-flex justify-center">
-    <v-card elevation="0" :width="isMobile ? '100vw' : '80vw'">
-      <v-card-title class="text-h5 mb-3">Chaperone Availability</v-card-title>
+    <v-card
+      elevation="0"
+      :width="isMobile ? '100vw' : '80vw'"
+    >
+      <v-card-title class="text-h5 mb-3">
+        Chaperone Availability
+      </v-card-title>
 
-      <v-row class="mt-6 pl-5" v-if="!isMobile">
+      <v-row
+        v-if="!isMobile"
+        class="mt-6 pl-5"
+      >
+        <date-picker
+          label="Start"
+          total-width="240px"
+          :date="start.toISOString().split('T')[0]"
+          @update:date="start = new Date($event)"
+        />
 
-        <date-picker label="Start" totalWidth="240px" :date="start.toISOString().split('T')[0]"
-          @update:date="start = new Date($event)"></date-picker>
-
-        <date-picker label="End" totalWidth="240px" :date="end.toISOString().split('T')[0]"
-          @update:date="end = new Date($event)" class="ml-6"></date-picker>
+        <date-picker
+          label="End"
+          total-width="240px"
+          :date="end.toISOString().split('T')[0]"
+          class="ml-6"
+          @update:date="end = new Date($event)"
+        />
 
         <v-spacer />
 
-        <v-btn :disabled="offline" v-if="showTable" color="primary" :loading="sendingEmails" @click="sendAvailabilityEmail" class="mr-4"
-          variant="flat">Send
-          Availability Email</v-btn>
-        <v-btn v-if="showTable" color="primary" @click="saveTableAsImage" class="mr-4" variant="flat">Save as
-          Image</v-btn>
-        <v-btn v-if="showTable && isDev" color="primary" @click="printTable" class="mr-4" variant="flat">Print</v-btn>
+        <v-btn
+          v-if="showTable"
+          :disabled="offline"
+          color="primary"
+          :loading="sendingEmails"
+          class="mr-4"
+          variant="flat"
+          @click="sendAvailabilityEmail"
+        >
+          Send
+          Availability Email
+        </v-btn>
+        <v-btn
+          v-if="showTable"
+          color="primary"
+          class="mr-4"
+          variant="flat"
+          @click="saveTableAsImage"
+        >
+          Save as
+          Image
+        </v-btn>
+        <v-btn
+          v-if="showTable && isDev"
+          color="primary"
+          class="mr-4"
+          variant="flat"
+          @click="printTable"
+        >
+          Print
+        </v-btn>
       </v-row>
 
       <v-div v-else>
-        <date-picker label="Start" totalWidth="240px" :date="start.toISOString().split('T')[0]"
-          @update:date="start = new Date($event)" class="ml-6"></date-picker>
+        <date-picker
+          label="Start"
+          total-width="240px"
+          :date="start.toISOString().split('T')[0]"
+          class="ml-6"
+          @update:date="start = new Date($event)"
+        />
 
-        <date-picker label="End" totalWidth="240px" :date="end.toISOString().split('T')[0]"
-          @update:date="end = new Date($event)" class="ml-6"></date-picker>
+        <date-picker
+          label="End"
+          total-width="240px"
+          :date="end.toISOString().split('T')[0]"
+          class="ml-6"
+          @update:date="end = new Date($event)"
+        />
       </v-div>
 
-      <div v-if="loadingData" class="d-flex justify-center align-center" style="height: 40vh;">
-        <v-progress-circular color="primary" indeterminate size="40" />
+      <div
+        v-if="loadingData"
+        class="d-flex justify-center align-center"
+        style="height: 40vh;"
+      >
+        <v-progress-circular
+          color="primary"
+          indeterminate
+          size="40"
+        />
       </div>
-      <v-sheet v-else-if="showTable" class="table_container">
-        <div style="max-width: 100vw; overflow: scroll;" class="justify-center">
+      <v-sheet
+        v-else-if="showTable"
+        class="table_container"
+      >
+        <div
+          style="max-width: 100vw; overflow: scroll;"
+          class="justify-center"
+        >
           <table class="my-6">
             <tr>
-              <th></th><th></th>
-              <th v-for="event in gigs" class="pa-1">
+              <th /><th />
+              <th
+                v-for="event in gigs"
+                class="pa-1"
+              >
                 <span class="vertical-text rotate gig-location">
                   {{ event.location }}
                 </span>
               </th>
-              <th class="divider"></th>
-              <th :colspan="rehearsalMonday.length">Monday Rehearsals</th>              
-              <th class="divider"></th>
-              <th :colspan="rehearsalFriday.length">Friday Rehearsals</th>
+              <th class="divider" />
+              <th :colspan="rehearsalMonday.length">
+                Monday Rehearsals
+              </th>              
+              <th class="divider" />
+              <th :colspan="rehearsalFriday.length">
+                Friday Rehearsals
+              </th>
             </tr>
             <tr>
-              <th></th><th></th>
-              <th v-for="event in gigs" class="pa-1">
+              <th /><th />
+              <th
+                v-for="event in gigs"
+                class="pa-1"
+              >
                 <span class="vertical-text rotate">
                   {{ event.start.toLocaleDateString('en-GB') }}
                 </span>
               </th>
-              <th class="divider"></th>
+              <th class="divider" />
               <th v-for="mon in rehearsalMonday">
                 <span class="vertical-text rotate">
                   {{ mon.start.toLocaleDateString('en-GB') }}
                 </span> 
               </th>
-              <th class="divider"></th>
+              <th class="divider" />
               <th v-for="fri in rehearsalFriday">
                 <span class="vertical-text rotate">
                   {{ fri.start.toLocaleDateString('en-GB') }}
@@ -74,117 +149,137 @@
               </th>
             </tr>
             <tr>
-              <td colspan="2"><b>Juniors Present</b></td>
+              <td colspan="2">
+                <b>Juniors Present</b>
+              </td>
               <td v-for="gig in gigs">
                 <b><pre v-if="gig.juniors_present"> J</pre></b>
               </td>
-              <td class="divider"></td>
+              <td class="divider" />
               <td v-for="mon in rehearsalMonday">
                 <b><pre v-if="mon.juniors_present"> J</pre></b>
               </td>
-              <td class="divider"></td>
+              <td class="divider" />
               <td v-for="fri in rehearsalFriday">
                 <b><pre v-if="fri.juniors_present"> J</pre></b>
               </td>
             </tr>
             <tr>
-              <td class="divider" v-for="i in eventsInRange.length + 4"></td>
+              <td
+                v-for="i in eventsInRange.length + 4"
+                class="divider"
+              />
             </tr>
             <tr v-for="chaperone in nonSingingChaperones">
               <td v-if="chaperone === nonSingingChaperones[0]">
                 <i>Non-Singing</i>
               </td>
-              <td v-else></td>
+              <td v-else />
               <td>{{ chaperone.name }}</td>
               <td v-for="event in gigs">
                 <span
                   v-if="store.allAvailability.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available"
-                  style="text-align: center;">
+                  style="text-align: center;"
+                >
                   <!-- <v-icon>mdi-check</v-icon> -->
                   <pre>Y</pre>
                 </span>
                 <span
                   v-else-if="store.allAvailability.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available === null"
-                  style="text-align: center;">
+                  style="text-align: center;"
+                >
                   <pre>?</pre>
                 </span>
               </td>
-              <td class="divider"></td>
+              <td class="divider" />
               <td v-for="event in rehearsalMonday">
                 <span
                   v-if="store.allAvailability.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available"
-                  style="text-align: center;">
+                  style="text-align: center;"
+                >
                   <!-- <v-icon>mdi-check</v-icon> -->
                   <pre>Y</pre>
                 </span>
                 <span
                   v-else-if="store.allAvailability.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available === null"
-                  style="text-align: center;">
+                  style="text-align: center;"
+                >
                   <pre>?</pre>
                 </span>
               </td>
-              <td class="divider"></td>
+              <td class="divider" />
               <td v-for="event in rehearsalFriday">
                 <span
                   v-if="store.allAvailability.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available"
-                  style="text-align: center;">
+                  style="text-align: center;"
+                >
                   <!-- <v-icon>mdi-check</v-icon> -->
                   <pre>Y</pre>
                 </span>
                 <span
                   v-else-if="store.allAvailability.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available === null"
-                  style="text-align: center;">
+                  style="text-align: center;"
+                >
                   <pre>?</pre>
                 </span>
               </td>
             </tr>
             <tr>
-              <td class="divider" v-for="i in eventsInRange.length + 4"></td>
+              <td
+                v-for="i in eventsInRange.length + 4"
+                class="divider"
+              />
             </tr>
             <tr v-for="chaperone in singingChaperones">
               <td v-if="chaperone === singingChaperones[0]">
                 <i>Singing</i>
               </td>
-              <td v-else></td>
+              <td v-else />
               <td>{{ chaperone.name }}</td>
               <td v-for="event in gigs">
                 <span
                   v-if="store.allAvailability.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available"
-                  style="text-align: center;">
+                  style="text-align: center;"
+                >
                   <!-- <v-icon>mdi-check</v-icon> -->
                   <pre>Y</pre>
                 </span>
                 <span
                   v-else-if="store.allAvailability.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available === null"
-                  style="text-align: center;">
+                  style="text-align: center;"
+                >
                   <pre>?</pre>
                 </span>
               </td>
-              <td class="divider"></td>
+              <td class="divider" />
               <td v-for="event in rehearsalMonday">
                 <span
                   v-if="store.allAvailability.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available"
-                  style="text-align: center;">
+                  style="text-align: center;"
+                >
                   <!-- <v-icon>mdi-check</v-icon> -->
                   <pre>Y</pre>
                 </span>
                 <span
                   v-else-if="store.allAvailability.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available === null"
-                  style="text-align: center;">
+                  style="text-align: center;"
+                >
                   <pre>?</pre>
                 </span>
               </td>
-              <td class="divider"></td>
+              <td class="divider" />
               <td v-for="event in rehearsalFriday">
                 <span
                   v-if="store.allAvailability.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available"
-                  style="text-align: center;">
+                  style="text-align: center;"
+                >
                   <!-- <v-icon>mdi-check</v-icon> -->
                   <pre>Y</pre>
                 </span>
                 <span
                   v-else-if="store.allAvailability.find(availability => availability.chaperone_id === chaperone.id && availability.event_id === event.id)?.available === null"
-                  style="text-align: center;">
+                  style="text-align: center;"
+                >
                   <pre>?</pre>
                 </span>
               </td>
@@ -200,10 +295,22 @@
           as
           Image</v-btn> -->
       </v-sheet>
-      <v-card-text v-else>No events found in the selected range</v-card-text>
-      <v-btn :disabled="offline" v-if="isMobile" :loading="sendingEmails" class="mt-4" width="100vw" color="primary"
-        @click="sendAvailabilityEmail" variant="flat">Send
-        Availability Email</v-btn>
+      <v-card-text v-else>
+        No events found in the selected range
+      </v-card-text>
+      <v-btn
+        v-if="isMobile"
+        :disabled="offline"
+        :loading="sendingEmails"
+        class="mt-4"
+        width="100vw"
+        color="primary"
+        variant="flat"
+        @click="sendAvailabilityEmail"
+      >
+        Send
+        Availability Email
+      </v-btn>
     </v-card>
   </div>
 </template>
