@@ -195,21 +195,38 @@
       
       <v-divider class="mt-4" />
 
-      <v-row class="my-3">
-        <v-card-title class="mt-4">
+      <v-row class="mt-2 ml-2">
+        <v-card-title class="mt-2">
           Chaperones
         </v-card-title>
         <v-spacer />
-        <v-btn
-          v-if="!isMobile"
-          color="primary"
-          variant="outlined"
-          class="mt-6 mr-6"
-          @click="newSlot"
-        >
-          Add
-          Chaperone
-        </v-btn>
+        <v-col cols="auto">
+          <v-select
+            v-model="event.lead_chaperone"
+            class="mb-n2"
+            variant="outlined"
+            density="compact"
+            label="Lead Chaperone"
+            min-width="200"
+            :items="on_duty_chaperones"
+            item-title="name"
+            item-value="id"
+            clearable
+          />
+        </v-col>
+
+        <v-col cols="auto">
+          <v-btn
+            v-if="!isMobile"
+            color="primary"
+            variant="outlined"
+            class="mr-6"
+            @click="newSlot"
+          >
+            Add
+            Chaperone
+          </v-btn>
+        </v-col>
       </v-row>
 
       <v-spacer />
@@ -669,6 +686,8 @@ const isDefaultTemplate = computed(() => [2, 3].includes(event.value.id));
 const { proxy } = getCurrentInstance();
 
 const selectedTemplate = ref();
+
+const on_duty_chaperones = computed(() => event.value.slots?.map(slot => store.getChaperoneByName(slot.selectedChaperoneName)).sort((a, b) => a.name > b.name))
 
 const tableHeaders = [
   { title: 'Group', key: 'title', width: '20%' },

@@ -74,6 +74,19 @@
       </v-card-subtitle>
 
       <v-card-text class="pl-0">
+        <v-card-text class="py-0">
+          <b>
+            <i
+              v-if="store.isSingingChaperoneFromName(lead_chaperone_name)"
+              class="text-primary"
+            >
+              {{ lead_chaperone_name }}
+            </i>
+            <span v-else>
+              {{ lead_chaperone_name }}
+            </span>
+          </b>
+        </v-card-text>
         <span v-for="chaperone in sortedChaperones">
           <v-card-text
             v-if="chaperone"
@@ -132,7 +145,11 @@ const props = defineProps({
   small: Boolean
 })
 
-const sortedChaperones = computed(() => [... new Set(props.event.chaperones)].sort())
+const lead_chaperone_name = computed(() => store.getChaperone(props.event.lead_chaperone)?.name)
+const sortedChaperones = computed(() => { 
+  const sorted_names =  [... new Set(props.event.chaperones)].sort() 
+  return sorted_names.filter(name => name !== lead_chaperone_name.value)
+})
 const missingChaperones = computed(() => props.event.chaperones?.includes(null) && !props.event.chaperones?.every(chaperone => chaperone === null))
 
 const goToEvent = (value) => {

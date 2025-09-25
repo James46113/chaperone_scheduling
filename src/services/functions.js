@@ -29,8 +29,8 @@ export const fetchAPI = async (url, params, redirect = true) => {
   if (window.location.hostname === 'localhost') {
     HOSTNAME = 'http://localhost:5000/';
   } else {
-    HOSTNAME = 'https://api.chaperones.steelcitychoristers.org.uk/'
   }
+  HOSTNAME = 'https://api.chaperones.steelcitychoristers.org.uk/'
 
   return fetch(HOSTNAME + url, {
     ...params,

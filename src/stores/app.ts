@@ -1,6 +1,54 @@
 // Utilities
 import { defineStore } from 'pinia'
 
+
+interface ChaperoneSlot {
+  id: number;
+  event_id: number;
+  chaperone: number;
+  start: Date;
+  end: Date;
+}
+
+interface Event {
+  id: number;
+  start: Date;
+  end: Date;
+  date: Date;
+  lead_chaperone: number;
+}
+
+interface Chaperone {
+  id: number;
+  name: string;
+  is_singing_chaperone?: boolean;
+}
+
+interface Availability {
+  id: number;
+  event_id: number;
+  chaperone_id: number;
+  available: boolean | null;
+  chaperoneName?: string | (() => string | null);
+}
+
+interface Template {
+  id: number;
+  template_name: string;
+  start: Date;
+  end: Date;
+  slots: TemplateSlot[] | (() => TemplateSlot[]);
+  slotsToDelete?: number[];
+}
+
+interface TemplateSlot {
+  id: number;
+  template_id: number;
+  start: Date;
+  end: Date;
+  randomID?: number;
+}
+
 export const useAppStore = defineStore('app', () => {
   const showAlertDialog = ref(false);
   const alertTitle = ref('');
@@ -462,6 +510,19 @@ export const useAppStore = defineStore('app', () => {
     }
   }
 
+  const updateEvent = async (id: number) => {
+    const event = events.value.find((e: any) => e.id === id)
+    fetchAPI(`events/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(event)
+    })
+    .catch(() => showAlert("An Error Occurred", "The event could not be updated, please try again later."))
+    setTimeout(loadEvents, 2000)
+  }
+
   const getEvent = (id: number) => {
     return events.value.find((event: any) => event.id == id);
   }
@@ -538,6 +599,10 @@ export const useAppStore = defineStore('app', () => {
 
   const getChaperoneIDByName = (name: string) => {
     return chaperones.value.find((chaperone: any) => chaperone.name === name)?.id
+  }
+
+  const getChaperoneByName = (name: string) => {
+        return chaperones.value.find((chaperone: any) => chaperone.name === name);
   }
 
   const removeChaperoneSlot = (slotToRemove: any) => {
@@ -775,6 +840,7 @@ export const useAppStore = defineStore('app', () => {
     loadTemplates,
     loadTemplateSlots,
     getEvent,
+    updateEvent,
     deleteEvent,
     getEventAvailability,
     getEventsByChaperone,
@@ -788,6 +854,7 @@ export const useAppStore = defineStore('app', () => {
     isFirstEvent,
     getChaperone,
     getChaperoneIDByName,
+    getChaperoneByName,
     updateChaperoneSlot,
     newChaperoneSlot,
     removeChaperoneSlot,
