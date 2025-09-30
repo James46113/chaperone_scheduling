@@ -17,6 +17,7 @@
           variant="flat"
           class="mt-6 mr-6"
           color="primary"
+          prepend-icon="mdi-account-question"
           @click="proxy.$router.push('/availability')"
         >
           Availability
@@ -26,6 +27,7 @@
           variant="flat"
           class="mt-6 mr-6"
           color="primary"
+          prepend-icon="mdi-account-multiple"
           @click="proxy.$router.push('/users')"
         >
           Manage Users
@@ -59,6 +61,7 @@
           class="mt-6 mr-6"
           color="primary"
           width="100vw"
+          prepend-icon="mdi-account-question"
           @click="proxy.$router.push('/availability')"
         >
           Availability
@@ -68,6 +71,7 @@
           color="primary"
           width="100vw"
           class="mt-4"
+          prepend-icon="mdi-account-multiple"
           @click="proxy.$router.push('/users')"
         >
           Manage

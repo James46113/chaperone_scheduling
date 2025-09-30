@@ -119,35 +119,39 @@
         </v-btn>
       </v-row>
 
-      <v-card style="border: 1px solid rgb(var(--v-theme-primary));" elevation="0" class="ma-3" width="190">
-        
+      <v-card
+        style="border: 1px solid rgb(var(--v-theme-primary));"
+        elevation="0"
+        class="ma-3"
+        width="190"
+      >
         <v-card-text class="mb-n5">
           Lead Chaperone
         </v-card-text>
         <v-text-field
-        readonly
-        variant="outlined"
-        density="compact"
-        width="150"
-        class="ml-4 mt-2"
-        @dragover="allowDrop"
-        @drop="dropChaperoneOnLeadChaperone"
-        >
-        <v-chip 
-        v-if="currentEvent?.lead_chaperone"
-          append-icon="mdi-close"
-          @click="() => {currentEvent.lead_chaperone = null; store.updateEvent(currentEvent.id)}"
+          readonly
           variant="outlined"
-          :color="chipColor(store.getChaperone(parseInt(currentEvent?.lead_chaperone)))"
+          density="compact"
+          width="150"
+          class="ml-4 mt-2"
+          @dragover="allowDrop"
+          @drop="dropChaperoneOnLeadChaperone"
+        >
+          <v-chip 
+            v-if="currentEvent?.lead_chaperone"
+            append-icon="mdi-close"
+            variant="outlined"
+            :color="chipColor(store.getChaperone(parseInt(currentEvent?.lead_chaperone)))"
+            @click="() => {currentEvent.lead_chaperone = null; store.updateEvent(currentEvent.id)}"
           >
-          {{ store.getChaperone(parseInt(currentEvent?.lead_chaperone))?.name }}
-        </v-chip>
-      </v-text-field>
-    </v-card>
+            {{ store.getChaperone(parseInt(currentEvent?.lead_chaperone))?.name }}
+          </v-chip>
+        </v-text-field>
+      </v-card>
       
       <div style="display: flex; flex-wrap: wrap;">
         <v-sheet
-        v-for="slot in currentEvent?.slots"
+          v-for="slot in currentEvent?.slots"
           class="ma-3"
           variant="outlined"
           color="primary"

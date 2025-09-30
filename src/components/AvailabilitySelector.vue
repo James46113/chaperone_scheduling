@@ -15,21 +15,22 @@
     <v-row class="mx-2 mb-3">
       <v-btn
         :disabled="offline"
-        variant="flat"
+        :variant="eventRef?.available === true ? 'flat' : 'outlined'"
         max-width="100px"
-        width="50%"
-        :color="eventRef?.available === null ? '' : eventRef?.available ? '#198754' : ''"
+        width="48%"
+        color="#198754"
         :ripple="false"
+        class="mr-1"
         @click="updateAvailable(true)"
       >
         ✓
       </v-btn>
       <v-btn
         :disabled="offline"
-        variant="flat"
+        :variant="eventRef?.available === false ? 'flat' : 'outlined'"
         max-width="100px"
-        width="50%"
-        :color="eventRef?.available === null ? '' : eventRef?.available ? '' : 'primary'"
+        width="48%"
+        color="primary"
         :ripple="false"
         @click="updateAvailable(false)"
       >

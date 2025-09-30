@@ -1,6 +1,6 @@
 <template>
   <app-header />
-  <div class="d-flex justify-center mt-10">
+  <!-- <div class="d-flex justify-center mt-10">
     <v-card
       class="ma-4"
       :width="isMobile ? '100vw' : '40vw'"
@@ -22,7 +22,16 @@
         <v-spacer />
       </v-row>
     </v-card>
-  </div>
+  </div> -->
+  <v-empty-state
+    headline="Whoops, 404"
+    title="Page Not Found"
+    text="The page you were looking for does not exist. It may have been deleted or moved. Please check the URL and try again."
+    action-text="Return to Calendar"
+    icon="mdi-emoticon-sad-outline"
+    color="primary"
+    @click:action="proxy.$router.push('/')"
+  />
 </template>
 
 <script setup>
