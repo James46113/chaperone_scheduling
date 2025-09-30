@@ -202,6 +202,7 @@
         <v-spacer />
         <v-col cols="auto">
           <v-select
+            v-if="!isNewEvent && !isTemplate"
             v-model="event.lead_chaperone"
             class="mb-n2"
             variant="outlined"
@@ -464,7 +465,7 @@
             class="mt-n2"
           />
           <v-select
-            v-if="!isTemplate"
+            v-if="!isTemplate && !isNewEvent"
             v-model="slot.selectedChaperoneName"
             clearable
             :items="event.availability"
