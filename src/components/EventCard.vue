@@ -1,154 +1,272 @@
 <template>
-  <!-- <v-sheet elevation="2" class="ma-2" variant="outlined" color="primary" style="padding: 1px;" rounded> -->
-  <v-card class="ma-2 eventcard">
-    <div
-      style="cursor: pointer;"
-      @click="goToEvent"
-    >
-      <div v-if="isMobile">
-        <v-icon
-          color="primary"
-          size="25"
-          class="mt-2 mr-3"
-          style="position: absolute; right: 0px"
+  <v-card
+    class="my-3 mx-1"
+    :elevation="small ? 0 : 3"
+    :style="small ? 'border: 1px solid rgb(var(--v-theme-primary))' : ''"
+  >
+    <v-row class="flex-nowrap">
+      <v-col
+        v-if="!small"
+        cols="auto"
+        max-width="200"
+        class="mr-n4"
+      >
+        <v-card
+          class="pa-2 date"
+          max-width="100px"
+          min-width="60px"
+          elevation="0"
+          style="border-radius: 0;"
+          height="100%"
         >
-          mdi-open-in-new
-        </v-icon>
-        <v-card-title>
-          {{
-            event.start.toLocaleDateString('en-GB', {
-              weekday: 'short', day: 'numeric',
-              month: 'short', year: 'numeric'
-            })
-          }}
-        </v-card-title>
-        <v-divider class="mt-n1" />
-        <v-card-title class="mt-n1">
-          {{ event.title }}
-        </v-card-title>
-      </div>
-      <!-- <v-alert type="warning" width="60px" /> -->
-
-      <v-card-title v-if="small && !isMobile">
-        {{ event.title }}
-        <v-icon
-          v-if="!small"
-          color="primary"
-          size="25"
-          class="mt-n1 ml-2"
-        >
-          mdi-open-in-new
-        </v-icon>
-        <v-icon
-          v-else
-          color="primary"
-          size="25"
-          style="position: absolute; right: 12px"
-        >
-          mdi-open-in-new
-        </v-icon>
-      </v-card-title>
-
-      <div v-else-if="!isMobile">
-        <v-card-title>
-          {{ event.start.toLocaleDateString('en-GB', {
-            weekday: 'short', day: 'numeric',
-            month: 'short', year: 'numeric'
-          }) }} - {{ event.title }}
-          <v-icon
-            color="primary"
-            size="25"
-            class="mt-n1 ml-2"
+          <p
+            class="dow"
+            height="100%"
           >
-            mdi-open-in-new
-          </v-icon>
-        </v-card-title>
-      </div>
-
-      <v-card-subtitle class="mt-n3">
-        {{ event.location }}
-      </v-card-subtitle>
-      <v-card-subtitle>
-        {{ new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} -
-        {{ new Date(event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
-      </v-card-subtitle>
-
-      <v-card-text class="pl-0">
-        <v-card-text class="py-0">
-          <b>
-            <i
-              v-if="store.isSingingChaperoneFromName(lead_chaperone_name)"
-              class="text-primary"
-            >
-              {{ lead_chaperone_name }}
-            </i>
-            <span v-else>
-              {{ lead_chaperone_name }}
-            </span>
-          </b>
-        </v-card-text>
-        <span v-for="chaperone in sortedChaperones">
-          <v-card-text
-            v-if="chaperone"
-            class="py-0"
-          >
-            <i
-              v-if="store.isSingingChaperoneFromName(chaperone)"
-              class="text-primary"
-            >
-              {{ chaperone }}
-            </i>
-            <span v-else>
-              {{ chaperone }}
-            </span>
-            <br>
-          </v-card-text>
-        </span>
-        <v-alert
-          v-if="missingChaperones && store.isAdmin && !event.isPastEvent"
-          density="compact"
-          type="warning"
-          class="mt-1"
-          max-width="400px"
-        >
-          Empty
-          Slot(s)
-        </v-alert>
+            {{ props.event.start.toLocaleString('en-GB', { weekday: 'short' }) }}
+          </p>
+          <p class="day">
+            {{ props.event.start.getDate() }}
+          </p>
+          <p class="month">
+            {{ props.event.start.toLocaleString('en-GB', { month: 'short' }) }}
+          </p>
+        </v-card>
+      </v-col>
+      <v-col class="pt-5">
         <div
-          v-if="loadingData && sortedChaperones.length === 0"
-          class="d-flex justify-center align-center"
+          class="d-flex flex-row flex-wrap justify-start"
+          style="width: 100%;"
         >
-          <v-progress-circular
-            color="primary"
-            indeterminate
-          />
+          <router-link
+            :to="`/event/${props.event.id}`"
+            class="routerlink"
+          >
+            <div class="flex-grow-1">
+              <v-card-title style="white-space: normal; overflow-wrap: anywhere; line-height: 1.1; ">
+                {{ props.event.title }}
+              </v-card-title>
+              <v-card-subtitle
+                v-if="!small"
+                class="mt-n2 mb-2"
+                style="white-space: normal; overflow-wrap: anywhere;"
+              >
+                {{ props.event.location }}, {{ props.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} - {{ props.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
+              </v-card-subtitle>
+              <div v-else>
+                <v-card-subtitle
+                  class="mt-n2 mb-1"
+                  style="white-space: normal; overflow-wrap: anywhere;"
+                >
+                  {{ props.event.location }}
+                </v-card-subtitle>
+                <v-card-subtitle
+                  class="mt-n2 mb-2"
+                  style="white-space: normal; overflow-wrap: anywhere;"
+                >
+                  {{ props.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} - {{ props.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
+                </v-card-subtitle>
+              </div>
+              <v-card-text
+                v-if="store.isAdmin"
+                class="mt-n4"
+              >
+                <b style="text-decoration: underline;">{{ lead_chaperone_name }}</b><br v-if="lead_chaperone_name">
+                
+                <span v-for="chaperone in sortedChaperones">
+                    <i v-if="store.isSingingChaperoneFromName(chaperone)" style="color: rgb(var(--v-theme-primary))">
+                      {{ chaperone }}
+                    </i>
+                    <span v-else>
+                      {{ chaperone }}
+                    </span>
+                    <span v-if="chaperone !== sortedChaperones[sortedChaperones.length - 1]">, </span>
+                </span>
+              </v-card-text>
+              <availability-selector
+                v-if="props.small"
+                :event="props.event.id"
+                small
+                class="mt-n3 ml-1"
+                @mousedown.stop
+                @click.stop
+              />
+            </div>
+            <v-expand-transition style="margin-top: -28px;">
+              <div
+                v-if="showSlots && props.event.slots.filter(slot => slot.chaperone == props.chaperoneID).length > 0 && isMobile"
+                v-show="showTimeline"
+                class="pa-2 pt-5"
+              >
+                <v-fade-transition>
+                  <v-timeline
+                    v-show="showTimeline"
+                    direction="vertical"
+                    side="end"
+                    dot-color="primary"
+                    density="compact"
+                    truncate-line="both"
+                  >
+                    <v-timeline-item :size="16">
+                      <div class="mb-n2">
+                        <b>
+                          {{ props.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
+                        </b>
+                        <p class="mt-n1">
+                          Start
+                        </p>
+                      </div>
+                    </v-timeline-item>
+                    <template
+                      v-for="slot in props.event.slots"
+                      :key="slot.id"
+                    >
+                      <v-timeline-item
+                        v-if="slot.chaperone == props.chaperoneID"
+                        :size="16"
+                      >
+                        <div class="my-n2">
+                          <b style="white-space: nowrap; overflow: visible;">
+                            {{ slot.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} - {{ slot.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
+                          </b>
+                          <p class="mt-n1">
+                            {{ slot.title }}
+                          </p>
+                        </div>
+                      </v-timeline-item>
+                    </template>
+                    <v-timeline-item :size="16">
+                      <div class="mt-n2">
+                        <b>
+                          {{ props.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
+                        </b>
+                        <p class="mt-n1">
+                          End
+                        </p>
+                      </div>
+                    </v-timeline-item>
+                  </v-timeline>
+                </v-fade-transition>
+              </div>
+            </v-expand-transition>
+          </router-link>
+          <div
+            v-if="showSlots && props.event.slots.filter(slot => slot.chaperone == props.chaperoneID).length > 0 && !isMobile"
+            class="pa-2 mr-4"
+          >
+            <v-timeline
+              direction="horizontal"
+              side="end"
+              dot-color="primary"
+              density="compact"
+              truncate-line="both"
+            >
+              <v-timeline-item :size="16">
+                <div
+                  class="mt-n6 d-flex flex-column justify-center align-center"
+                  style="align-items: center;"
+                >
+                  <b>
+                    {{ props.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
+                  </b>
+                  <p class="mt-n1">
+                    Start
+                  </p>
+                </div>
+              </v-timeline-item>
+              <template
+                v-for="slot in props.event.slots"
+                :key="slot.id"
+              >
+                <v-timeline-item
+                  v-if="slot.chaperone == props.chaperoneID"
+                  :size="16"
+                >
+                  <div
+                    class="mt-n6 d-flex flex-column justify-center align-center"
+                    style="align-items: center;"
+                  >
+                    <b style="white-space: nowrap; overflow: visible;">
+                      {{ slot.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} - {{ slot.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
+                    </b>
+                    <p
+                      class="mt-n1"
+                      style="text-align: center;"
+                    >
+                      {{ slot.title }}
+                    </p>
+                  </div>
+                </v-timeline-item>
+              </template>
+              <v-timeline-item :size="16">
+                <div
+                  class="mt-n6 d-flex flex-column justify-center align-center"
+                  style="align-items: center;"
+                >
+                  <b>
+                    {{ props.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
+                  </b>
+                  <p class="mt-n1">
+                    End
+                  </p>
+                </div>
+              </v-timeline-item>
+            </v-timeline>
+          </div>
+          <div
+            v-if="props.getAvailability"
+            class="ml-2"
+            style="min-width: 200px; margin-left: auto"
+          >
+            <availability-selector
+              v-if="!props.small"
+              :event="props.event.id"
+              small
+              :class="isMobile ? 'mt-n6' : 'mt-n3'"
+              @mousedown.stop
+              @click.stop
+            />
+          </div>
         </div>
-      </v-card-text>
-    </div>
-    <availability-selector
-      :event="event.id"
-      small
-      class="mt-n3"
-    />
+      </v-col>
+      <v-col
+        v-if="isMobile && props.showSlots"
+        cols="auto"
+      >
+        <v-btn
+          variant="text"
+          color="primary"
+          height="100%"
+          @click="showTimeline = !showTimeline"
+        >
+          <v-icon size="32">
+            {{ showTimeline ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
+          </v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
   </v-card>
-  <!-- </v-sheet> -->
 </template>
 
 <script setup>
 import { useAppStore } from '@/stores/app'
 
-
 const { proxy } = getCurrentInstance()
 const store = useAppStore();
 const props = defineProps({
   event: Object,
-  small: Boolean
+  small: Boolean,
+  getAvailability: Boolean,
+  showSlots: Boolean,
+  chaperoneID: Number,
 })
+
+const showTimeline = ref(false);
 
 const lead_chaperone_name = computed(() => store.getChaperone(props.event.lead_chaperone)?.name)
 const sortedChaperones = computed(() => { 
   const sorted_names =  [... new Set(props.event.chaperones)].sort() 
-  return sorted_names.filter(name => name !== lead_chaperone_name.value)
+  return sorted_names.filter(name => name !== lead_chaperone_name.value && name)
 })
 const missingChaperones = computed(() => props.event.chaperones?.includes(null) && !props.event.chaperones?.every(chaperone => chaperone === null))
 
@@ -163,5 +281,40 @@ const goToEvent = (value) => {
 <style lang="scss" scoped>
   .eventcard {
     border: 1px solid rgb(var(--v-theme-primary));
+  }
+
+  .routerlink {
+    display: contents !important;
+    text-decoration: none !important;
+    color: inherit !important;
+    
+    &:hover, &:visited, &:active {
+      text-decoration: none !important;
+      color: inherit !important;
+    }  
+  }
+
+  .month, .dow {
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .day {
+    padding-top: 0;
+    margin-top: -10px;
+    margin-bottom: -10px;
+    font-size: x-large;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .date {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid rgb(var(--v-theme-primary));
+    color: white;
+    background-color: rgb(var(--v-theme-primary));
   }
 </style>

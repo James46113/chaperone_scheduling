@@ -16,95 +16,13 @@
           "'"
           : "'s" }} Schedule
       </v-card-title>
-
-      <v-card-text>
-        Chaperone names in <i class="text-primary">red italics</i> are singing chaperones.
-      </v-card-text>
-
-      <v-sheet
+      <event-card 
         v-for="event in events"
-        elevation="2"
-        class="my-2"
-        variant="outlined"
-        color="primary"
-        style="padding: 1px; cursor: pointer;"
-        rounded
-        @click="proxy.$router.push(`/event/${event.id}`)"
-      >
-        <v-card class="pa-1">
-          <v-icon
-            v-if="isMobile"
-            color="primary"
-            size="25"
-            class="mt-2 mr-3"
-            style="position: absolute; right: 0px"
-          >
-            mdi-open-in-new
-          </v-icon>
-
-          <v-card-title v-if="!isMobile">
-            {{ event.title }} - {{ event.start.toLocaleDateString('en-GB', {
-              weekday: 'short', day: 'numeric',
-              month: 'short', year: 'numeric'
-            }) }}
-            <v-icon
-              v-if="!isMobile"
-              color="primary"
-              size="25"
-              class="mt-n1 ml-2"
-            >
-              mdi-open-in-new
-            </v-icon>
-          </v-card-title>
-          <div v-else>
-            <v-card-title>
-              {{ event.start.toLocaleDateString('en-GB', {
-                weekday: 'short', day: 'numeric',
-                month: 'short', year: 'numeric'
-              }) }}
-            </v-card-title>
-            <v-divider class="mt-n1" />
-            <v-card-title class="mt-n1 mb-n2">
-              {{ event.title }}
-            </v-card-title>
-          </div>
-
-          <v-card-subtitle>{{ event.location }}</v-card-subtitle>
-          <v-card-subtitle>
-            {{ event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} -
-            {{ event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
-          </v-card-subtitle>
-
-          <v-card-text v-if="false">
-            Lead Chaperone: {{ event.lead_chaperone }}
-          </v-card-text>
-          <div v-for="slot in event.slots">
-            <div
-              v-if="slot.chaperone == chaperone_id"
-              class="mt-2"
-            >
-              <v-divider />
-              <v-card-text><b>{{ slot.title }}</b></v-card-text>
-              <v-card-subtitle class="mt-n4">
-                {{ slot.start.toLocaleTimeString([], {
-                  hour: '2-digit', minute: '2-digit', hour12: false
-                })
-                }}
-                - {{
-                  slot.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
-                }}
-              </v-card-subtitle>
-              <v-card-text class="mt-n3">
-                <span v-if="slot.details?.length > 0">
-                  {{ slot.details }}
-                </span>
-                <i v-else>No Details Available</i>
-              </v-card-text>
-            </div>
-          </div>
-        </v-card>
-      </v-sheet>
-
+        show-slots
+        :event="event"
+        :chaperone-i-d="chaperone_id"
+      />
+      
       <v-card-text v-if="events.length === 0 && !loadingData">
         <i>No upcoming events scheduled</i>
       </v-card-text>
