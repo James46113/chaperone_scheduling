@@ -161,7 +161,16 @@ export const useAppStore = defineStore('app', () => {
       });
 
       event.isPastEvent = computed(() => event.start < new Date());
-      event.slots = computed(() => chaperoneSlots.value.filter((slot: any) => slot.event_id === event.id).sort((a: any, b: any) => a.start - b.start) ?? []);
+      event.slots = computed(() => 
+        chaperoneSlots.value
+          .filter((slot: any) => slot.event_id === event.id)
+          .sort((a: any, b: any) => {
+        if (a.start.getTime() !== b.start.getTime()) {
+          return a.start - b.start;
+        }
+        return a.end - b.end;
+          }) ?? []
+      );
       event.available = computed(() => availability.value.filter((avail: any) => avail.event_id === event.id).map((avail: any) => avail.available)[0] ?? null);
 
       event.chaperones = computed(() => {

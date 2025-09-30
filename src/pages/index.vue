@@ -48,6 +48,7 @@
             <event-card
               :event="event"
               small
+              get-availability
             />
           </template>
           <template
@@ -84,7 +85,10 @@
 
         <v-card-text>
           To give your availability, press on the tick or the cross on each event.<br>
-          Chaperone names in <i class="text-primary">red italics</i> are singing chaperones.
+          <span v-if="store.isAdmin">
+            Lead chaperones (if present) are <b style="text-decoration: underline;">bold and underlined</b>.<br />
+            Singing chaperones are in <i class="text-primary">red italics</i>.
+          </span>
         </v-card-text>
 
         <v-divider
@@ -97,6 +101,8 @@
           v-for="event in store.upcomingEvents"
           v-if="!loadingData"
           :event="event"
+          get-availability
+          :chaperone-i-d="store.userID"
         />
         <div
           v-else
