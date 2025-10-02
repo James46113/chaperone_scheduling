@@ -31,9 +31,8 @@ export const fetchAPI = async (url, params, redirect = true) => {
   } else {
   }
   HOSTNAME = 'https://api.chaperones.steelcitychoristers.org.uk/'
-  const currentTimestamp = Date.now();
 
-  return fetch(HOSTNAME + url + `?cb=${currentPath}`, {
+  return fetch(HOSTNAME + url + `?cb=${Date.now()}`, {
     ...params,
     headers
   }).then((response) => {
