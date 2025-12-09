@@ -162,6 +162,11 @@
           label="Admin"
           color="primary"
         />
+        <v-switch
+          v-model="newUser.is_singing_chaperone"
+          label="Is Singing Chaperone"
+          color="primary"
+        />
       </v-card-text>
       <v-card-actions>
         <v-btn @click="showNewUserDialog = false">
@@ -182,7 +187,7 @@
 import { useAppStore } from '@/stores/app'
 
 
-const newUser = ref({ is_admin: false })
+const newUser = ref({ is_admin: false, is_singing_chaperone: false })
 const showNewUserDialog = ref(false)
 
 const store = useAppStore();
@@ -271,7 +276,7 @@ const createUser = () => {
       return response.json()
     })
     .then((data) => {
-      newUser.value = { is_admin: false, email: null }
+      newUser.value = { is_admin: false, email: null, is_singing_chaperone: false }
       store.loadChaperones();
       store.loadChaperoneSlots();
       showNewUserDialog.value = false
