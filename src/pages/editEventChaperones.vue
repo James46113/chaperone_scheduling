@@ -247,13 +247,16 @@ const chipColor = (chaperone) => {
 }
 
 const sortedChaperones = computed(() => {
-  const eventAvailability = store.allAvailability.filter(availability => availability.event_id === currentEventID.value)
-  const eventAvailabile = eventAvailability.filter(availability => availability.available)
-  const eventUnknown = eventAvailability.filter(availability => availability.available === null)
-  const eventUnavailable = eventAvailability.filter(availability => availability.available === false)
-  return [...eventAvailabile, ...eventUnknown, ...eventUnavailable].map(availability => store.getChaperone(availability.chaperone_id)).filter(c => c)
-})
+  const eventAvailability = store.allAvailability.filter(av => av.event_id === currentEventID.value)
+  const eventAvailable = eventAvailability.filter(av => av.available)
+  const eventUnknown = eventAvailability.filter(av => av.available === null)
+  const eventUnavailable = eventAvailability.filter(av => av.available === false)
 
+  return [...eventAvailable, ...eventUnknown, ...eventUnavailable]
+    .map(av => store.getChaperone(av.chaperone_id))
+    .filter(c => c)
+    .sort((a, b) => a.name.localeCompare(b.name))
+})
 
 const allowDrop = (e) => {
   e.preventDefault();
