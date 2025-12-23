@@ -480,7 +480,7 @@ const resetPassword = () => {
     return;
   }
 
-  fetchAPI('auth/forgot_password', {
+  fetchAPI('forgot_password', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
