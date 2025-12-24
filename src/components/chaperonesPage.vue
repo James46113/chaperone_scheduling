@@ -135,23 +135,25 @@ onMounted(async () => {
 })
 
 const formatLastLogin = (last_login) => {
+  let more_than = ''
   if (!last_login) {
-    return ''
+    last_login = new Date('2025-12-24');
+    more_than += '>'
   }
   last_login = new Date(last_login)
   const now = new Date();
   const diffInMs = now - last_login;
   const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-  if (diffInDays == 0){
+  if (diffInDays == 0 && more_than == ''){
     return 'Today';
   } else if (diffInDays < 7) {
-    return `${diffInDays} day${diffInDays === 1 ? '' : 's'} ago`;
+    return `${more_than} ${diffInDays} day${diffInDays === 1  ? '' : 's'} ago`;
   } else if (diffInDays < 30) {
     const diffInWeeks = Math.floor(diffInDays / 7);
-    return `${diffInWeeks} week${diffInWeeks === 1 ? '' : 's'} ago`;
+    return `${more_than} ${diffInWeeks} week${diffInWeeks === 1  ? '' : 's'} ago`;
   } else {
     const diffInMonths = Math.floor(diffInDays / 30);
-    return `${diffInMonths} month${diffInMonths === 1 ? '' : 's'} ago`;
+    return `${more_than} ${diffInMonths} month${diffInMonths === 1  ? '' : 's'} ago`;
   }
 
 }
