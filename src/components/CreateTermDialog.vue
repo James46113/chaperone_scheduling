@@ -94,7 +94,7 @@ const createTerm = () => {
   })
   .then(response => {
     if (!response.ok) {
-      store.showAlert("An Error Occurred", "There was a problem creating the term. Please try again later. If this issue persists, please contact jamescaroe@gmail.com.")
+      store.showAlert("An Error Occurred", "There was a problem creating the term. Please try again later. If this issue persists, please contact help@jamescaroe.on.spiceworks.com.")
     } else {
         store.showCreateTermDialog = false;
         store.loadEvents();

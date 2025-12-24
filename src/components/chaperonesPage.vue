@@ -53,6 +53,9 @@
             No chaperones found
           </v-card-text>
         </template>
+        <template #item.last_login="{ item }">
+          {{ formatLastLogin(item.last_login) }}
+        </template>
       </v-data-table>
 
       <div v-if="isMobile">
@@ -103,6 +106,7 @@ document.title = "Chaperones - Steel City Choristers"
 
 const headers = [
   { title: 'Name', key: 'name' },
+  { title: 'Last Login', key: 'last_login' },
   { title: 'Assigned Events', key: 'numEvents', align: 'end' }
 ]
 
@@ -129,5 +133,27 @@ onMounted(async () => {
   }
   loadingData.value = false;
 })
+
+const formatLastLogin = (last_login) => {
+  if (!last_login) {
+    return ''
+  }
+  last_login = new Date(last_login)
+  const now = new Date();
+  const diffInMs = now - last_login;
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+  if (diffInDays == 0){
+    return 'Today';
+  } else if (diffInDays < 7) {
+    return `${diffInDays} day${diffInDays === 1 ? '' : 's'} ago`;
+  } else if (diffInDays < 30) {
+    const diffInWeeks = Math.floor(diffInDays / 7);
+    return `${diffInWeeks} week${diffInWeeks === 1 ? '' : 's'} ago`;
+  } else {
+    const diffInMonths = Math.floor(diffInDays / 30);
+    return `${diffInMonths} month${diffInMonths === 1 ? '' : 's'} ago`;
+  }
+
+}
 
 </script>
