@@ -26,18 +26,22 @@
     >
       <v-btn @click="goHome('calendar')">
         <v-icon>mdi-calendar</v-icon>
+        <span>Calendar</span>
       </v-btn>
       <v-btn @click="goHome('list')">
         <v-icon>mdi-format-list-bulleted</v-icon>
+        <span>List</span>
       </v-btn>
       <v-btn
         v-if="store.isAdmin"
         @click="goHome('chaperones')"
       >
         <v-icon>mdi-account-multiple</v-icon>
+        <span>Chaperones</span>
       </v-btn>
       <v-btn @click="goHome('schedule')">
         <v-icon>mdi-account</v-icon>
+        <span>You</span>
       </v-btn>
     </v-bottom-navigation>
 
