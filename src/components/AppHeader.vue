@@ -18,16 +18,17 @@
     </v-card-title>
     <v-spacer />
 
-    <v-card-title
+    <!-- <v-card-title
       v-if="isMobile"
       class="text-h5 mt-4 mr-4"
     >
       Chaperones
-    </v-card-title>
-    <!-- <v-btn href="mailto:jamescaroe@gmail.com?subject=SCC%20Chaperone%20System%20Bug%20Report" color="primary"
+    </v-card-title> -->
+    <v-btn href="mailto:help@jamescaroe.on.spiceworks.com" color="primary"
       class="mt-4">
-      Report Error
-    </v-btn> -->
+      <v-icon class="mr-2" size="25">mdi-help-circle-outline</v-icon>
+      Support
+    </v-btn>
 
     <v-btn
       v-if="store.isAdmin && !isMobile"
