@@ -51,7 +51,7 @@
                 class="mt-n2 mb-2"
                 style="white-space: normal; overflow-wrap: anywhere;"
               >
-                {{ props.event.location }}, {{ props.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} - {{ props.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
+                {{ props.event.location }}, {{ props.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} – {{ props.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
               </v-card-subtitle>
               <div v-else>
                 <v-card-subtitle
@@ -64,7 +64,7 @@
                   class="mt-n2 mb-2"
                   style="white-space: normal; overflow-wrap: anywhere;"
                 >
-                  {{ props.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} - {{ props.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
+                  {{ props.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} – {{ props.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
                 </v-card-subtitle>
               </div>
               <v-card-text
@@ -127,7 +127,7 @@
                       >
                         <div class="my-n2">
                           <b style="white-space: nowrap; overflow: visible;">
-                            {{ slot.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} - {{ slot.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
+                            {{ slot.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} – {{ slot.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
                           </b>
                           <p class="mt-n1">
                             {{ slot.title }}
@@ -187,7 +187,7 @@
                     style="align-items: center;"
                   >
                     <b style="white-space: nowrap; overflow: visible;">
-                      {{ slot.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} - {{ slot.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
+                      {{ slot.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }} – {{ slot.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }}
                     </b>
                     <p
                       class="mt-n1"

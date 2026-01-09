@@ -22,7 +22,7 @@
           label="Start"
           total-width="240px"
           :date="start.toISOString().split('T')[0]"
-          @update:date="start = new Date($event)"
+          @update:date="updateStart($event)"
         />
 
         <date-picker
@@ -30,7 +30,7 @@
           total-width="240px"
           :date="end.toISOString().split('T')[0]"
           class="ml-6"
-          @update:date="end = new Date($event)"
+          @update:date="updateEnd($event)"
         />
 
         <v-spacer />
@@ -74,7 +74,7 @@
           total-width="240px"
           :date="start.toISOString().split('T')[0]"
           class="ml-6"
-          @update:date="start = new Date($event)"
+          @update:date="updateStart($event)"
         />
 
         <date-picker
@@ -82,7 +82,7 @@
           total-width="240px"
           :date="end.toISOString().split('T')[0]"
           class="ml-6"
-          @update:date="end = new Date($event)"
+          @update:date="updateEnd($event)"
         />
       </v-div>
 
@@ -321,6 +321,7 @@ import { useAppStore } from '@/stores/app';
 
 const store = useAppStore();
 const eventsInRange = computed(() => store.events.filter(event => event.start >= start.value && event.end <= end.value))
+const invalidDates = ref(false);
 const rehearsalMonday = computed(() =>
   eventsInRange.value.filter(
     event =>
@@ -341,6 +342,24 @@ const gigs = computed(() =>
       event.title !== "Rehearsal"
   )
 )
+
+const updateStart = (value) => {
+    if (isNaN(Date.parse(value))) {
+    invalidDates.value = true;
+    return;
+  }
+  start.value = new Date(value);
+  invalidDates.value = false;
+}
+
+const updateEnd = (value) => {
+  if (isNaN(Date.parse(value))) {
+    invalidDates.value = true;
+    return;
+  }
+  end.value = new Date(value);
+  invalidDates.value = false;
+}
 
 const singingChaperones = computed(() => {
   const orderedNames = ['Jeremy', 'Kate', 'Chris'];
