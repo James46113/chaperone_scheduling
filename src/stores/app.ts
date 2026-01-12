@@ -135,11 +135,11 @@ export const useAppStore = defineStore('app', () => {
         console.log("loaded from stored events");
       }
     }
-    
+
     // console.log(ids)
     // console.log(loadedEvents.map((event: any) => event.id))
     if (ids.length !== 0)
-    loadedEvents = loadedEvents.filter((event: any) => ids.includes(event.id));
+      loadedEvents = loadedEvents.filter((event: any) => ids.includes(event.id));
     // console.log(ids)
     // console.log(loadedEvents.map((event: any) => event.id))
 
@@ -157,17 +157,17 @@ export const useAppStore = defineStore('app', () => {
       event.date = new Date(event.start);
       event.dateString = event.date.toLocaleDateString('en-UK', {
         weekday: 'short', day: 'numeric',
-        month: 'short', year: 'numeric'
+        month: 'short'
       });
 
-      event.isPastEvent = computed(() => event.start < new Date());
+      event.isPastEvent = computed(() => event.start < new Date().setDate(new Date().getDate() - 2));
       event.slots = computed(() =>
         chaperoneSlots.value
           .filter((slot: any) => slot.event_id === event.id)
           .sort((a: any, b: any) => {
-        const aTitle = (a.title ?? '').toString();
-        const bTitle = (b.title ?? '').toString();
-        return aTitle.localeCompare(bTitle);
+            const aTitle = (a.title ?? '').toString();
+            const bTitle = (b.title ?? '').toString();
+            return aTitle.localeCompare(bTitle);
           }) ?? []
       );
       event.available = computed(() => availability.value.filter((avail: any) => avail.event_id === event.id).map((avail: any) => avail.available)[0] ?? null);
@@ -206,6 +206,28 @@ export const useAppStore = defineStore('app', () => {
     });
 
     return data.sort((a: any, b: any) => a.start - b.start);
+  }
+
+  const formatLastLogin = (last_login: Date) => {
+    if (!last_login) {
+      return "Never"
+    }
+    last_login = new Date(last_login)
+    const now = new Date();
+    const diffInMs = now.getTime() - last_login.getTime();
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+    if (diffInDays == 0) {
+      return 'Today';
+    } else if (diffInDays < 7) {
+      return `${diffInDays} day${diffInDays === 1 ? '' : 's'} ago`;
+    } else if (diffInDays < 30) {
+      const diffInWeeks = Math.floor(diffInDays / 7);
+      return `${diffInWeeks} week${diffInWeeks === 1 ? '' : 's'} ago`;
+    } else {
+      const diffInMonths = Math.floor(diffInDays / 30);
+      return `${diffInMonths} month${diffInMonths === 1 ? '' : 's'} ago`;
+    }
+
   }
 
   const loadChaperones = async () => {
@@ -247,7 +269,7 @@ export const useAppStore = defineStore('app', () => {
     }
 
     if (ids.length !== 0)
-    loadedChaperones = loadedChaperones.filter((chaperone: any) => ids.includes(chaperone.id));
+      loadedChaperones = loadedChaperones.filter((chaperone: any) => ids.includes(chaperone.id));
 
     localStorage.setItem('chaperones', JSON.stringify(loadedChaperones));
     localStorage.setItem('chaperonesLastUpdated', Math.floor(new Date().getTime() / 1000 - 60 * 24).toString());
@@ -259,7 +281,10 @@ export const useAppStore = defineStore('app', () => {
       });
     });
 
-    chaperones.value = loadedChaperones.sort((a: any, b: any) => a.name.localeCompare(b.name)).filter((chaperone: any) => chaperone.name !== 'Choir Phone' && chaperone.name !== "Eleanor");
+    chaperones.value = loadedChaperones.sort((a: any, b: any) => a.name.localeCompare(b.name)).filter((chaperone: any) => chaperone.name !== 'Choir Phone' && chaperone.name !== "Eleanor")
+      .map((chaperone: any) => {
+        return { ...chaperone, last_login_string: formatLastLogin(chaperone.last_login), last_login: new Date().getTime() - new Date(chaperone.last_login).getTime() }
+      });
   }
 
   const loadChaperoneSlots = async () => {
@@ -303,7 +328,7 @@ export const useAppStore = defineStore('app', () => {
     if (eventsLocked.value) return;
 
     if (ids.length !== 0)
-    loadedSlots = loadedSlots.filter((slot: any) => ids.includes(slot.id));
+      loadedSlots = loadedSlots.filter((slot: any) => ids.includes(slot.id));
 
     localStorage.setItem('chaperoneSlots', JSON.stringify(loadedSlots));
     localStorage.setItem('chaperoneSlotsLastUpdated', Math.floor(new Date().getTime() / 1000 - 60 * 24).toString()); // 24 hours ago
@@ -376,7 +401,7 @@ export const useAppStore = defineStore('app', () => {
 
     let loadedTemplates: any[] = [];
     let ids: number[] = [];
-    
+
     if (!offline.value) {
 
       const response = await fetchAPI('templates', {
@@ -412,7 +437,7 @@ export const useAppStore = defineStore('app', () => {
     }
 
     if (ids.length !== 0)
-    loadedTemplates = loadedTemplates.filter((template: any) => ids.includes(template.id));
+      loadedTemplates = loadedTemplates.filter((template: any) => ids.includes(template.id));
 
     localStorage.setItem('templates', JSON.stringify(loadedTemplates));
     localStorage.setItem('templatesLastUpdated', Math.floor(new Date().getTime() / 1000 - 60 * 24).toString());
@@ -465,7 +490,7 @@ export const useAppStore = defineStore('app', () => {
     }
 
     if (ids.length !== 0)
-    loadedTemplateSlots = loadedTemplateSlots.filter((slot: any) => ids.includes(slot.id));
+      loadedTemplateSlots = loadedTemplateSlots.filter((slot: any) => ids.includes(slot.id));
 
     localStorage.setItem('templateSlots', JSON.stringify(loadedTemplateSlots));
     localStorage.setItem('templateSlotsLastUpdated', Math.floor(new Date().getTime() / 1000 - 60 * 24).toString());
@@ -527,7 +552,7 @@ export const useAppStore = defineStore('app', () => {
       },
       body: JSON.stringify(event)
     })
-    .catch(() => showAlert("An Error Occurred", "The event could not be updated, please try again later."))
+      .catch(() => showAlert("An Error Occurred", "The event could not be updated, please try again later."))
     setTimeout(loadEvents, 2000)
   }
 
@@ -610,7 +635,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const getChaperoneByName = (name: string) => {
-        return chaperones.value.find((chaperone: any) => chaperone.name === name);
+    return chaperones.value.find((chaperone: any) => chaperone.name === name);
   }
 
   const removeChaperoneSlot = (slotToRemove: any) => {
