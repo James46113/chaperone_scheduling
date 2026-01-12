@@ -160,7 +160,7 @@ export const useAppStore = defineStore('app', () => {
         month: 'short'
       });
 
-      event.isPastEvent = computed(() => event.start < new Date());
+      event.isPastEvent = computed(() => event.start < new Date().setDate(new Date().getDate() - 2));
       event.slots = computed(() =>
         chaperoneSlots.value
           .filter((slot: any) => slot.event_id === event.id)
@@ -206,6 +206,28 @@ export const useAppStore = defineStore('app', () => {
     });
 
     return data.sort((a: any, b: any) => a.start - b.start);
+  }
+
+  const formatLastLogin = (last_login: Date) => {
+    if (!last_login) {
+      return "Never"
+    }
+    last_login = new Date(last_login)
+    const now = new Date();
+    const diffInMs = now.getTime() - last_login.getTime();
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+    if (diffInDays == 0) {
+      return 'Today';
+    } else if (diffInDays < 7) {
+      return `${diffInDays} day${diffInDays === 1 ? '' : 's'} ago`;
+    } else if (diffInDays < 30) {
+      const diffInWeeks = Math.floor(diffInDays / 7);
+      return `${diffInWeeks} week${diffInWeeks === 1 ? '' : 's'} ago`;
+    } else {
+      const diffInMonths = Math.floor(diffInDays / 30);
+      return `${diffInMonths} month${diffInMonths === 1 ? '' : 's'} ago`;
+    }
+
   }
 
   const loadChaperones = async () => {
@@ -259,7 +281,10 @@ export const useAppStore = defineStore('app', () => {
       });
     });
 
-    chaperones.value = loadedChaperones.sort((a: any, b: any) => a.name.localeCompare(b.name)).filter((chaperone: any) => chaperone.name !== 'Choir Phone' && chaperone.name !== "Eleanor");
+    chaperones.value = loadedChaperones.sort((a: any, b: any) => a.name.localeCompare(b.name)).filter((chaperone: any) => chaperone.name !== 'Choir Phone' && chaperone.name !== "Eleanor")
+      .map((chaperone: any) => {
+        return { ...chaperone, last_login_string: formatLastLogin(chaperone.last_login), last_login: new Date().getTime() - new Date(chaperone.last_login).getTime() }
+      });
   }
 
   const loadChaperoneSlots = async () => {

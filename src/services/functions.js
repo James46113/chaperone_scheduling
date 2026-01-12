@@ -5,9 +5,9 @@ import { getCurrentInstance } from "vue";
 export const fetchAPI = async (url, params, redirect = true) => {
   let authHeader = null;
   if (usingPasswordLogin.value) {
-    authHeader = {'token' : Cookies.get('passwdAccessToken'), 'fingerprint' : fingerprint};
+    authHeader = { 'token': Cookies.get('passwdAccessToken'), 'fingerprint': fingerprint };
   } else {
-    authHeader = {'oAuthToken' : Cookies.get('accessToken')};
+    authHeader = { 'oAuthToken': Cookies.get('accessToken') };
   }
   const headers = {
     ...(params.headers || {}),
@@ -29,8 +29,8 @@ export const fetchAPI = async (url, params, redirect = true) => {
   if (window.location.hostname === 'localhost') {
     HOSTNAME = 'http://localhost:5000/';
   } else {
+    HOSTNAME = 'https://api.chaperones.steelcitychoristers.org.uk/'
   }
-  HOSTNAME = 'https://api.chaperones.steelcitychoristers.org.uk/'
 
   return fetch(HOSTNAME + url + `?cb=${Date.now()}`, {
     ...params,
@@ -78,7 +78,7 @@ export const serviceworker = ref(null);
 
 export const offline = ref(window.navigator.onLine === false);
 window.addEventListener('online', () => { offline.value = false });
-window.addEventListener('offline', () => { 
+window.addEventListener('offline', () => {
   offline.value = true;
   const currentPath = window.location.pathname;
   if (currentPath.startsWith('/login')) {
@@ -102,22 +102,22 @@ function urlBase64ToUint8Array(base64String) {
 
 
 export const notificationsSubscribe = async (userID) => {
-      const permission = await Notification.requestPermission();
-      if (permission !== 'granted') {
-        // alert('Notifications are not enabled.');
-        return;
-      }
+  const permission = await Notification.requestPermission();
+  if (permission !== 'granted') {
+    // alert('Notifications are not enabled.');
+    return;
+  }
 
-      const subscription = await serviceworker.value.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array('BDxiXIhjftxcAEVif8XED2Qah1j6FFZUO8iN2GFDK_aadrb2ad23Z_i85whgM2TIJ3uKGXntjTbc0m8C-4r4pjc')
-      });
+  const subscription = await serviceworker.value.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlBase64ToUint8Array('BDxiXIhjftxcAEVif8XED2Qah1j6FFZUO8iN2GFDK_aadrb2ad23Z_i85whgM2TIJ3uKGXntjTbc0m8C-4r4pjc')
+  });
 
-      await fetchAPI(`notifications/subscribe/${userID}`, {
-        method: 'POST',
-        body: JSON.stringify(subscription),
-        headers: { 'Content-Type': 'application/json' }
-      });
+  await fetchAPI(`notifications/subscribe/${userID}`, {
+    method: 'POST',
+    body: JSON.stringify(subscription),
+    headers: { 'Content-Type': 'application/json' }
+  });
 
 }
 
