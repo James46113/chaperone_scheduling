@@ -161,7 +161,7 @@ export const useAppStore = defineStore('app', () => {
       });
 
       event.isPastEvent = computed(() => event.start < new Date());
-      event.isEditableEvent = computed(() => event.start < new Date().setDate(new Date().getDate() - 2))
+      event.isEditableEvent = computed(() => event.start > new Date().setDate(new Date().getDate() - 2))
       event.slots = computed(() =>
         chaperoneSlots.value
           .filter((slot: any) => slot.event_id === event.id)
