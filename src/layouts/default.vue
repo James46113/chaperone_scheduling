@@ -39,7 +39,7 @@
         <v-icon>mdi-account-multiple</v-icon>
         <span>Chaperones</span>
       </v-btn>
-      <v-btn @click="goHome('schedule')">
+      <v-btn v-if="!store.userHidden" @click="goHome('schedule')">
         <v-icon>mdi-account</v-icon>
         <span>You</span>
       </v-btn>
@@ -58,7 +58,7 @@ import { useAppStore } from '@/stores/app';
 
 const { proxy } = getCurrentInstance();
 const store = useAppStore();
-const showNavigationBar = computed(() => !['/login', '/offline', '/resetPassword'].includes(proxy.$route.path))
+const showNavigationBar = computed(() => !['/login', '/offline', '/resetPassword', '/maintenance'].includes(proxy.$route.path))
 
 const goHome = (tab) => {
   store.tabView = tab;

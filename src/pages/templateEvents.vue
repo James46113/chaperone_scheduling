@@ -62,9 +62,10 @@ const headers = [
 onMounted(async () => {
   loadingData.value = true;
   if (!store.templatesLoaded) {
-    await Promise.all(
-    store.loadTemplates(),
-    store.loadTemplateSlots)
+    await Promise.all([
+      store.loadTemplates(),
+      store.loadTemplateSlots(),
+    ])
   } else {
     store.loadTemplates();
     store.loadTemplateSlots();

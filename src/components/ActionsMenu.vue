@@ -95,7 +95,7 @@ const createTerm = () => {
 
 const sendAssignedEventsEmail = () => {
   store.showAlert('Sending Email', 'Sending chaperones their assigned events')
-  fetchAPI('chaperones/events/email', {
+  fetchAPI('/api/chaperones/events/email', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ const sendAssignedEventsEmail = () => {
 
 const sendAvailabilityEmail = () => {
   store.showAlert('Sending Email', 'Sending availability email')
-  fetchAPI('availability/mail', {
+  fetchAPI('/api/chaperones/availability/email', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -188,6 +188,7 @@ const saveEvent = async () => {
     }
 
     await store.saveTemplate(EVENTID.value);
+    proxy.$router.push(`/templates`);
 
   } else { // If is event
 

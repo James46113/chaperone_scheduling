@@ -13,26 +13,8 @@ export const fetchAPI = async (url, params, redirect = true) => {
     ...(params.headers || {}),
     ...authHeader,
   };
-  // const APIURL = window.location.href.startsWith('https://chaperonescheduling-dev.up.railway.app')
-  //   ? 'https://chaperone_scheduling_api.railway.internal:5000/' : import.meta.env.VITE_API_URL;
-  let APIURL;
-  // if (!isSignedIn.value && window.location.hostname === 'localhost') {
-  //   APIURL = "";
-  // } else
-  if (usingPasswordLogin.value) {
-    APIURL = '/api/p/';
-  } else {
-    APIURL = '/api/'
-  }
 
-  let HOSTNAME;
-  if (window.location.hostname === 'localhost') {
-    HOSTNAME = 'http://localhost:5000/';
-  } else {
-    HOSTNAME = 'https://api.chaperones.steelcitychoristers.org.uk/'
-  }
-
-  return fetch(HOSTNAME + url + `?cb=${Date.now()}`, {
+  return fetch('https://scc-chaperones-app.pages.dev' + url + `?cb=${Date.now()}`, {
     ...params,
     headers
   }).then((response) => {
@@ -113,9 +95,9 @@ export const notificationsSubscribe = async (userID) => {
     applicationServerKey: urlBase64ToUint8Array('BDxiXIhjftxcAEVif8XED2Qah1j6FFZUO8iN2GFDK_aadrb2ad23Z_i85whgM2TIJ3uKGXntjTbc0m8C-4r4pjc')
   });
 
-  await fetchAPI(`notifications/subscribe/${userID}`, {
+  await fetchAPI(`/api/notifications/subscribe`, {
     method: 'POST',
-    body: JSON.stringify(subscription),
+    body: JSON.stringify({ subscription, chaperone_id: userID }),
     headers: { 'Content-Type': 'application/json' }
   });
 

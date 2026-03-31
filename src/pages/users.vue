@@ -148,6 +148,7 @@
           :rules="[required]"
           label="Email"
           required
+          variant="outlined"
           @keyup.enter="createUser"
         />
         <v-text-field
@@ -155,6 +156,7 @@
           :rules="[required]"
           label="Name"
           required
+          variant="outlined"
           @keyup.enter="createUser"
         />
         <v-switch
@@ -175,6 +177,7 @@
         <v-btn
           color="primary"
           @click="createUser"
+          :loading="creatingUser"
         >
           Create
         </v-btn>
@@ -189,6 +192,7 @@ import { useAppStore } from '@/stores/app'
 
 const newUser = ref({ is_admin: false, is_singing_chaperone: false })
 const showNewUserDialog = ref(false)
+const creatingUser = ref(false)
 
 const store = useAppStore();
 
@@ -240,7 +244,7 @@ const cancelEditEmail = (user) => {
 
 const saveEmail = (user) => {
   user.editEmail = false;
-  fetchAPI(`chaperones/${user.id}`, {
+  fetchAPI(`/api/chaperones/${user.id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -261,8 +265,9 @@ const createUser = () => {
     store.showAlert('Invalid name', 'Please enter a name')
     return;
   }
+  creatingUser.value = true;
   store.addChaperone(newUser.value)
-  fetchAPI('chaperones', {
+  fetchAPI('/api/chaperones', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -280,6 +285,7 @@ const createUser = () => {
       store.loadChaperones();
       store.loadChaperoneSlots();
       showNewUserDialog.value = false
+      creatingUser.value = false;
     })
     .catch((response) => {
       if (response.status == 409) {
@@ -287,12 +293,13 @@ const createUser = () => {
         return;
       }
       store.showAlert('Error', 'An error occurred while creating the user')
+      creatingUser.value = false;
     });
 }
 
 const deleteUser = (user_id) => {
   store.deleteChaperone(user_id)
-  fetchAPI(`chaperones/${user_id}`, {
+  fetchAPI(`/api/chaperones/${user_id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -302,9 +309,12 @@ const deleteUser = (user_id) => {
       if (!response.ok) {
         return Promise.reject(response);
       }
+      if (response.status === 204) {
+        return null;
+      }
       return response.json()
     })
-    .then((data) => {
+    .then(() => {
       store.loadChaperoneSlots();
     })
     .catch((response) => {
@@ -317,7 +327,7 @@ const updateAdmin = (user) => {
   if (user.name === 'Choir Phone' || offline.value) {
     return;
   }
-  fetchAPI(`chaperones/${user.id}`, {
+  fetchAPI(`/api/chaperones/${user.id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -339,7 +349,7 @@ const updateSinging = (user) => {
     return;
   }
 
-  fetchAPI(`chaperones/${user.id}`, {
+  fetchAPI(`/api/chaperones/${user.id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',

@@ -132,7 +132,7 @@
       elevation="0"
     >
       <v-card-title class="text-h5">
-        Invalid Token
+        Invalid Link
       </v-card-title>
       <v-card-text>
         The link you are using to reset your password is invalid. Please request a new link from the password reset
@@ -173,7 +173,7 @@ const resetPassword = () => {
     return
   }
 
-  fetchAPI(`reset_password`, {
+  fetchAPI(`/public/auth/reset_password`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -197,11 +197,14 @@ const resetPassword = () => {
     })
 }
 
-fetchAPI(`check_token/${proxy.$route.query.token}`, {
-  method: 'GET',
+fetchAPI(`/public/auth/check_token`, {
+  method: 'POST',
   headers: {
     'Content-Type': 'application/json',
   },
+  body: JSON.stringify({
+    token: proxy.$route.query.token,
+  }),
 })
   .then((response) => {
     if (response.ok) {

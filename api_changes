@@ -1,0 +1,7 @@
+check token now in body
+login now in body
+authbp/token moved under oauth
+availability/mail now under chaperones
+create term now POST not PUT
+removed timezone adjustments - need to update frontend to manage timezones itself
+notifications subscribe chaperone id moved to body

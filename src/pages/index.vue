@@ -145,7 +145,6 @@ const { proxy } = getCurrentInstance()
 
 const store = useAppStore();
 
-
 document.title = "Chaperones' Calendar - Steel City Choristers"
 
 document.addEventListener('click', handleUserInteraction);

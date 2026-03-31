@@ -56,7 +56,7 @@ const updateAvailable = (availability) => {
   const originalAvailability = eventRef.value.available
   store.getEventAvailability(props.event).available = availability
 
-  fetchAPI(`chaperones/availability/${store.userID}`, {
+  fetchAPI(`/api/chaperones/availability/${store.userID}`, {
     // fetchAPI(`chaperones/availability/1`, { // DEBUG ONLY
     method: 'PATCH',
     headers: {

@@ -27,11 +27,11 @@
               item-title="template_name" variant="outlined" class="mx-6" placeholder="Load Template"
               @update:model-value="loadTemplate" />
 
-            <v-btn v-if="event.isEditableEvent && !isNewEvent && !(isTemplate && isDefaultTemplate)" color="primary"
+            <v-btn v-if="isEditableEvent && !isNewEvent && !isDefaultTemplate" color="primary"
               class="mt-2 mr-4" variant="outlined" @click="showConfirmDeleteDialog = true">
               Delete {{ isTemplate ? 'Template' : 'Event' }}
             </v-btn>
-            <v-btn color="primary" class="mt-2" :loading="saving" @click="startSaveEvent">
+            <v-btn v-if="isEditableEvent" color="primary" class="mt-2" :loading="saving" @click="startSaveEvent">
               Save
             </v-btn>
           </div>
@@ -44,40 +44,17 @@
             @update:date="event.date = new Date($event)" />
         </v-col>
         <v-col>
-          <!-- <v-row class="my-2"> -->
-          <!-- <span class="ml-4 mt-5 mr-3">Start</span> -->
           <time-picker label="Start" :hours="event.startHours" :minutes="event.startMinutes"
             @update:hours="updateEventStartHours" @update:minutes="updateEventStartMinutes" />
-          <!-- </v-row> -->
         </v-col>
         <v-col>
-          <!-- <v-row class="my-2"> -->
-          <!-- <span class="ml-4 mt-5 mr-5">End</span> -->
           <time-picker label="End" :hours="event.endHours" :minutes="event.endMinutes"
             @update:hours="updateEventEndHours" @update:minutes="updateEventEndMinutes" />
-          <!-- </v-row> -->
         </v-col>
         <v-col />
       </v-row>
 
       <div v-else>
-        <!-- <v-text-field type="text" readonly variant="outlined" class="mt-3" max-width="300" prepend-icon="mdi-calendar"
-          @click="showDateMenu = true" v-if="!isTemplate">
-          {{ event.date?.toLocaleDateString('en-GB') }}
-          <v-menu activator="parent" :close-on-content-click="false" v-model="showDateMenu">
-            <v-confirm-edit v-model="event.date">
-              <template v-slot:default="{ model: proxyModel, actions, save, cancel, isPristine }">
-                <v-date-picker v-model="proxyModel.value">
-                  <template v-slot:actions>
-                    <v-btn text @click="() => { cancel(); showDateMenu = false; }">Cancel</v-btn>
-                    <v-btn text color="primary" @click="() => { save(); showDateMenu = false; }">Ok</v-btn>
-                  </template>
-</v-date-picker>
-</template>
-</v-confirm-edit>
-</v-menu>
-</v-text-field>
--->
         <v-row class="px-3">
           <span class="ml-4 mt-3 mr-3">
             Date
@@ -130,6 +107,7 @@
 
       <v-data-table v-if="!isMobile" :height="event.slots?.length > 0 ? (event.slots?.length + 1) * 76 : undefined"
         :items="event.slots" :headers="tableHeaders" items-per-page="-1" hide-default-footer>
+       
         <template #item.chaperone="{ item }">
           <v-select v-model="item.selectedChaperoneName" clearable :items="event.availability"
             item-title="chaperoneName" label="Chaperone" variant="outlined" density="compact" class="mt-3 mb-1">
@@ -179,8 +157,6 @@
 
       <v-divider />
 
-      <!-- <v-sheet v-if="!isMobile && !isTemplate && isDev && !loadingData" color="primary" class="my-4" rounded
-        style="padding: 1px;" elevation="2"> -->
       <v-card v-if="!isMobile && !isTemplate && !isNewEvent" elevation="0">
         <v-card-title class="text-h5 mt-4 mb-n4">
           Availability
@@ -317,12 +293,12 @@
 
         <v-divider class="my-6" />
 
-        <v-btn v-if="event.isEditableEvent && !isNewEvent && !(isTemplate && isDefaultTemplate)" color="primary"
+        <v-btn v-if="isEditableEvent && !isNewEvent && !isDefaultTemplate" color="primary"
           class="mt-2 mr-4" variant="outlined" width="100vw" @click="showConfirmDeleteDialog = true">
           {{ 'Delete ' + (isTemplate ? 'Template' : 'Event') }}
         </v-btn>
 
-        <v-btn color="primary" class="mt-4" :loading="saving" width="100vw" @click="startSaveEvent">
+        <v-btn v-if="isEditableEvent" color="primary" class="mt-4" :loading="saving" width="100vw" @click="startSaveEvent">
           Save
         </v-btn>
       </div>
@@ -394,7 +370,8 @@ const showDateMenu = ref(false)
 const saving = ref(false)
 const deleting = ref(false)
 const required = value => !!value || 'Field is required.';
-const isDefaultTemplate = computed(() => [2, 3].includes(event.value.id));
+const isDefaultTemplate = computed(() => [2, 3].includes(event.value.id) && props.isTemplate.value);
+const isEditableEvent = computed(() => event.value.isEditableEvent ?? true)
 
 const { proxy } = getCurrentInstance();
 

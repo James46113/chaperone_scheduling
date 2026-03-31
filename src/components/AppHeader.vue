@@ -44,7 +44,7 @@
     </v-btn>
 
     <v-btn
-      v-if="!isMobile"
+      v-if="!isMobile && !store.userHidden"
       class="mt-4 mr-3"
       @click="proxy.$router.push(`/chaperones/${store.userID}`)"
     >

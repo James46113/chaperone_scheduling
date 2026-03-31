@@ -1,70 +1,31 @@
 // Utilities
 import { defineStore } from 'pinia'
 
-
-interface ChaperoneSlot {
-  id: number;
-  event_id: number;
-  chaperone: number;
-  start: Date;
-  end: Date;
-}
-
-interface Event {
-  id: number;
-  start: Date;
-  end: Date;
-  date: Date;
-  lead_chaperone: number;
-}
-
-interface Chaperone {
-  id: number;
-  name: string;
-  is_singing_chaperone?: boolean;
-}
-
-interface Availability {
-  id: number;
-  event_id: number;
-  chaperone_id: number;
-  available: boolean | null;
-  chaperoneName?: string | (() => string | null);
-}
-
-interface Template {
-  id: number;
-  template_name: string;
-  start: Date;
-  end: Date;
-  slots: TemplateSlot[] | (() => TemplateSlot[]);
-  slotsToDelete?: number[];
-}
-
-interface TemplateSlot {
-  id: number;
-  template_id: number;
-  start: Date;
-  end: Date;
-  randomID?: number;
-}
-
 export const useAppStore = defineStore('app', () => {
   const showAlertDialog = ref(false);
   const alertTitle = ref('');
   const alertMessage = ref('');
   const userEmail = ref('');
+  const userHidden = ref(false);
   const isAdmin = ref(false);
   const userID = ref();
   const tabView = ref(isMobile.value ? 'schedule' : 'calendar');
   const showCreateTermDialog = ref(false);
-  const calendarDate = ref(new Date())
+  const calendarDate = ref()
 
   const showAlert = (title: string, message: string) => {
     alertTitle.value = title;
     alertMessage.value = message;
     showAlertDialog.value = true;
   };
+
+  watch(userHidden, (newValue) => {
+    if (newValue) {
+      if (tabView.value === 'schedule') {
+        tabView.value = 'list';
+      }
+    }
+  });
 
   // DATABASE
 
@@ -98,13 +59,13 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const loadEvents = async () => {
-    const eventsLastUpdated = localStorage.getItem('eventsLastUpdated');
+    const eventsLastUpdated = undefined //localStorage.getItem('eventsLastUpdated');
     let loadedEvents: any[] = [];
     let ids: number[] = [];
 
     if (!offline.value) {
       console.log("fetched events")
-      const response = await fetchAPI('events', {
+      const response = await fetchAPI('/api/events', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -164,12 +125,7 @@ export const useAppStore = defineStore('app', () => {
       event.isEditableEvent = computed(() => event.start > new Date().setDate(new Date().getDate() - 2))
       event.slots = computed(() =>
         chaperoneSlots.value
-          .filter((slot: any) => slot.event_id === event.id)
-          .sort((a: any, b: any) => {
-            const aTitle = (a.title ?? '').toString();
-            const bTitle = (b.title ?? '').toString();
-            return aTitle.localeCompare(bTitle);
-          }) ?? []
+          .filter((slot: any) => slot.event_id === event.id) ?? []
       );
       event.available = computed(() => availability.value.filter((avail: any) => avail.event_id === event.id).map((avail: any) => avail.available)[0] ?? null);
 
@@ -232,12 +188,12 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const loadChaperones = async () => {
-    const chaperonesLastUpdated = localStorage.getItem('chaperonesLastUpdated');
+    const chaperonesLastUpdated = undefined //localStorage.getItem('chaperonesLastUpdated');
     let loadedChaperones: any[] = [];
     let ids: number[] = [];
 
     if (!offline.value) {
-      const response = await fetchAPI('chaperones', {
+      const response = await fetchAPI('/api/chaperones', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -282,19 +238,19 @@ export const useAppStore = defineStore('app', () => {
       });
     });
 
-    chaperones.value = loadedChaperones.sort((a: any, b: any) => a.name.localeCompare(b.name)).filter((chaperone: any) => chaperone.name !== 'Choir Phone' && chaperone.name !== "Eleanor")
+    chaperones.value = loadedChaperones.sort((a: any, b: any) => a.name.localeCompare(b.name)).filter((chaperone: any) => chaperone.hidden !== 1)
       .map((chaperone: any) => {
         return { ...chaperone, last_login_string: formatLastLogin(chaperone.last_login), last_login: new Date().getTime() - new Date(chaperone.last_login).getTime() }
       });
   }
 
   const loadChaperoneSlots = async () => {
-    const lastUpdated = localStorage.getItem('chaperoneSlotsLastUpdated');
+    const lastUpdated = undefined //localStorage.getItem('chaperoneSlotsLastUpdated');
     let loadedSlots: any[] = [];
     let ids: number[] = [];
 
     if (!offline.value) {
-      const response = await fetchAPI('chaperone_slots', {
+      const response = await fetchAPI('/api/chaperone_slots', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -340,7 +296,11 @@ export const useAppStore = defineStore('app', () => {
       slot.chaperoneName = computed(() => chaperones.value.filter((chaperone: any) => chaperone.id === slot.chaperone).map((c: any) => c.name)[0] ?? null);
       slot.setChaperone = (id: number) => slot.chaperone = id;
     });
-    chaperoneSlots.value = loadedSlots;
+    chaperoneSlots.value = loadedSlots.sort((a: any, b: any) => {
+      const aTitle = (a.title ?? '').toString();
+      const bTitle = (b.title ?? '').toString();
+      return aTitle.localeCompare(bTitle);
+    });
   }
 
   const loadAvailability = async () => {
@@ -348,7 +308,7 @@ export const useAppStore = defineStore('app', () => {
 
     if (!offline.value) {
 
-      const response = await fetchAPI(`chaperones/availability/${userID.value}`, {
+      const response = await fetchAPI(`/api/chaperones/availability/${userID.value}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -365,6 +325,9 @@ export const useAppStore = defineStore('app', () => {
     }
 
     localStorage.setItem('availability', JSON.stringify(data));
+    data.forEach((avail: any) => {
+      avail.available = avail.available === 1 ? true : avail.available === 0 ? false : null;
+    });
     availability.value = data.filter((avail: any) => avail.chaperone_id !== 0);
   }
 
@@ -373,7 +336,7 @@ export const useAppStore = defineStore('app', () => {
 
     if (!offline.value) {
 
-      const response = await fetchAPI(`chaperones/availability`, {
+      const response = await fetchAPI(`/api/chaperones/availability`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -394,18 +357,21 @@ export const useAppStore = defineStore('app', () => {
       avail.chaperoneName = computed(() => chaperones.value.filter((chaperone: any) => chaperone.id === avail.chaperone_id).map((c: any) => c.name
       )[0] ?? null);
     });
-    allAvailability.value = data.filter((avail: any) => avail.chaperone_id != 0);
+    allAvailability.value = data.filter((avail: any) => {
+      const chaperone = chaperones.value.find((c: any) => c.id === avail.chaperone_id);
+      return avail.chaperone_id != 0 && chaperone && chaperone.hidden !== 1;
+    });
   }
 
   const loadTemplates = async () => {
-    const templatesLastUpdated = localStorage.getItem('templatesLastUpdated');
+    const templatesLastUpdated = undefined //localStorage.getItem('templatesLastUpdated');
 
     let loadedTemplates: any[] = [];
     let ids: number[] = [];
 
     if (!offline.value) {
 
-      const response = await fetchAPI('templates', {
+      const response = await fetchAPI('/api/templates', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -440,7 +406,7 @@ export const useAppStore = defineStore('app', () => {
     if (ids.length !== 0)
       loadedTemplates = loadedTemplates.filter((template: any) => ids.includes(template.id));
 
-    localStorage.setItem('templates', JSON.stringify(loadedTemplates));
+    localStorage.setItem('templates', JSON.stringify(loadedTemplates || []));
     localStorage.setItem('templatesLastUpdated', Math.floor(new Date().getTime() / 1000 - 60 * 24).toString());
 
     loadedTemplates.forEach((template: any) => {
@@ -452,13 +418,13 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const loadTemplateSlots = async () => {
-    const lastUpdated = localStorage.getItem('templateSlotsLastUpdated');
+    const lastUpdated = undefined //localStorage.getItem('templateSlotsLastUpdated');
 
     let loadedTemplateSlots: any[] = [];
     let ids: number[] = [];
 
     if (!offline.value) {
-      const response = await fetchAPI('template_chaperone_slots', {
+      const response = await fetchAPI('/api/template_chaperone_slots', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -531,12 +497,16 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const updateChaperoneSlot = async (slot: any) => {
-    const response = await fetchAPI(`chaperone_slots/${slot.id}`, {
+    const response = await fetchAPI(`/api/chaperone_slots/${slot.id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(slot),
+      body: JSON.stringify({
+        ...slot,
+        start: slot.start.getTime(),
+        end: slot.end.getTime(),
+      }),
     });
     if (!response.ok) {
       showAlert('Error', 'Failed to update chaperone slot');
@@ -546,12 +516,16 @@ export const useAppStore = defineStore('app', () => {
 
   const updateEvent = async (id: number) => {
     const event = events.value.find((e: any) => e.id === id)
-    fetchAPI(`events/${id}`, {
+    fetchAPI(`/api/events/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(event)
+      body: JSON.stringify({
+        ...event,
+        start: event.start.getTime(),
+        end: event.end.getTime(),
+      })
     })
       .catch(() => showAlert("An Error Occurred", "The event could not be updated, please try again later."))
     setTimeout(loadEvents, 2000)
@@ -562,7 +536,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const deleteEvent = async (id: number) => {
-    const response = await fetchAPI(`events/${id}`, {
+    const response = await fetchAPI(`/api/events/${id}`, {
       method: 'DELETE'
     })
     if (!response.ok) {
@@ -574,7 +548,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const deleteTemplate = async (id: number) => {
-    const response = await fetchAPI(`templates/${id}`, {
+    const response = await fetchAPI(`/api/templates/${id}`, {
       method: 'DELETE'
     })
     if (!response.ok) {
@@ -586,7 +560,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const getEventAvailability = (id: number) => {
-    console.log(availability.value.find((avail: any) => avail.event_id == id))
+    // console.log(availability.value.find((avail: any) => avail.event_id == id))
     return availability.value.find((avail: any) => avail.event_id == id);
   }
 
@@ -653,12 +627,16 @@ export const useAppStore = defineStore('app', () => {
 
   const saveEvent = async (eventID: number) => {
     const event = getEvent(eventID);
-    const response = await fetchAPI(`events/${eventID}`, {
+    const response = await fetchAPI(`/api/events/${eventID}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(event),
+      body: JSON.stringify({
+        ...event,
+        start: event.start.getTime(),
+        end: event.end.getTime(),
+      }),
     });
     if (!response.ok) {
       showAlert('Error', 'Failed to save event');
@@ -680,7 +658,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const deleteChaperoneSlot = async (slotID: number) => {
-    const response = await fetchAPI(`chaperone_slots/${slotID}`, {
+    const response = await fetchAPI(`/api/chaperone_slots/${slotID}`, {
       method: 'DELETE',
     });
     if (!response.ok) {
@@ -692,19 +670,23 @@ export const useAppStore = defineStore('app', () => {
 
   const saveTemplate = async (templateID: number) => {
     const template = getTemplate(templateID);
-    const response = await fetchAPI(`templates/${templateID}`, {
+    const response = await fetchAPI(`/api/templates/${templateID}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(template),
+      body: JSON.stringify({
+        ...template,
+        start: template.start.getTime(),
+        end: template.end.getTime(),
+      }),
     });
     if (!response.ok) {
       showAlert('Error', 'Failed to save template');
       return;
     }
     if (template.slotsToDelete) {
-      await Promise.all([...template.slotsToDelete?.map((slotID: number) => fetchAPI(`template_chaperone_slots/${slotID}`, { method: 'DELETE' })),
+      await Promise.all([...template.slotsToDelete?.map((slotID: number) => fetchAPI(`/api/template_chaperone_slots/${slotID}`, { method: 'DELETE' })),
       ...template.slots.map((slot: any) => saveTemplateSlot(slot))]);
     } else {
       await Promise.all(template.slots.map((slot: any) => saveTemplateSlot(slot)));
@@ -715,23 +697,31 @@ export const useAppStore = defineStore('app', () => {
 
   const saveTemplateSlot = async (slot: any) => {
     if (slot.id) {
-      const response = await fetchAPI(`template_chaperone_slots/${slot.id}`, {
+      const response = await fetchAPI(`/api/template_chaperone_slots/${slot.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(slot),
+        body: JSON.stringify({
+          ...slot,
+          start: slot.start.getTime(),
+          end: slot.end.getTime(),
+        }),
       });
       if (!response.ok) {
         showAlert('Error', 'Failed to save template slot');
       }
     } else {
-      const response = await fetchAPI('template_chaperone_slots', {
+      const response = await fetchAPI('/api/template_chaperone_slots', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(slot),
+        body: JSON.stringify({
+          ...slot,
+          start: slot.start.getTime(),
+          end: slot.end.getTime(),
+        }),
       });
       if (!response.ok) {
         showAlert('Error', 'Failed to save template slot');
@@ -742,12 +732,16 @@ export const useAppStore = defineStore('app', () => {
   const saveChaperoneSlot = async (slot: any) => {
     if (slot.id) {
       slot.chaperone = slot.selectedChaperoneID ?? null;
-      const response = await fetchAPI(`chaperone_slots/${slot.id}`, {
+      const response = await fetchAPI(`/api/chaperone_slots/${slot.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(slot),
+        body: JSON.stringify({
+          ...slot,
+          start: slot.start.getTime(),
+          end: slot.end.getTime(),
+        }),
       });
       if (!response.ok) {
         showAlert('Error', 'Failed to save chaperone slot');
@@ -755,12 +749,16 @@ export const useAppStore = defineStore('app', () => {
       }
     } else {
       slot.chaperone = getChaperoneIDByName(slot.selectedChaperoneName);
-      const response = await fetchAPI('chaperone_slots', {
+      const response = await fetchAPI('/api/chaperone_slots', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(slot),
+        body: JSON.stringify({
+          ...slot,
+          start: slot.start.getTime(),
+          end: slot.end.getTime(),
+        }),
       });
       if (!response.ok) {
         showAlert('Error', 'Failed to save chaperone slot');
@@ -771,12 +769,16 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const createNewEvent = async (event: any) => {
-    const response = await fetchAPI('events', {
+    const response = await fetchAPI('/api/events', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(event),
+      body: JSON.stringify({
+        ...event,
+        start: event.start.getTime(),
+        end: event.end.getTime(),
+      }),
     });
     if (!response.ok) {
       showAlert('Error', 'Failed to create event');
@@ -801,12 +803,16 @@ export const useAppStore = defineStore('app', () => {
   }
 
   const createNewTemplate = async (template: any) => {
-    const response = await fetchAPI('templates', {
+    const response = await fetchAPI('/api/templates', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(template),
+      body: JSON.stringify({
+        ...template,
+        start: template.start.getTime(),
+        end: template.end.getTime(),
+      }),
     });
     if (!response.ok) {
       showAlert('Error', 'Failed to create template');
@@ -843,6 +849,7 @@ export const useAppStore = defineStore('app', () => {
     userEmail,
     isAdmin,
     userID,
+    userHidden,
     tabView,
     showCreateTermDialog,
     calendarDate,

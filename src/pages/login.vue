@@ -384,7 +384,7 @@ const resetTimeout = ref(0);
 setInterval(() => { if (resetTimeout.value > 0) resetTimeout.value -= 1 }, 1000)
 
 onMounted(async () => {
-  fetchAPI('ping', { method: 'GET' }).catch(() => {
+  fetchAPI('/public/ping', { method: 'GET' }).catch(() => {
       store.isAdmin = Cookies.get('isAdmin') == 'true';
       store.userID = Cookies.get('userID');
       proxy.$router.push(proxy.$route.query.redirect);
@@ -416,7 +416,7 @@ const cancelSignIn = () => {
 const tokenLogin = async () => {
   signingIn.value = true;
   const token = Cookies.get('passwdAccessToken');
-  fetchAPI('/login/token', {
+  fetchAPI('/public/auth/login/token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -431,7 +431,7 @@ const tokenLogin = async () => {
     store.userID = data.id;
     Cookies.set('isAdmin', data.is_admin, { expires: 365, secure: true, sameSite: 'strict' });
     Cookies.set('userID', data.id, { expires: 365, secure: true, sameSite: 'strict' });
-    // notificationsSubscribe(store.userID);
+    store.userHidden = data.hidden;
     store.isAdmin = data.is_admin;
     store.userEmail = data.email;
     isSignedIn.value = true;
@@ -451,7 +451,7 @@ const passwordLogin = async () => {
   incorrectPassword.value = false;
   signingIn.value = true;
   try {
-    const response = await fetchAPI('login/password', {
+    const response = await fetchAPI('/public/auth/login/password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -468,6 +468,7 @@ const passwordLogin = async () => {
       // notificationsSubscribe(store.userID);
       store.isAdmin = responseJson.is_admin;
       store.userEmail = responseJson.email;
+      store.userHidden = responseJson.hidden;
       usingPasswordLogin.value = true;
       isSignedIn.value = true;
       if (proxy.$route.query.redirect) {
@@ -502,7 +503,7 @@ const resetPassword = () => {
     return;
   }
 
-  fetchAPI('forgot_password', {
+  fetchAPI('/public/auth/forgot_password', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -541,7 +542,7 @@ const customLogin = () => {
     google.accounts.oauth2.initCodeClient({
       client_id: "898082729738-m1b4g6ls0l88lvosj3pb79ki7buid87p.apps.googleusercontent.com",
       scope: 'openid email profile',
-      redirect_uri: 'chaperones.steelcitychoristers.org.uk',
+      redirect_uri: 'https://scc-chaperones-app.pages.dev', //TODO: chaperones.steelcitychoristers.org.uk when not testing
       accessType: 'offline',
       callback: onCodeReceived
     }).requestCode();
@@ -551,7 +552,7 @@ const customLogin = () => {
 
 function onCodeReceived(response) {
   // Exchange the authorization code for tokens
-  fetchAPI('token', {
+  fetchAPI('/public/auth/login/oauth/token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -581,8 +582,12 @@ function onSignIn(response) {
 
   store.userEmail = decodeCredential(response.credential).email;
 
-  fetchAPI(`login/${store.userEmail}`, {
-    method: 'GET',
+  fetchAPI(`/public/auth/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email: store.userEmail }),
   }, false)
     .then((response) => {
       if (response.ok) {
@@ -595,6 +600,7 @@ function onSignIn(response) {
       console.log(`Logged in with google`);
       store.isAdmin = data.is_admin;
       store.userID = data.id;
+      store.userHidden = data.hidden;
       Cookies.set('isAdmin', data.is_admin, { expires: 365, secure: true, sameSite: 'strict' });
       Cookies.set('userID', data.id, { expires: 365, secure: true, sameSite: 'strict' });
       // notificationsSubscribe(store.userID);
@@ -624,7 +630,7 @@ function onSignIn(response) {
 
 async function refreshToken() {
   try {
-    const response = await fetchAPI('refresh-token', {
+    const response = await fetchAPI('/public/auth/login/oauth/refresh-token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

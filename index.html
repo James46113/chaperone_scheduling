@@ -36,6 +36,8 @@
 import { serviceworker } from '@/services/functions.js';
 
 (async () => {
-  serviceworker.value = await navigator.serviceWorker.register('/sw2.js');
+  if ('serviceWorker' in navigator && !import.meta.env.DEV) {
+    serviceworker.value = await navigator.serviceWorker.register('/sw2.js');
+  }
 })();
 </script>

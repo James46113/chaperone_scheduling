@@ -419,7 +419,7 @@ onMounted(async () => {
 
 const sendAvailabilityEmail = () => {
   sendingEmails.value = true
-  fetchAPI('availability/mail', {
+  fetchAPI('/api/chaperones/availability/email', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -11,7 +11,11 @@ self.addEventListener("message", (event) => {
 });
 
 workbox.routing.registerRoute(
-  new RegExp("/*"),//('/^((?!api).)*$'),
+  ({ request, url }) => {
+    if (request.mode !== 'navigate') return false;
+    if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/public/')) return false;
+    return true;
+  },
   new workbox.strategies.StaleWhileRevalidate({
     cacheName: CACHE
   })
@@ -40,9 +44,9 @@ self.addEventListener('push', event => {
 
 self.addEventListener('notificationclick', event => {
   event.notification.close();
-  
+
   const urlToOpen = event.notification.data?.url || event.notification.url || '/';
-  
+
   event.waitUntil(
     clients.matchAll({
       type: 'window',
@@ -56,7 +60,7 @@ self.addEventListener('notificationclick', event => {
           return client.navigate(urlToOpen);
         }
       }
-      
+
       // If no existing window, open a new one
       if (clients.openWindow) {
         return clients.openWindow(urlToOpen);

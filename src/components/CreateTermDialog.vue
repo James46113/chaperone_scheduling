@@ -48,6 +48,7 @@
           :disabled="start > end"
           color="primary"
           variant="flat"
+          :loading="creatingTerm"
           @click="createTerm"
         >
           Create
@@ -68,6 +69,7 @@ const templateChaperoneSlots = ref()
 
 const showStartMenu = ref(false)
 const showEndMenu = ref(false)
+const creatingTerm = ref(false)
 
 const store = useAppStore();
 
@@ -84,15 +86,16 @@ const createTerm = () => {
   if (start.value > end.value) {
     store.showAlert("Invalid Dates", "The start date must be before the end date.")
   }
-
-  fetchAPI('create_term', {
-    method: 'PUT',
+  creatingTerm.value = true;
+  fetchAPI('/api/events/create_term', {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ start: start.value.getTime(), end: end.value.getTime() })
   })
   .then(response => {
+    creatingTerm.value = false;
     if (!response.ok) {
       store.showAlert("An Error Occurred", "There was a problem creating the term. Please try again later. If this issue persists, please contact help@jamescaroe.on.spiceworks.com.")
     } else {
