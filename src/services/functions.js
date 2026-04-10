@@ -14,7 +14,7 @@ export const fetchAPI = async (url, params, redirect = true) => {
     ...authHeader,
   };
 
-  return fetch('https://scc-chaperones-app.pages.dev' + url + `?cb=${Date.now()}`, {
+  return fetch(url + `?cb=${Date.now()}`, {
     ...params,
     headers
   }).then((response) => {
