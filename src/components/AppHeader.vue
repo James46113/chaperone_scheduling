@@ -24,7 +24,7 @@
     >
       Chaperones
     </v-card-title> -->
-    <v-btn href="mailto:help@jamescaroe.on.spiceworks.com" color="primary"
+    <v-btn :href="store.isAdmin ? 'https://jamescaroe.on.spiceworks.com/portal' : 'mailto:help@jamescaroe.on.spiceworks.com'" target="_blank" color="primary"
       class="mt-4">
       <v-icon class="mr-2" size="25">mdi-help-circle-outline</v-icon>
       Support

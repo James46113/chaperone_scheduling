@@ -54,7 +54,7 @@
             Sign in with
             password
           </v-card-text>
-          <v-btn variant="text" color="primary" href="mailto:help@jamescaroe.on.spiceworks.com">
+          <v-btn variant="text" color="primary" :href="store.isAdmin ? 'https://jamescaroe.on.spiceworks.com/portal' : 'mailto:help@jamescaroe.on.spiceworks.com'" target="_blank">
             <v-icon size="20" class="mr-1">mdi-help-circle-outline</v-icon>
             Get Help
           </v-btn>
@@ -138,7 +138,7 @@
                 Sign in with Google
               </v-btn>
               <div class="mt-3" style="display: flex; justify-content: center;">
-                <v-btn variant="text" color="primary" href="mailto:help@jamescaroe.on.spiceworks.com">
+                <v-btn variant="text" color="primary" :href="store.isAdmin ? 'https://jamescaroe.on.spiceworks.com/portal' : 'mailto:help@jamescaroe.on.spiceworks.com'" target="_blank">
                   <v-icon size="20" class="mr-1">mdi-help-circle-outline</v-icon>
                   Get Help
                 </v-btn>
@@ -229,7 +229,7 @@
                 password
               </v-card-text>
               <div style="display: flex; justify-content: center;">
-                <v-btn variant="text" color="primary" href="mailto:help@jamescaroe.on.spiceworks.com">
+                <v-btn variant="text" color="primary" :href="store.isAdmin ? 'https://jamescaroe.on.spiceworks.com/portal' : 'mailto:help@jamescaroe.on.spiceworks.com'" target="_blank">
                   <v-icon size="20" class="mr-1">mdi-help-circle-outline</v-icon>
                   Get Help
                 </v-btn>
@@ -316,7 +316,7 @@
                 Sign in with Google
               </v-btn>
               <div class="mt-3" style="display: flex; justify-content: center;">
-                <v-btn variant="text" color="primary" href="mailto:help@jamescaroe.on.spiceworks.com">
+                <v-btn variant="text" color="primary" :href="store.isAdmin ? 'https://jamescaroe.on.spiceworks.com/portal' : 'mailto:help@jamescaroe.on.spiceworks.com'" target="_blank">
                   <v-icon size="20" class="mr-1">mdi-help-circle-outline</v-icon>
                   Get Help
                 </v-btn>
