@@ -29,7 +29,6 @@ export const fetchAPI = async (url, params, redirect = true) => {
     return response;
   })
     .catch((e) => {
-      offline.value = true;
       console.error('Error fetching API:', e);
     })
 };
@@ -58,10 +57,9 @@ export const usingPasswordLogin = ref(false);
 export const serviceworker = ref(null);
 
 
-export const offline = ref(window.navigator.onLine === false);
+export const offline = ref(false);
 window.addEventListener('online', () => { offline.value = false });
 window.addEventListener('offline', () => {
-  offline.value = true;
   const currentPath = window.location.pathname;
   if (currentPath.startsWith('/login')) {
     window.location.href = '/';
