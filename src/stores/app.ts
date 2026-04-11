@@ -354,6 +354,7 @@ export const useAppStore = defineStore('app', () => {
     localStorage.setItem('allAvailability', JSON.stringify(data));
 
     data.forEach((avail: any) => {
+      avail.available = avail.available === 1 ? true : avail.available === 0 ? false : null;
       avail.chaperoneName = computed(() => chaperones.value.filter((chaperone: any) => chaperone.id === avail.chaperone_id).map((c: any) => c.name
       )[0] ?? null);
     });
