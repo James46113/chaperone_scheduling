@@ -232,6 +232,8 @@ export const useAppStore = defineStore('app', () => {
     localStorage.setItem('chaperonesLastUpdated', Math.floor(new Date().getTime() / 1000 - 60 * 24).toString());
 
     loadedChaperones.forEach((chaperone: any) => {
+      chaperone.is_singing_chaperone = chaperone.is_singing_chaperone === 1 ? true : false;
+      chaperone.is_admin = chaperone.is_admin === 1 ? true : false;
       chaperone.numEvents = computed(() => {
         const uniqueEventIDs = [...new Set(chaperoneSlots.value.filter((slot: any) => slot.chaperone === chaperone.id).map((slot: any) => slot.event_id))];
         return uniqueEventIDs.filter((eventID: any) => getEvent(eventID).start > new Date()).length;
